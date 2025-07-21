@@ -9,7 +9,7 @@ on:
 jobs:
   fetch-papers:
     runs-on: ubuntu-latest
-    timeout-minutes: 15
+    timeout-minutes: 20  # Increased for rate-limited processing
     
     steps:
       - name: Checkout repository
@@ -58,8 +58,7 @@ jobs:
           config = {
               "GOOGLE_SPREADSHEET_ID": os.environ.get("GOOGLE_SHEET_ID", ""),
               "GOOGLE_CREDENTIALS_JSON": "./google-credentials.json",
-              # Temporarily disable NCBI to test the rest of the pipeline
-              "NCBI_API_KEY": "",  # Skip DOI fetching for now
+              "NCBI_API_KEY": os.environ.get("NCBI_KEY", ""),  # Fixed: restore NCBI key for validation
               "LOCAL_ROOT_DIR": ".",
               
               # SINGLE query that worked before (not split)
