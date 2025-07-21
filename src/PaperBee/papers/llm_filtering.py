@@ -38,8 +38,16 @@ class LLMFilter:
         self.model: str = model
         self.filtering_prompt: str = filtering_prompt
         self.client: Union[OpenAI, Client]
+
         if self.llm_provider == "openai":
-            self.client = OpenAI(api_key=OPENAI_API_KEY)
+            # Get base_url from config if provided
+            base_url = config.get("OPENAI_BASE_URL", "https://api.openai.com/v1")
+            self.client = OpenAI(
+                api_key=OPENAI_API_KEY,
+                base_url=base_url
+            )
+        #if self.llm_provider == "openai":
+        #    self.client = OpenAI(api_key=OPENAI_API_KEY)
         elif self.llm_provider == "ollama":
             self.client = Client(host="http://localhost:11434", headers={"x-some-header": "some-value"})
         else:
