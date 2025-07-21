@@ -70,9 +70,24 @@ jobs:
           
       - name: Debug config file
         run: |
-          echo "=== Config file contents ==="
+          echo "=== Raw config file contents ==="
           cat config.yml
-          echo "=== End config file ==="
+          echo ""
+          echo "=== Line by line with numbers ==="
+          cat -n config.yml
+          echo ""
+          echo "=== Test YAML parsing ==="
+          python3 -c "
+          import yaml
+          try:
+              with open('config.yml', 'r') as f:
+                  config = yaml.safe_load(f)
+                  print('✅ YAML is valid')
+                  print('Keys found:', list(config.keys()) if config else 'None')
+          except Exception as e:
+              print('❌ YAML parsing failed:', str(e))
+              print('Error type:', type(e).__name__)
+          "
           
       - name: Run PaperBee (your modified fork)
         run: |
