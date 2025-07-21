@@ -54,7 +54,7 @@ jobs:
           # LLM Filtering with Gemini (the ONLY thing we're fixing)
           LLM_FILTERING: true
           LLM_PROVIDER: "openai"
-          LANGUAGE_MODEL: "gemini-2.0-flash-light"
+          LANGUAGE_MODEL: "gemini-2.0-flash-lite"
           OPENAI_API_KEY: "${{ secrets.GEMINI_API_KEY }}"
           OPENAI_BASE_URL: "https://generativelanguage.googleapis.com/v1beta/openai/"
           
