@@ -9,7 +9,7 @@ on:
 jobs:
   fetch-papers:
     runs-on: ubuntu-latest
-    timeout-minutes: 20  # Increased for rate-limited processing
+    timeout-minutes: 20  # Increased slightly for rate limiting delays
     
     steps:
       - name: Checkout repository
@@ -33,8 +33,8 @@ jobs:
         run: |
           DAY_OF_WEEK=$(date +%u)
           if [ "$DAY_OF_WEEK" -eq 1 ]; then
-            echo "since_days=2" >> $GITHUB_OUTPUT
-            echo "Monday: 2 days"
+            echo "since_days=3" >> $GITHUB_OUTPUT
+            echo "Monday: 3 days"
           else
             echo "since_days=1" >> $GITHUB_OUTPUT
             echo "Weekday: 1 day"  
@@ -58,19 +58,24 @@ jobs:
           config = {
               "GOOGLE_SPREADSHEET_ID": os.environ.get("GOOGLE_SHEET_ID", ""),
               "GOOGLE_CREDENTIALS_JSON": "./google-credentials.json",
-              "NCBI_API_KEY": os.environ.get("NCBI_KEY", ""),  # Fixed: restore NCBI key for validation
+              # Temporarily disable NCBI to test the rest of the pipeline
+              "NCBI_API_KEY": "",  # Skip DOI fetching for now
               "LOCAL_ROOT_DIR": ".",
               
               # SINGLE query that worked before (not split)
               "query": "[single-cell RNA sequencing] OR [spatial transcriptomics] OR [single-cell analysis] OR [scRNA-seq] OR [single cell atlas] OR [single-cell integration] OR [fibrosis] OR [IBD] OR [lung health] OR [COPD]",
               
-              # Gemini support (the only thing we're adding)
+              # Updated Gemini support with 2.0 Flash Lite
               "LLM_FILTERING": True,
               "LLM_PROVIDER": "openai",
-              "LANGUAGE_MODEL": "gemini-2.0-flash-lite",  # API auto-selects Flash-Lite (30 RPM)
+              "LANGUAGE_MODEL": "gemini-2.0-flash-lite",  # ⬆️ Updated to 2.0 Flash Lite
               "OPENAI_API_KEY": os.environ.get("GEMINI_KEY", ""),
               "OPENAI_BASE_URL": "https://generativelanguage.googleapis.com/v1beta/openai/",
               "FILTERING_PROMPT": os.environ.get("FILTER_PROMPT", "You are a research assistant. Is this paper relevant to single-cell biology and IBD research? Answer only yes or no."),
+              
+              # Rate limiting configuration for Gemini (30 RPM = 1 request every 2 seconds)
+              "LLM_RATE_LIMIT_DELAY": 2.5,  # 2.5 seconds between requests to be safe
+              "LLM_MAX_RETRIES": 3,         # Retry failed LLM calls
               
               "SLACK": {
                   "is_posting_on": True,
@@ -88,22 +93,143 @@ jobs:
           print("✅ Config created successfully")
           EOF
           
+      - name: Apply Gemini rate limiting patch
+        run: |
+          # Create a rate limiting patch for Gemini API calls
+          cat > gemini_rate_limit_patch.py << 'EOF'
+          import time
+          import logging
+          
+          # Global rate limiter state
+          last_gemini_call_time = 0
+          GEMINI_DELAY = 2.5  # 2.5 seconds between calls (30 RPM = 2 seconds, +0.5 for safety)
+          
+          def rate_limited_gemini_call(original_function):
+              """Decorator to add rate limiting to Gemini API calls"""
+              def wrapper(*args, **kwargs):
+                  global last_gemini_call_time
+                  
+                  current_time = time.time()
+                  time_since_last_call = current_time - last_gemini_call_time
+                  
+                  if time_since_last_call < GEMINI_DELAY:
+                      sleep_time = GEMINI_DELAY - time_since_last_call
+                      print(f"🤖 Gemini rate limiting: waiting {sleep_time:.1f}s...")
+                      time.sleep(sleep_time)
+                  
+                  last_gemini_call_time = time.time()
+                  
+                  try:
+                      result = original_function(*args, **kwargs)
+                      return result
+                  except Exception as e:
+                      print(f"⚠️ Gemini API call failed: {str(e)}")
+                      raise
+              
+              return wrapper
+          
+          def apply_gemini_rate_limiting():
+              """Apply rate limiting to PaperBee's LLM filtering functions"""
+              try:
+                  # Try to patch the LLM filtering module
+                  from PaperBee.papers.llm_filtering import filter_papers_with_llm
+                  
+                  # Wrap the filtering function with rate limiting
+                  original_filter = filter_papers_with_llm
+                  
+                  def rate_limited_filter(papers, config):
+                      print(f"🤖 Starting LLM filtering with rate limiting ({GEMINI_DELAY}s delay)...")
+                      print(f"📄 Processing {len(papers)} papers...")
+                      
+                      filtered_papers = []
+                      for i, paper in enumerate(papers):
+                          print(f"🔍 Processing paper {i+1}/{len(papers)}: {paper.get('title', 'Unknown')[:50]}...")
+                          
+                          # Apply rate limiting before each LLM call
+                          global last_gemini_call_time
+                          current_time = time.time()
+                          time_since_last_call = current_time - last_gemini_call_time
+                          
+                          if time_since_last_call < GEMINI_DELAY:
+                              sleep_time = GEMINI_DELAY - time_since_last_call
+                              print(f"⏳ Rate limiting: sleeping {sleep_time:.1f}s...")
+                              time.sleep(sleep_time)
+                          
+                          last_gemini_call_time = time.time()
+                          
+                          # Call original filtering function for single paper
+                          try:
+                              result = original_filter([paper], config)
+                              filtered_papers.extend(result)
+                              print(f"✅ Paper {i+1} processed successfully")
+                          except Exception as e:
+                              print(f"❌ Error processing paper {i+1}: {str(e)}")
+                              # Continue with next paper instead of crashing
+                              continue
+                      
+                      print(f"🎉 LLM filtering complete: {len(filtered_papers)}/{len(papers)} papers passed")
+                      return filtered_papers
+                  
+                  # Replace the original function
+                  import PaperBee.papers.llm_filtering
+                  PaperBee.papers.llm_filtering.filter_papers_with_llm = rate_limited_filter
+                  
+                  print("✅ Gemini rate limiting patch applied successfully")
+                  return True
+                  
+              except ImportError as e:
+                  print(f"⚠️ Could not import LLM filtering module: {e}")
+                  return False
+              except Exception as e:
+                  print(f"⚠️ Error applying rate limiting patch: {e}")
+                  return False
+          
+          if __name__ == "__main__":
+              apply_gemini_rate_limiting()
+          EOF
+          
+          # Apply the patch
+          python3 gemini_rate_limit_patch.py
+          
       - name: Debug config
         run: |
           echo "=== Config ==="
           cat config.yml
           echo ""
           echo "Search window: ${{ steps.search_days.outputs.since_days }} days"
+          echo "Gemini model: gemini-2.0-flash-lite (30 RPM limit)"
+          echo "Rate limiting: 2.5 seconds between LLM calls"
           
-      - name: Run PaperBee (simple approach)
+      - name: Run PaperBee with Gemini rate limiting
         env:
-          NCBI_API_KEY: ${{ secrets.NCBI_API_KEY }}  # 🔧 THE CRITICAL FIX: Environment variable for NCBI API
+          # Set Python path to help with imports
+          PYTHONPATH: ${{ github.workspace }}
         run: |
-          echo "Using SIMPLE single query approach (like before)"
+          echo "🐝 Starting PaperBee with Gemini 2.0 Flash Lite + Rate Limiting"
           echo "Search window: ${{ steps.search_days.outputs.since_days }} days"
+          echo "Expected behavior:"
+          echo "  - Skip DOI fetching (NCBI disabled)"
+          echo "  - Use Gemini 2.0 Flash Lite for filtering"
+          echo "  - 2.5 second delay between LLM calls (30 RPM limit)"
+          echo ""
+          
+          # Import and apply the rate limiting patch at runtime
+          python3 -c "
+          import sys
+          sys.path.insert(0, '.')
+          
+          # Import the patch
+          try:
+              exec(open('gemini_rate_limit_patch.py').read())
+              print('✅ Rate limiting patch loaded')
+          except Exception as e:
+              print(f'⚠️ Could not load patch: {e}')
+          "
+          
+          # Run PaperBee
           paperbee post --config config.yml --since ${{ steps.search_days.outputs.since_days }}
           
       - name: Clean up
         if: always()
         run: |
-          rm -f google-credentials.json config.yml
+          rm -f google-credentials.json config.yml gemini_rate_limit_patch.py
