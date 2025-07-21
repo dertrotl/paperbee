@@ -36,7 +36,8 @@ jobs:
           SLACK_BOT: ${{ secrets.SLACK_BOT_TOKEN }}
           SLACK_CHANNEL: ${{ secrets.SLACK_CHANNEL_ID }}
           SLACK_APP: ${{ secrets.SLACK_APP_TOKEN }}
-          SEARCH_QUERY: ${{ secrets.SEARCH_QUERY }}
+          QUERY_BIORXIV: ${{ secrets.QUERY_BIORXIV }}
+          QUERY_PUBMED_ARXIV: ${{ secrets.QUERY_PUBMED_ARXIV }}
           FILTER_PROMPT: ${{ secrets.FILTERING_PROMPT }}
         run: |
           # Create config using environment variables (safer for YAML parsing)
@@ -78,13 +79,14 @@ jobs:
           echo "=== Generated config.yml ==="
           cat config.yml
           echo ""
-          echo "=== Query value specifically ==="
+          echo "=== Query structure ==="
           python3 -c "
           import yaml
           with open('config.yml', 'r') as f:
               config = yaml.safe_load(f)
-              print('Query:', repr(config.get('query', 'NOT FOUND')))
-              print('Query length:', len(config.get('query', '')))
+              print('BioRxiv query:', repr(config.get('query_biorxiv', 'NOT FOUND')))
+              print('PubMed/arXiv query:', repr(config.get('query_pubmed_arxiv', 'NOT FOUND')))
+              print('LLM filtering:', config.get('LLM_FILTERING', False))
           "
           
       - name: Run PaperBee (your modified fork)
