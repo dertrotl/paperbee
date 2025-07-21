@@ -40,36 +40,53 @@ jobs:
             echo "Weekday: 1 day"  
           fi
           
-      - name: Create simple config (like before, but with Gemini support)
+      - name: Create config with Python (avoid YAML issues)
+        env:
+          GOOGLE_SHEET_ID: ${{ secrets.GOOGLE_SPREADSHEET_ID }}
+          NCBI_KEY: ${{ secrets.NCBI_API_KEY }}
+          GEMINI_KEY: ${{ secrets.GEMINI_API_KEY }}
+          SLACK_BOT: ${{ secrets.SLACK_BOT_TOKEN }}
+          SLACK_CHANNEL: ${{ secrets.SLACK_CHANNEL_ID }}
+          SLACK_APP: ${{ secrets.SLACK_APP_TOKEN }}
+          FILTER_PROMPT: ${{ secrets.FILTERING_PROMPT }}
         run: |
-          cat > config.yml << 'EOF'
-          GOOGLE_SPREADSHEET_ID: "${{ secrets.GOOGLE_SPREADSHEET_ID }}"
-          GOOGLE_CREDENTIALS_JSON: "./google-credentials.json"
-          NCBI_API_KEY: "${{ secrets.NCBI_API_KEY }}"
-          LOCAL_ROOT_DIR: "."
+          # Use Python to avoid YAML formatting issues
+          python3 << 'EOF'
+          import yaml
+          import os
           
-          # Use your WORKING single query (not separated)
-          query: "[single-cell RNA sequencing] OR [spatial transcriptomics] OR [single-cell analysis] OR [scRNA-seq] OR [single cell atlas] OR [single-cell integration] OR [fibrosis] OR [IBD] OR [lung health] OR [COPD]"
+          config = {
+              "GOOGLE_SPREADSHEET_ID": os.environ.get("GOOGLE_SHEET_ID", ""),
+              "GOOGLE_CREDENTIALS_JSON": "./google-credentials.json",
+              # Temporarily disable NCBI to test the rest of the pipeline
+              "NCBI_API_KEY": "",  # Skip DOI fetching for now
+              "LOCAL_ROOT_DIR": ".",
+              
+              # SINGLE query that worked before (not split)
+              "query": "[single-cell RNA sequencing] OR [spatial transcriptomics] OR [single-cell analysis] OR [scRNA-seq] OR [single cell atlas] OR [single-cell integration] OR [fibrosis] OR [IBD] OR [lung health] OR [COPD]",
+              
+              # Gemini support (the only thing we're adding)
+              "LLM_FILTERING": True,
+              "LLM_PROVIDER": "openai",
+              "LANGUAGE_MODEL": "gemini-2.0-flash-lite",  # API auto-selects Flash-Lite (30 RPM)
+              "OPENAI_API_KEY": os.environ.get("GEMINI_KEY", ""),
+              "OPENAI_BASE_URL": "https://generativelanguage.googleapis.com/v1beta/openai/",
+              "FILTERING_PROMPT": os.environ.get("FILTER_PROMPT", "You are a research assistant. Is this paper relevant to single-cell biology and IBD research? Answer only yes or no."),
+              
+              "SLACK": {
+                  "is_posting_on": True,
+                  "bot_token": os.environ.get("SLACK_BOT", ""),
+                  "channel_id": os.environ.get("SLACK_CHANNEL", ""),
+                  "app_token": os.environ.get("SLACK_APP", "")
+              },
+              "TELEGRAM": {"is_posting_on": False},
+              "ZULIP": {"is_posting_on": False}
+          }
           
-          # LLM Filtering with Gemini (the ONLY thing we're fixing)
-          LLM_FILTERING: true
-          LLM_PROVIDER: "openai"
-          LANGUAGE_MODEL: "gemini-2.0-flash-lite"
-          OPENAI_API_KEY: "${{ secrets.GEMINI_API_KEY }}"
-          OPENAI_BASE_URL: "https://generativelanguage.googleapis.com/v1beta/openai/"
+          with open("config.yml", "w") as f:
+              yaml.dump(config, f, default_flow_style=False)
           
-          FILTERING_PROMPT: "${{ secrets.FILTERING_PROMPT || 'You are a research assistant. Is this paper relevant to single-cell biology and IBD research? Answer only yes or no.' }}"
-          
-          SLACK:
-            is_posting_on: true
-            bot_token: "${{ secrets.SLACK_BOT_TOKEN }}"
-            channel_id: "${{ secrets.SLACK_CHANNEL_ID }}"
-            app_token: "${{ secrets.SLACK_APP_TOKEN }}"
-          
-          TELEGRAM:
-            is_posting_on: false
-          ZULIP:
-            is_posting_on: false
+          print("✅ Config created successfully")
           EOF
           
       - name: Debug config
