@@ -96,6 +96,8 @@ jobs:
           echo "Search window: ${{ steps.search_days.outputs.since_days }} days"
           
       - name: Run PaperBee (simple approach)
+        env:
+          NCBI_API_KEY: ${{ secrets.NCBI_API_KEY }}  # 🔧 THE CRITICAL FIX: Environment variable for NCBI API
         run: |
           echo "Using SIMPLE single query approach (like before)"
           echo "Search window: ${{ steps.search_days.outputs.since_days }} days"
