@@ -1,9 +1,9 @@
 # .github/workflows/daily-papers.yml
-name: Daily Paper Fetch (Gemini Fork - Fixed)
+name: Weekday Paper Fetch (Mon-Fri)
 
 on:
   schedule:
-    - cron: '0 9 * * *'  # Daily at 9 AM UTC
+    - cron: '0 9 * * 1-5'  # Monday-Friday at 9 AM UTC (no weekends)
   workflow_dispatch:
 
 jobs:
@@ -51,11 +51,11 @@ jobs:
               "NCBI_API_KEY": os.environ.get("NCBI_KEY", ""),
               "LOCAL_ROOT_DIR": ".",
               
-              # Use your sophisticated query structure
-              "query_biorxiv": os.environ.get("QUERY_BIORXIV") or "[single-cell RNA sequencing] OR [spatial transcriptomics] OR [single-cell analysis] OR [scRNA-seq] OR [single cell atlas] OR [single-cell integration] OR [multiomics] OR [organoids] OR [IBD] OR [Crohn disease] OR [ulcerative colitis] OR [inflammasome] OR [NLRP3] OR [immunodeficiency] OR [autoinflammation] OR [computational pathology] OR [intestinal epithelial] OR [VEO-IBD]",
-              "query_pubmed_arxiv": os.environ.get("QUERY_PUBMED_ARXIV") or "([single-cell RNA sequencing] OR [spatial transcriptomics] OR [scRNA-seq] OR [single cell atlas] OR [organoids] OR [IBD] OR [inflammasome]) AND ([computational biology] OR [bioinformatics] OR [machine learning] OR [multiomics] OR [immunology]) AND NOT ([cancer] OR [tumor])",
+              # Use your proven working queries
+              "query_biorxiv": os.environ.get("QUERY_BIORXIV") or "[single-cell RNA sequencing] OR [spatial transcriptomics] OR [single-cell analysis] OR [scRNA-seq] OR [single cell atlas] OR [single-cell integration] OR [fibrosis] OR [IBD] OR [lung health] OR [COPD]",
+              "query_pubmed_arxiv": os.environ.get("QUERY_PUBMED_ARXIV") or "([single-cell RNA sequencing] OR [spatial transcriptomics] OR [scRNA-seq] OR [single cell atlas]) AND ([computational biology] OR [bioinformatics] OR [machine learning]) AND NOT ([proteomics])",
               
-              "LLM_FILTERING": True,
+              "LLM_FILTERING": True,  # Keep enabled to test Gemini
               "LLM_PROVIDER": "openai", 
               "LANGUAGE_MODEL": "gemini-1.5-flash",
               "OPENAI_API_KEY": os.environ.get("GEMINI_KEY", ""),
@@ -103,9 +103,35 @@ jobs:
               print('Has proper query structure:', 'query_biorxiv' in config and 'query_pubmed_arxiv' in config)
           "
           
-      - name: Run PaperBee (your modified fork)
+      - name: Determine search window based on day of week
+        id: search_days
         run: |
-          paperbee post --config config.yml --since 1
+          # Get day of week (1=Monday, 2=Tuesday, ..., 5=Friday)
+          DAY_OF_WEEK=$(date +%u)
+          DAY_NAME=$(date +%A)
+          echo "Today is $DAY_NAME (day $DAY_OF_WEEK of the week)"
+          
+          if [ "$DAY_OF_WEEK" -eq 1 ]; then
+            # Monday: look back 3 days (covers weekend + Friday)
+            SINCE_DAYS=2
+            echo "📅 Monday schedule: searching last 3 days (covers weekend)"
+          else
+            # Tuesday-Friday: look back 1 day
+            SINCE_DAYS=1
+            echo "📅 $DAY_NAME schedule: searching last 1 day"
+          fi
+          
+          echo "since_days=$SINCE_DAYS" >> $GITHUB_OUTPUT
+          echo "🔍 Will use --since $SINCE_DAYS"
+          
+      - name: Run PaperBee with day-based schedule
+        run: |
+          echo "🐝 Starting PaperBee with intelligent scheduling"
+          echo "📊 Search window: ${{ steps.search_days.outputs.since_days }} days"
+          echo "🔬 Research focus: Single-cell, IBD, computational biology"
+          echo "🤖 LLM filtering: Gemini with your lab-specific prompt"
+          echo ""
+          paperbee post --config config.yml --since ${{ steps.search_days.outputs.since_days }}
           
       - name: Clean up
         if: always()
