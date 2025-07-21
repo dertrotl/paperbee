@@ -24,7 +24,7 @@ class LLMFilter:
         model: str = "gpt-3.5-turbo",
         filtering_prompt: str = "",
         OPENAI_API_KEY: str = "",
-        OPENAI_BASE_URL: str = "https://api.openai.com/v1",  
+        OPENAI_BASE_URL: str = "https://api.openai.com/v1",  # Add base URL parameter
     ) -> None:
         """
         Initializes the LLMFilter with a DataFrame of articles and an LLM model.
@@ -33,17 +33,17 @@ class LLMFilter:
             df (pd.DataFrame): The DataFrame containing articles with their details.
             client_type (str): The type of client to use ("openai" or "ollama"). Defaults to "openai".
             model (str): The model to use for filtering. Defaults to "gpt-3.5-turbo".
+            OPENAI_BASE_URL (str): The base URL for OpenAI API (for custom endpoints like Gemini).
         """
         self.df: pd.DataFrame = df
         self.llm_provider: str = llm_provider.lower()
         self.model: str = model
         self.filtering_prompt: str = filtering_prompt
         self.client: Union[OpenAI, Client]
-
         if self.llm_provider == "openai":
             self.client = OpenAI(
                 api_key=OPENAI_API_KEY,
-                base_url=OPENAI_BASE_URL
+                base_url=OPENAI_BASE_URL  # Use the base URL parameter
             )
         elif self.llm_provider == "ollama":
             self.client = Client(host="http://localhost:11434", headers={"x-some-header": "some-value"})
