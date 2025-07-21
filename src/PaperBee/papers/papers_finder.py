@@ -60,6 +60,7 @@ class PapersFinder:
         llm_provider: Optional[str] = "",
         model: Optional[str] = "",
         OPENAI_API_KEY: Optional[str] = "",
+        OPENAI_BASE_URL: Optional[str] = "https://api.openai.com/v1",
         slack_bot_token: str = "",
         slack_channel_id: str = "",
         telegram_bot_token: str = "",
@@ -105,6 +106,7 @@ class PapersFinder:
         self.model: str = model or "gpt-3.5-turbo"
         self.filtering_prompt: str = filtering_prompt or ""
         self.OPENAI_API_KEY: str = OPENAI_API_KEY or ""
+        self.OPENAI_BASE_URL: str = OPENAI_BASE_URL or "https://api.openai.com/v1"
         # Slack, Telegram, Zulip
         self.slack_bot_token: str = slack_bot_token
         self.slack_channel_id: str = slack_channel_id
@@ -198,6 +200,7 @@ class PapersFinder:
                 model=self.model,
                 filtering_prompt=self.filtering_prompt,
                 OPENAI_API_KEY=self.OPENAI_API_KEY,
+                OPENAI_BASE_URL=self.OPENAI_BASE_URL,
             )
             processed_articles = llm_filter.filter_articles()
             self.logger.info(f"Filtered down to {len(processed_articles)} articles using LLM.")
