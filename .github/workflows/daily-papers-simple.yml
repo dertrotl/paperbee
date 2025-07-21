@@ -40,7 +40,8 @@ jobs:
           FILTER_PROMPT: ${{ secrets.FILTERING_PROMPT }}
         run: |
           # Create config using environment variables (safer for YAML parsing)
-          cat > config.yml << EOF
+          # Create config using heredoc with proper YAML indentation
+          cat > config.yml << 'CONFIGEOF'
           GOOGLE_SPREADSHEET_ID: "${GOOGLE_SHEET_ID}"
           GOOGLE_CREDENTIALS_JSON: "./google-credentials.json"
           NCBI_API_KEY: "${NCBI_KEY}"
@@ -66,28 +67,16 @@ jobs:
             is_posting_on: false
           ZULIP:
             is_posting_on: false
-          EOF
+          CONFIGEOF
           
-      - name: Debug config file
+          # Now substitute the environment variables
+          envsubst < config.yml > config_final.yml
+          mv config_final.yml config.yml
+          
+      - name: Debug config file (quick check)
         run: |
-          echo "=== Raw config file contents ==="
+          echo "=== Generated config.yml ==="
           cat config.yml
-          echo ""
-          echo "=== Line by line with numbers ==="
-          cat -n config.yml
-          echo ""
-          echo "=== Test YAML parsing ==="
-          python3 -c "
-          import yaml
-          try:
-              with open('config.yml', 'r') as f:
-                  config = yaml.safe_load(f)
-                  print('✅ YAML is valid')
-                  print('Keys found:', list(config.keys()) if config else 'None')
-          except Exception as e:
-              print('❌ YAML parsing failed:', str(e))
-              print('Error type:', type(e).__name__)
-          "
           
       - name: Run PaperBee (your modified fork)
         run: |
