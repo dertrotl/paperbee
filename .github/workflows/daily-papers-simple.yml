@@ -33,8 +33,8 @@ jobs:
         run: |
           DAY_OF_WEEK=$(date +%u)
           if [ "$DAY_OF_WEEK" -eq 1 ]; then
-            echo "since_days=3" >> $GITHUB_OUTPUT
-            echo "Monday: 3 days"
+            echo "since_days=2" >> $GITHUB_OUTPUT
+            echo "Monday: 2 days"
           else
             echo "since_days=1" >> $GITHUB_OUTPUT
             echo "Weekday: 1 day"  
@@ -58,8 +58,8 @@ jobs:
           config = {
               "GOOGLE_SPREADSHEET_ID": os.environ.get("GOOGLE_SHEET_ID", ""),
               "GOOGLE_CREDENTIALS_JSON": "./google-credentials.json",
-              # Temporarily disable NCBI to test the rest of the pipeline
-              "NCBI_API_KEY": "",  # Skip DOI fetching for now
+              # Use NCBI key but handle DOI errors gracefully
+              "NCBI_API_KEY": os.environ.get("NCBI_KEY", ""),
               "LOCAL_ROOT_DIR": ".",
               
               # SINGLE query that worked before (not split)
@@ -93,16 +93,37 @@ jobs:
           print("✅ Config created successfully")
           EOF
           
-      - name: Apply Gemini rate limiting patch
+      - name: Apply patches for robust operation
         run: |
-          # Create a rate limiting patch for Gemini API calls
-          cat > gemini_rate_limit_patch.py << 'EOF'
+          # Create a comprehensive patch for both Gemini rate limiting and DOI error handling
+          cat > comprehensive_patch.py << 'EOF'
           import time
           import logging
           
           # Global rate limiter state
           last_gemini_call_time = 0
           GEMINI_DELAY = 2.5  # 2.5 seconds between calls (30 RPM = 2 seconds, +0.5 for safety)
+          
+          def apply_doi_error_handling():
+              """Make DOI extraction more robust"""
+              try:
+                  from PaperBee.papers import utils
+                  original_get_doi = utils.get_doi_from_title
+                  
+                  def safe_get_doi_from_title(title, ncbi_api_key=None):
+                      try:
+                          return original_get_doi(title, ncbi_api_key)
+                      except Exception as e:
+                          print(f"⚠️ DOI extraction failed for '{title[:50]}...': {str(e)}")
+                          return None  # Return None instead of crashing
+                  
+                  utils.get_doi_from_title = safe_get_doi_from_title
+                  print("✅ DOI error handling patch applied")
+                  return True
+                  
+              except ImportError:
+                  print("⚠️ Could not patch DOI extraction")
+                  return False
           
           def rate_limited_gemini_call(original_function):
               """Decorator to add rate limiting to Gemini API calls"""
@@ -131,65 +152,106 @@ jobs:
           def apply_gemini_rate_limiting():
               """Apply rate limiting to PaperBee's LLM filtering functions"""
               try:
-                  # Try to patch the LLM filtering module
-                  from PaperBee.papers.llm_filtering import filter_papers_with_llm
+                  # Import the LLM filtering module
+                  import PaperBee.papers.llm_filtering as llm_module
+                  
+                  # Try to find the correct function name
+                  filter_function = None
+                  possible_names = ['filter_papers_with_llm', 'filter_papers', 'llm_filter', 'filter_with_llm']
+                  
+                  for name in possible_names:
+                      if hasattr(llm_module, name):
+                          filter_function = getattr(llm_module, name)
+                          print(f"✅ Found LLM function: {name}")
+                          break
+                  
+                  if not filter_function:
+                      print("⚠️ Could not find LLM filtering function, trying alternative approach...")
+                      return apply_openai_client_rate_limiting()
                   
                   # Wrap the filtering function with rate limiting
-                  original_filter = filter_papers_with_llm
+                  original_filter = filter_function
                   
-                  def rate_limited_filter(papers, config):
-                      print(f"🤖 Starting LLM filtering with rate limiting ({GEMINI_DELAY}s delay)...")
-                      print(f"📄 Processing {len(papers)} papers...")
+                  def rate_limited_filter(*args, **kwargs):
+                      global last_gemini_call_time
                       
-                      filtered_papers = []
-                      for i, paper in enumerate(papers):
-                          print(f"🔍 Processing paper {i+1}/{len(papers)}: {paper.get('title', 'Unknown')[:50]}...")
-                          
-                          # Apply rate limiting before each LLM call
-                          global last_gemini_call_time
-                          current_time = time.time()
-                          time_since_last_call = current_time - last_gemini_call_time
-                          
-                          if time_since_last_call < GEMINI_DELAY:
-                              sleep_time = GEMINI_DELAY - time_since_last_call
-                              print(f"⏳ Rate limiting: sleeping {sleep_time:.1f}s...")
-                              time.sleep(sleep_time)
-                          
-                          last_gemini_call_time = time.time()
-                          
-                          # Call original filtering function for single paper
-                          try:
-                              result = original_filter([paper], config)
-                              filtered_papers.extend(result)
-                              print(f"✅ Paper {i+1} processed successfully")
-                          except Exception as e:
-                              print(f"❌ Error processing paper {i+1}: {str(e)}")
-                              # Continue with next paper instead of crashing
-                              continue
+                      current_time = time.time()
+                      time_since_last_call = current_time - last_gemini_call_time
                       
-                      print(f"🎉 LLM filtering complete: {len(filtered_papers)}/{len(papers)} papers passed")
-                      return filtered_papers
+                      if time_since_last_call < GEMINI_DELAY:
+                          sleep_time = GEMINI_DELAY - time_since_last_call
+                          print(f"⏳ Gemini rate limiting: sleeping {sleep_time:.1f}s...")
+                          time.sleep(sleep_time)
+                      
+                      last_gemini_call_time = time.time()
+                      
+                      try:
+                          result = original_filter(*args, **kwargs)
+                          return result
+                      except Exception as e:
+                          print(f"⚠️ LLM call failed: {str(e)}")
+                          raise
                   
                   # Replace the original function
-                  import PaperBee.papers.llm_filtering
-                  PaperBee.papers.llm_filtering.filter_papers_with_llm = rate_limited_filter
+                  setattr(llm_module, filter_function.__name__, rate_limited_filter)
                   
                   print("✅ Gemini rate limiting patch applied successfully")
                   return True
                   
-              except ImportError as e:
-                  print(f"⚠️ Could not import LLM filtering module: {e}")
-                  return False
               except Exception as e:
-                  print(f"⚠️ Error applying rate limiting patch: {e}")
+                  print(f"⚠️ Error applying LLM rate limiting: {e}")
+                  return apply_openai_client_rate_limiting()
+          
+          def apply_openai_client_rate_limiting():
+              """Alternative: patch OpenAI client calls directly"""
+              try:
+                  import openai
+                  
+                  # Patch the OpenAI client if available
+                  if hasattr(openai, 'OpenAI'):
+                      original_create = None
+                      
+                      # Try to find and patch chat completions
+                      try:
+                          client_class = openai.OpenAI
+                          if hasattr(client_class, 'chat') and hasattr(client_class.chat, 'completions'):
+                              original_create = client_class.chat.completions.create
+                              
+                              def rate_limited_create(self, *args, **kwargs):
+                                  global last_gemini_call_time
+                                  
+                                  current_time = time.time()
+                                  time_since_last_call = current_time - last_gemini_call_time
+                                  
+                                  if time_since_last_call < GEMINI_DELAY:
+                                      sleep_time = GEMINI_DELAY - time_since_last_call
+                                      print(f"⏳ Gemini rate limiting: sleeping {sleep_time:.1f}s...")
+                                      time.sleep(sleep_time)
+                                  
+                                  last_gemini_call_time = time.time()
+                                  return original_create(self, *args, **kwargs)
+                              
+                              client_class.chat.completions.create = rate_limited_create
+                              print("✅ Applied rate limiting to OpenAI client")
+                              return True
+                      except Exception as e:
+                          print(f"⚠️ Could not patch OpenAI client: {e}")
+                  
+                  print("⚠️ Rate limiting patch not applied - will rely on manual delays")
+                  return False
+                  
+              except ImportError:
+                  print("⚠️ OpenAI not available for patching")
                   return False
           
           if __name__ == "__main__":
-              apply_gemini_rate_limiting()
+              success1 = apply_doi_error_handling()
+              success2 = apply_gemini_rate_limiting()
+              print(f"✅ Patches applied: DOI={success1}, Gemini={success2}")
           EOF
           
-          # Apply the patch
-          python3 gemini_rate_limit_patch.py
+          # Apply the patches
+          python3 comprehensive_patch.py
           
       - name: Debug config
         run: |
@@ -204,26 +266,28 @@ jobs:
         env:
           # Set Python path to help with imports
           PYTHONPATH: ${{ github.workspace }}
+          # Set NCBI API key to satisfy validation
+          NCBI_API_KEY: ${{ secrets.NCBI_API_KEY }}
         run: |
           echo "🐝 Starting PaperBee with Gemini 2.0 Flash Lite + Rate Limiting"
           echo "Search window: ${{ steps.search_days.outputs.since_days }} days"
           echo "Expected behavior:"
-          echo "  - Skip DOI fetching (NCBI disabled)"
+          echo "  - Use NCBI API key but handle DOI errors gracefully"
           echo "  - Use Gemini 2.0 Flash Lite for filtering"
           echo "  - 2.5 second delay between LLM calls (30 RPM limit)"
           echo ""
           
-          # Import and apply the rate limiting patch at runtime
+          # Import and apply the patches at runtime
           python3 -c "
           import sys
           sys.path.insert(0, '.')
           
-          # Import the patch
+          # Import and apply both patches
           try:
-              exec(open('gemini_rate_limit_patch.py').read())
-              print('✅ Rate limiting patch loaded')
+              exec(open('comprehensive_patch.py').read())
+              print('✅ All patches loaded successfully')
           except Exception as e:
-              print(f'⚠️ Could not load patch: {e}')
+              print(f'⚠️ Could not load patches: {e}')
           "
           
           # Run PaperBee
@@ -232,4 +296,4 @@ jobs:
       - name: Clean up
         if: always()
         run: |
-          rm -f google-credentials.json config.yml gemini_rate_limit_patch.py
+          rm -f google-credentials.json config.yml comprehensive_patch.py
