@@ -24,6 +24,7 @@ class LLMFilter:
         model: str = "gpt-3.5-turbo",
         filtering_prompt: str = "",
         OPENAI_API_KEY: str = "",
+        OPENAI_BASE_URL: str = "https://api.openai.com/v1",  
     ) -> None:
         """
         Initializes the LLMFilter with a DataFrame of articles and an LLM model.
@@ -40,14 +41,10 @@ class LLMFilter:
         self.client: Union[OpenAI, Client]
 
         if self.llm_provider == "openai":
-            # Get base_url from config if provided
-            base_url = config.get("OPENAI_BASE_URL", "https://api.openai.com/v1")
             self.client = OpenAI(
                 api_key=OPENAI_API_KEY,
-                base_url=base_url
+                base_url=OPENAI_BASE_URL
             )
-        #if self.llm_provider == "openai":
-        #    self.client = OpenAI(api_key=OPENAI_API_KEY)
         elif self.llm_provider == "ollama":
             self.client = Client(host="http://localhost:11434", headers={"x-some-header": "some-value"})
         else:
