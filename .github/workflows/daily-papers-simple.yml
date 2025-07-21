@@ -77,6 +77,15 @@ jobs:
         run: |
           echo "=== Generated config.yml ==="
           cat config.yml
+          echo ""
+          echo "=== Query value specifically ==="
+          python3 -c "
+          import yaml
+          with open('config.yml', 'r') as f:
+              config = yaml.safe_load(f)
+              print('Query:', repr(config.get('query', 'NOT FOUND')))
+              print('Query length:', len(config.get('query', '')))
+          "
           
       - name: Run PaperBee (your modified fork)
         run: |
