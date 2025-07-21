@@ -33,8 +33,8 @@ jobs:
         run: |
           DAY_OF_WEEK=$(date +%u)
           if [ "$DAY_OF_WEEK" -eq 1 ]; then
-            echo "since_days=3" >> $GITHUB_OUTPUT
-            echo "Monday: 3 days"
+            echo "since_days=2" >> $GITHUB_OUTPUT
+            echo "Monday: 2 days"
           else
             echo "since_days=1" >> $GITHUB_OUTPUT
             echo "Weekday: 1 day"  
