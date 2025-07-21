@@ -73,6 +73,7 @@ async def daily_papers_search(
         llm_provider=LLM_PROVIDER,
         model=LANGUAGE_MODEL,
         OPENAI_API_KEY=OPENAI_API_KEY,
+        OPENAI_BASE_URL=config.get("OPENAI_BASE_URL", "https://api.openai.com/v1"),
         slack_bot_token=slack_args["bot_token"],
         slack_channel_id=slack_args["channel_id"],
         telegram_bot_token=telegram_args["bot_token"],
