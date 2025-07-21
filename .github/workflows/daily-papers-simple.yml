@@ -43,6 +43,44 @@ jobs:
           # Fix NCBI timeout issue (increase from 10s to 30s)
           find . -name "utils.py" -path "*/PaperBee/*" -exec sed -i 's/timeout=10/timeout=30/g' {} \;
           
+          # Fix XML parsing errors in DOI extraction
+          python3 << 'EOF'
+          import os
+          import re
+          
+          # Find and patch utils.py for XML error handling
+          utils_files = []
+          for root, dirs, files in os.walk('.'):
+              if 'utils.py' in files and 'PaperBee' in root:
+                  utils_files.append(os.path.join(root, 'utils.py'))
+          
+          for utils_file in utils_files:
+              try:
+                  with open(utils_file, 'r') as f:
+                      content = f.read()
+                  
+                  # Replace the problematic XML parsing line
+                  old_pattern = 'root = ET.fromstring(fetch_response.content)  # Using defusedxml for parsing'
+                  new_pattern = '''try:
+                      root = ET.fromstring(fetch_response.content)  # Using defusedxml for parsing
+                  except (ET.ParseError, Exception) as e:
+                      print(f"⚠️ XML parsing failed, skipping DOI extraction: {str(e)[:50]}")
+                      return None'''
+                  
+                  if old_pattern in content and 'XML parsing failed' not in content:
+                      content = content.replace(old_pattern, new_pattern)
+                      
+                      with open(utils_file, 'w') as f:
+                          f.write(content)
+                      
+                      print(f"✅ Applied XML error handling to {utils_file}")
+                  else:
+                      print(f"ℹ️ XML error handling already applied or pattern not found in {utils_file}")
+                      
+              except Exception as e:
+                  print(f"⚠️ Error processing {utils_file}: {e}")
+          EOF
+          
           # Add Gemini rate limiting to LLM filtering
           python3 << 'EOF'
           import os
