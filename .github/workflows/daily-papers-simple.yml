@@ -1,5 +1,5 @@
 # .github/workflows/daily-papers.yml
-name: PaperBee Daily Digest
+name: PaperBee Daily Digest Clinic
 
 on:
   schedule:
@@ -141,7 +141,7 @@ jobs:
               "NCBI_API_KEY": os.environ.get("NCBI_KEY", ""),
               "LOCAL_ROOT_DIR": ".",
               
-              "query": "[single-cell RNA sequencing] OR [spatial transcriptomics] OR [single-cell analysis] OR [scRNA-seq] OR [single cell atlas] OR [single-cell integration] OR [fibrosis] OR [IBD] OR [lung health] OR [COPD]",
+              "query": "[single-cell RNA sequencing] OR [spatial transcriptomics] OR [single-cell analysis] OR [scRNA-seq] OR [single cell atlas] OR [single-cell integration] OR [IBD]",
               
               "LLM_FILTERING": True,
               "LLM_PROVIDER": "openai",
