@@ -3,7 +3,7 @@ name: PaperBee Daily Digest MarrPeng
 
 on:
   schedule:
-    - cron: '0 10 * * 1-5'  # Monday-Friday at 10 AM UTC (1 hour after first workflow)
+    - cron: '0 6 * * 1-5'  # Monday-Friday at 6 AM UTC (8 AM German time during DST)
   workflow_dispatch:
 
 jobs:
@@ -142,8 +142,8 @@ jobs:
               "NCBI_API_KEY": os.environ.get("NCBI_KEY", ""),
               "LOCAL_ROOT_DIR": ".",
               
-              # Use custom research query or fallback to default
-              "query": os.environ.get("RESEARCH_QUERY", "[machine learning] OR [artificial intelligence] OR [deep learning] OR [neural networks] OR [computational biology] OR [bioinformatics] OR [data science] OR [algorithm development]"),
+              # Use custom research query or fallback to expanded default with new keywords
+              "query": os.environ.get("RESEARCH_QUERY", "[machine learning] OR [artificial intelligence] OR [deep learning] OR [neural networks] OR [computational biology] OR [bioinformatics] OR [data science] OR [algorithm development] OR [segmentation] OR [3D segmentation] OR [vision language model]"),
               
               "LLM_FILTERING": True,
               "LLM_PROVIDER": "openai",
