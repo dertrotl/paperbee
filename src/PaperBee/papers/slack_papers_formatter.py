@@ -47,7 +47,10 @@ class SlackPaperPublisher:
         preprints = []
         for paper in papers_list:
             emoji = ":pencil:" if paper[3] == "TRUE" else ":rolled_up_newspaper:"
-            formatted_paper = f"{emoji} <{paper[-1]}|{paper[4]}>"
+            # Extract source information (now at index 6)
+            source = paper[6] if len(paper) > 6 else "Unknown"
+            # Format: emoji + title with link + (source)
+            formatted_paper = f"{emoji} <{paper[-1]}|{paper[4]}> ({source})"
             if paper[3] == "TRUE":
                 preprints.append(formatted_paper)
             else:

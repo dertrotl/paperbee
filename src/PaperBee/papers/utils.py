@@ -36,7 +36,7 @@ class ArticlesProcessor:
             print("⚠️ No articles found, creating empty DataFrame")
             self.articles = pd.DataFrame(columns=[
                 "DOI", "Date", "PostedDate", "IsPreprint", 
-                "Title", "Keywords", "Preprint", "URL"
+                "Title", "Keywords", "Source", "Preprint", "URL"
             ])
             return
             
@@ -74,7 +74,30 @@ class ArticlesProcessor:
     def rename_and_process_columns(self) -> None:
         """Renames columns and processes keywords."""
         self.articles["Title"] = self.articles["title"]
-        self.articles["Keywords"] = self.articles["keywords"].apply(lambda kws: ", ".join(kw[2:] for kw in kws))
+        # Fix keywords processing - handle both list and string cases
+        def process_keywords(kws):
+            if isinstance(kws, list):
+                return ", ".join(kw[2:] if len(kw) > 2 else kw for kw in kws)
+            elif isinstance(kws, str):
+                return kws
+            else:
+                return ""
+        self.articles["Keywords"] = self.articles["keywords"].apply(process_keywords)
+        # Extract primary source/journal from databases
+        def extract_primary_source(dbs):
+            if isinstance(dbs, list):
+                # Priority: PubMed > bioRxiv > ArXiv
+                if "PubMed" in dbs:
+                    return "PubMed"
+                elif "bioRxiv" in dbs:
+                    return "bioRxiv"
+                elif "ArXiv" in dbs:
+                    return "ArXiv"
+                else:
+                    return dbs[0] if dbs else "Unknown"
+            else:
+                return str(dbs) if dbs else "Unknown"
+        self.articles["Source"] = self.articles["databases"].apply(extract_primary_source)
         self.articles["URL"] = self.articles["url"]
 
     def select_last_columns(self) -> None:
@@ -88,6 +111,7 @@ class ArticlesProcessor:
                 "IsPreprint",
                 "Title",
                 "Keywords",
+                "Source",
                 "Preprint",
                 "URL",
             ]

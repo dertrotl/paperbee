@@ -75,7 +75,10 @@ class TelegramPaperPublisher:
             emoji = "✏️" if paper[3] == "TRUE" else "🗞️"
             title = escape_reserved_symbols(paper[4])
             link = escape_reserved_symbols(paper[-1])
-            formatted_paper = f"{emoji} [{title}]({link})"
+            # Extract source information (now at index 6)
+            source = paper[6] if len(paper) > 6 else "Unknown"
+            source_escaped = escape_reserved_symbols(source)
+            formatted_paper = f"{emoji} [{title}]({link}) \\({source_escaped}\\)"
 
             if paper[3] == "TRUE":
                 preprints.append(formatted_paper)

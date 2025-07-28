@@ -46,7 +46,7 @@ pip install paperbee
    In [Google Cloud Console](https://console.cloud.google.com/), enable the Google Sheets API for your service account.
 4. **Create a Google Spreadsheet:**
    You can copy this [template](https://docs.google.com/spreadsheets/d/13QqH13psraWsTG5GJ7jrqA8PkUvP_HlzO90BMxYwzYw/).
-   The sheet must have columns: `DOI`, `Date`, `PostedDate`, `IsPreprint`, `Title`, `Keywords`, `Preprint`, `URL`.
+   The sheet must have columns: `DOI`, `Date`, `PostedDate`, `IsPreprint`, `Title`, `Keywords`, `Source`, `Preprint`, `URL`.
    The sheet name must be `Papers`.
 5. **Share the Spreadsheet:**
    Add the service account email as an _Editor_.

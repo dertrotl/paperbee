@@ -54,7 +54,9 @@ class ZulipPaperPublisher:
         preprints = []
         for paper in papers_list:
             emoji = "🖊️" if paper[3] == "TRUE" else "📰"
-            formatted_paper = f"{emoji} [{paper[4]}]({paper[-1]})"
+            # Extract source information (now at index 6)
+            source = paper[6] if len(paper) > 6 else "Unknown"
+            formatted_paper = f"{emoji} [{paper[4]}]({paper[-1]}) ({source})"
             if paper[3] == "TRUE":
                 preprints.append(formatted_paper)
             else:

@@ -145,6 +145,7 @@ class PapersFinder:
                 articles_dict: List[Dict[str, Any]] = json.load(papers_file)["papers"]
             articles = list(articles_dict)
             print(f"Found {len(articles)} articles from unified query")
+            print(f"First few titles: {[art.get('title', 'No title')[:50] for art in articles[:3]]}")
         else:
             if not self.query_biorxiv or not self.query_pub_arx:
                 e = "Both query_biorxiv and query_pubmed_arxiv must be provided if query is not provided."
@@ -182,7 +183,11 @@ class PapersFinder:
             print(f"Found {len(articles_pub_arx_dict)} articles from PubMed/ArXiv")
             print(f"Found {len(articles_biorxiv_dict)} articles from bioRxiv")
             articles = articles_pub_arx_dict + articles_biorxiv_dict
+            print(f"Total articles before processing: {len(articles)}")
+            if articles:
+                print(f"Sample titles: {[art.get('title', 'No title')[:50] + '...' for art in articles[:3]]}")
 
+        # DOI extraction and URL filtering
         doi_extractor = PubMedClient()
         for article in tqdm(articles):
             if "PubMed" in article["databases"]:
@@ -202,7 +207,7 @@ class PapersFinder:
             print("   - Database connectivity issues")
             return pd.DataFrame(columns=[
                 "DOI", "Date", "PostedDate", "IsPreprint", 
-                "Title", "Keywords", "Preprint", "URL"
+                "Title", "Keywords", "Source", "Preprint", "URL"
             ])
             
         processor = ArticlesProcessor(articles, self.today_str)
