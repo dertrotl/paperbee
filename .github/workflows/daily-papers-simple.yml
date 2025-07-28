@@ -203,10 +203,10 @@ jobs:
           import os
           
           # Define separate queries for different databases
-          # bioRxiv has strict requirements: only OR, no complex queries
-          biorxiv_query = "[single cell] OR [cell] OR [transcriptomics] OR [omics] OR [genomics] OR [proteomics] OR [biology] OR [biomedical] OR [computational] OR [bioinformatics] OR [data science] OR [machine learning] OR [IBD] OR [bowel] OR [intestinal] OR [gut] OR [immune] OR [inflammation] OR [cytokine] OR [organoid] OR [stem cell] OR [differentiation] OR [development] OR [pathology] OR [histology] OR [microscopy] OR [imaging] OR [analysis] OR [algorithm] OR [method] OR [tool] OR [software] OR [pipeline] OR [workflow] OR [integration] OR [atlas] OR [database] OR [repository] OR [benchmark] OR [evaluation] OR [comparison] OR [spatial] OR [spatial transcriptomics]"
+          # bioRxiv has strict requirements: only OR, no complex queries, no brackets
+          biorxiv_query = "single cell OR cell OR transcriptomics OR omics OR genomics OR proteomics OR biology OR biomedical OR computational OR bioinformatics OR data science OR machine learning OR IBD OR bowel OR intestinal OR gut OR immune OR inflammation OR cytokine OR organoid OR stem cell OR differentiation OR development OR pathology OR histology OR microscopy OR imaging OR analysis OR algorithm OR method OR tool OR software OR pipeline OR workflow OR integration OR atlas OR database OR repository OR benchmark OR evaluation OR comparison OR spatial OR spatial transcriptomics"
           
-          # PubMed/ArXiv allows more complex queries
+          # PubMed/ArXiv allows more complex queries with parentheses
           pubmed_arxiv_query = "(single cell) OR (transcriptomics) OR (omics) OR (genomics) OR (proteomics) OR (computational biology) OR (bioinformatics) OR (machine learning) OR (deep learning) OR (artificial intelligence) OR (IBD) OR (inflammatory bowel disease) OR (bowel) OR (intestinal) OR (gut microbiome) OR (immune system) OR (inflammation) OR (cytokine) OR (T cell) OR (B cell) OR (macrophage) OR (organoid) OR (stem cell) OR (cell differentiation) OR (development) OR (pathology) OR (histology) OR (microscopy) OR (medical imaging) OR (image analysis) OR (algorithm) OR (method) OR (tool) OR (software) OR (pipeline) OR (workflow) OR (data integration) OR (atlas) OR (database) OR (repository) OR (benchmark) OR (evaluation) OR (comparison) OR (spatial transcriptomics) OR (spatial omics)"
           
           # Define LLM filtering prompt directly in workflow
