@@ -74,8 +74,19 @@ class LLMFilter:
             bool: True if the publication is deemed relevant, otherwise False.
         """
         if keywords:
-            message = f"Title of the publication: '{title}'\nKeywords: {', '.join(keywords)}"
-            print(f"Filtering with keywords: {', '.join(keywords)}")
+            # Handle case where keywords might be a string instead of a list
+            if isinstance(keywords, str):
+                # Split comma-separated string back into list
+                keywords_list = [kw.strip() for kw in keywords.split(',') if kw.strip()]
+            else:
+                keywords_list = keywords
+            
+            if keywords_list:
+                message = f"Title of the publication: '{title}'\nKeywords: {', '.join(keywords_list)}"
+                print(f"Filtering with keywords: {', '.join(keywords_list)}")
+            else:
+                message = f"Title of the publication: '{title}'"
+                print("Filtering without keywords (empty keywords list)")
         else:
             message = f"Title of the publication: '{title}'"
             print("Filtering without keywords")

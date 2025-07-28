@@ -47,7 +47,7 @@ jobs:
           python3 << 'EOF'
           import os
           
-          # Find papers_finder.py and apply bioRxiv fix
+          # Find papers_finder.py and apply bioRxiv fix + debug
           finder_files = []
           for root, dirs, files in os.walk('.'):
               if 'papers_finder.py' in files and 'PaperBee' in root:
@@ -99,13 +99,46 @@ jobs:
                   
                   if old_pattern in content:
                       content = content.replace(old_pattern, new_pattern)
+                  
+                  # Add debug to LLM filtering section
+                  old_llm_pattern = '''        if self.llm_filtering:
+            llm_filter = LLMFilter(
+                processed_articles,
+                llm_provider=self.llm_provider,
+                model=self.model,
+                filtering_prompt=self.filtering_prompt,
+                OPENAI_API_KEY=self.OPENAI_API_KEY,
+                OPENAI_BASE_URL=self.OPENAI_BASE_URL,
+            )
+            processed_articles = llm_filter.filter_articles()
+            self.logger.info(f"Filtered down to {len(processed_articles)} articles using LLM.")'''
+                  
+                  new_llm_pattern = '''        if self.llm_filtering:
+            print(f"🧠 LLM filtering ENABLED: Processing {len(processed_articles)} articles")
+            print(f"📊 Article breakdown by source before LLM: {processed_articles['Source'].value_counts().to_dict()}")
+            llm_filter = LLMFilter(
+                processed_articles,
+                llm_provider=self.llm_provider,
+                model=self.model,
+                filtering_prompt=self.filtering_prompt,
+                OPENAI_API_KEY=self.OPENAI_API_KEY,
+                OPENAI_BASE_URL=self.OPENAI_BASE_URL,
+            )
+            processed_articles = llm_filter.filter_articles()
+            print(f"✅ LLM filtering completed: {len(processed_articles)} articles remain")
+            self.logger.info(f"Filtered down to {len(processed_articles)} articles using LLM.")
+        else:
+            print("⚠️  LLM filtering DISABLED - all articles pass through unfiltered")'''
+                  
+                  if old_llm_pattern in content and '🧠 LLM filtering ENABLED' not in content:
+                      content = content.replace(old_llm_pattern, new_llm_pattern)
                       
                       with open(finder_file, 'w') as f:
                           f.write(content)
                       
-                      print(f"✅ Applied bioRxiv fix to {finder_file}")
+                      print(f"✅ Applied bioRxiv fix and LLM debug to {finder_file}")
                   else:
-                      print(f"ℹ️ bioRxiv fix already applied or pattern not found in {finder_file}")
+                      print(f"ℹ️ bioRxiv fix and debug already applied or pattern not found in {finder_file}")
                       
               except Exception as e:
                   print(f"⚠️ Error processing {finder_file}: {e}")
@@ -177,13 +210,43 @@ jobs:
                   
                   if old_pattern in content and 'time.sleep(3.5)' not in content:
                       content = content.replace(old_pattern, new_pattern)
+                  
+                  # Add debug logging to LLM filtering
+                  old_debug_pattern = 'def filter_articles(self):'
+                  new_debug_pattern = '''def filter_articles(self):
+          print(f"🧠 LLM Filtering: Starting with {len(self.articles)} articles")
+          print(f"Article sources: {self.articles['Source'].value_counts().to_dict()}")'''
+                  
+                  if old_debug_pattern in content and '🧠 LLM Filtering' not in content:
+                      content = content.replace(old_debug_pattern, new_debug_pattern)
+                  
+                  # Add debug info in is_relevant method
+                  old_relevant_pattern = 'def is_relevant('
+                  new_relevant_pattern = '''def is_relevant('''
+                  
+                  # Add debug after successful LLM call
+                  old_success_pattern = 'if response.choices[0].message.content.strip().lower() == "yes":'
+                  new_success_pattern = '''print(f"🤖 LLM response for '{title[:30]}...': {response.choices[0].message.content.strip()}")
+                  if response.choices[0].message.content.strip().lower() == "yes":'''
+                  
+                  if old_success_pattern in content and '🤖 LLM response' not in content:
+                      content = content.replace(old_success_pattern, new_success_pattern)
+                  
+                  # Add debug at end of filter_articles
+                  old_return_pattern = 'return filtered_articles'
+                  new_return_pattern = '''print(f"🧠 LLM Filtering: Filtered down to {len(filtered_articles)} articles")
+          print(f"Final article sources: {filtered_articles['Source'].value_counts().to_dict() if len(filtered_articles) > 0 else 'No articles'}")
+          return filtered_articles'''
+                  
+                  if old_return_pattern in content and '🧠 LLM Filtering: Filtered down to' not in content:
+                      content = content.replace(old_return_pattern, new_return_pattern)
                       
                       with open(llm_file, 'w') as f:
                           f.write(content)
                       
-                      print(f"✅ Applied Gemini rate limiting to {llm_file}")
+                      print(f"✅ Applied Gemini rate limiting and debug to {llm_file}")
                   else:
-                      print(f"ℹ️ Rate limiting already applied or pattern not found in {llm_file}")
+                      print(f"ℹ️ Rate limiting and debug already applied or pattern not found in {llm_file}")
                       
               except Exception as e:
                   print(f"⚠️ Error processing {llm_file}: {e}")
@@ -205,8 +268,12 @@ jobs:
           # Use single query for all databases (original working version)
           research_query = "[hematopoiesis] OR [haematopoiesis] OR [hematology] OR [haematology] OR [blood disorders] OR [computational pathology] OR [cell segmentation] OR [segmentation] OR [3D segmentation] OR [single cell] OR [single-cell] OR [machine learning] OR [deep learning] OR [artificial intelligence] OR [computer vision] OR [image analysis] OR [microscopy] OR [computational biology] OR [multi-omics] OR [multiomics] OR [foundation models] OR [self-supervised learning] OR [cell classification] OR [cell detection] OR [image processing] OR [biomedical image analysis] OR [medical imaging] OR [AI microscopy] OR [quantitative microscopy] OR [fluorescence microscopy] OR [vision language model] OR [large language models] OR [mathematical modeling] OR [mechanistic modeling] OR [drug target identification] OR [spatial transcriptomics] OR [pathology] OR [hematopathology] OR [blood cell] OR [leukemia] OR [lymphoma] OR [myeloma] OR [CHIP] OR [clonal hematopoiesis] OR [LLM] OR [language model]"
           
-          # Define LLM filtering prompt directly in workflow
-          filtering_prompt = """You are a lab manager at a research lab focusing on computational hematology, blood disorders, and microscopy image analysis, computational pathology and bioinformatics. The lab develops machine learning algorithms for cell segmentation, computational pathology, and single-cell profiling in hematological contexts. Key research areas include clonal hematopoiesis (CHIP), clonal dynamics, mechanistic mathematical modeling of haematopoiesis, and multi-omics approaches to blood cell production and disorders. The lab works extensively with foundation models, self-supervised learning, and multiple instance learning for analyzing microscopic images including bright-field, fluorescence, cryo-electron, and extended depth-of-field microscopy. Research focuses on developing AI-based algorithms for cell detection, classification, and quantification to advance diagnosis and treatment of severe blood disorders. Lab members are interested in computational hematopathology, single cell-based big data analysis for drug target identification, mechanistic modeling of time-resolved hematological data, and large language models/agents in healthcare applications. The lab combines AI with biomedical knowledge to classify individual cells and patients, with particular emphasis on quantitative microscopy image processing and custom machine learning methods for life scientists and pathologists. You are reviewing a list of research papers to determine if they are relevant to your lab. Please answer 'yes' or 'no' to the following question: Is the following research paper relevant?"""
+          # Define LLM filtering prompt directly in workflow (less restrictive)
+          filtering_prompt = """You are a lab manager at a research lab focusing on computational hematology, blood disorders, and microscopy image analysis, computational pathology and bioinformatics. The lab develops machine learning algorithms for cell segmentation, computational pathology, and single-cell profiling in hematological contexts. Key research areas include clonal hematopoiesis (CHIP), clonal dynamics, mechanistic mathematical modeling of haematopoiesis, and multi-omics approaches to blood cell production and disorders. The lab works extensively with foundation models, self-supervised learning, and multiple instance learning for analyzing microscopic images including bright-field, fluorescence, cryo-electron, and extended depth-of-field microscopy. Research focuses on developing AI-based algorithms for cell detection, classification, and quantification to advance diagnosis and treatment of severe blood disorders. Lab members are interested in computational hematopathology, single cell-based big data analysis for drug target identification, mechanistic modeling of time-resolved hematological data, and large language models/agents in healthcare applications. The lab combines AI with biomedical knowledge to classify individual cells and patients, with particular emphasis on quantitative microscopy image processing and custom machine learning methods for life scientists and pathologists. 
+
+You should be INCLUSIVE rather than exclusive in your filtering. Papers that are even tangentially related to machine learning, computational biology, single-cell analysis, hematology, pathology, or image analysis should be considered relevant. When in doubt, choose 'yes' rather than 'no'.
+
+You are reviewing a list of research papers to determine if they are relevant to your lab. Please answer 'yes' or 'no' to the following question: Is the following research paper relevant?"""
           
           config = {
               "GOOGLE_SPREADSHEET_ID": os.environ.get("GOOGLE_SHEET_ID", ""),
@@ -243,6 +310,9 @@ jobs:
           print("Using same query for all databases (PubMed, ArXiv, bioRxiv)")
           print("Note: Broad queries for maximum coverage - LLM will filter for relevance")
           print(f"Query contains {len(research_query.split(' OR '))} search terms")
+          print(f"LLM_FILTERING enabled: {config['LLM_FILTERING']}")
+          print(f"LLM_PROVIDER: {config['LLM_PROVIDER']}")
+          print(f"LANGUAGE_MODEL: {config['LANGUAGE_MODEL']}")
           EOF
           
       - name: Run PaperBee
