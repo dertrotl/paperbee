@@ -92,6 +92,8 @@ class LLMFilter:
             content = response["message"]["content"]
         elif isinstance(client, OpenAI):
             # Use OpenAI API
+            # Gemini rate limiting: 30 RPM = 2 seconds minimum, use 3.5s for safety
+            time.sleep(3.5)
             response = client.chat.completions.create(  # type: ignore[assignment]
                 model=model,
                 messages=[

@@ -77,7 +77,14 @@ class ArticlesProcessor:
         # Fix keywords processing - handle both list and string cases
         def process_keywords(kws):
             if isinstance(kws, list):
-                return ", ".join(kw[2:] if len(kw) > 2 else kw for kw in kws)
+                # Only apply [2:] slicing if the keyword looks like a tag (starts with special chars)
+                processed = []
+                for kw in kws:
+                    if isinstance(kw, str) and len(kw) > 2 and kw.startswith(('["', "['", '[', '"', "'")):
+                        processed.append(kw[2:] if kw.startswith('["') or kw.startswith("['") else kw[1:])
+                    else:
+                        processed.append(str(kw))
+                return ", ".join(processed)
             elif isinstance(kws, str):
                 return kws
             else:
@@ -147,7 +154,7 @@ class PubMedClient:
 
         for _ in range(n_retries):
             try:
-                search_response = requests.get(search_url, timeout=10)  # Added timeout
+                search_response = requests.get(search_url, timeout=30)  # Added timeout
                 search_data = search_response.json()
 
                 # NCBI does not allow more than 3 requests per second (10 with an API key)
@@ -174,8 +181,12 @@ class PubMedClient:
         if seconds_to_wait:
             sleep(seconds_to_wait)
         fetch_url = f"{base_url}efetch.fcgi?db=pubmed&id={pubmed_id}&retmode=xml"
-        fetch_response = requests.get(fetch_url, timeout=10)  # Added timeout
-        root = ET.fromstring(fetch_response.content)  # Using defusedxml for parsing
+        fetch_response = requests.get(fetch_url, timeout=30)  # Added timeout
+        try:
+            root = ET.fromstring(fetch_response.content)  # Using defusedxml for parsing
+        except (ET.ParseError, Exception) as e:
+            print(f"⚠️ XML parsing failed, skipping DOI extraction: {str(e)[:50]}")
+            return None
 
         for article in root.findall(".//Article"):
             for el in article.findall(".//ELocationID"):
