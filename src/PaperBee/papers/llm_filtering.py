@@ -75,8 +75,10 @@ class LLMFilter:
         """
         if keywords:
             message = f"Title of the publication: '{title}'\nKeywords: {', '.join(keywords)}"
+            print(f"Filtering with keywords: {', '.join(keywords)}")
         else:
             message = f"Title of the publication: '{title}'"
+            print("Filtering without keywords")
 
         if isinstance(client, Client):
             # Use Ollama

@@ -43,6 +43,74 @@ jobs:
           # Fix NCBI timeout issue (increase from 10s to 30s)
           find . -name "utils.py" -path "*/PaperBee/*" -exec sed -i 's/timeout=10/timeout=30/g' {} \;
           
+          # Apply bioRxiv search fix
+          python3 << 'EOF'
+          import os
+          
+          # Find papers_finder.py and apply bioRxiv fix
+          finder_files = []
+          for root, dirs, files in os.walk('.'):
+              if 'papers_finder.py' in files and 'PaperBee' in root:
+                  finder_files.append(os.path.join(root, 'papers_finder.py'))
+          
+          for finder_file in finder_files:
+              try:
+                  with open(finder_file, 'r') as f:
+                      content = f.read()
+                  
+                  # Fix bioRxiv loading issue
+                  old_pattern = '''            if "biorxiv" in self.databases:
+                findpapers.search(
+                    self.search_file_biorxiv,
+                    self.query_biorxiv,
+                    self.since,
+                    self.until,
+                    self.limit,
+                    self.limit_per_database,
+                    ["biorxiv"],
+                    verbose=False,
+                )
+            with open(self.search_file_pub_arx) as papers_file:
+                articles_pub_arx_dict: List[Dict[str, Any]] = json.load(papers_file)["papers"]
+            with open(self.search_file_biorxiv) as papers_file:
+                articles_biorxiv_dict: List[Dict[str, Any]] = json.load(papers_file)["papers"]
+            articles = articles_pub_arx_dict + articles_biorxiv_dict'''
+                  
+                  new_pattern = '''            articles_biorxiv_dict: List[Dict[str, Any]] = []
+            if "biorxiv" in self.databases:
+                findpapers.search(
+                    self.search_file_biorxiv,
+                    self.query_biorxiv,
+                    self.since,
+                    self.until,
+                    self.limit,
+                    self.limit_per_database,
+                    ["biorxiv"],
+                    verbose=False,
+                )
+                with open(self.search_file_biorxiv) as papers_file:
+                    articles_biorxiv_dict = json.load(papers_file)["papers"]
+            
+            with open(self.search_file_pub_arx) as papers_file:
+                articles_pub_arx_dict: List[Dict[str, Any]] = json.load(papers_file)["papers"]
+            print(f"Found {len(articles_pub_arx_dict)} articles from PubMed/ArXiv")
+            print(f"Found {len(articles_biorxiv_dict)} articles from bioRxiv")
+            articles = articles_pub_arx_dict + articles_biorxiv_dict'''
+                  
+                  if old_pattern in content:
+                      content = content.replace(old_pattern, new_pattern)
+                      
+                      with open(finder_file, 'w') as f:
+                          f.write(content)
+                      
+                      print(f"✅ Applied bioRxiv fix to {finder_file}")
+                  else:
+                      print(f"ℹ️ bioRxiv fix already applied or pattern not found in {finder_file}")
+                      
+              except Exception as e:
+                  print(f"⚠️ Error processing {finder_file}: {e}")
+          EOF
+          
           # Fix XML parsing errors in DOI extraction
           python3 << 'EOF'
           import os
@@ -129,12 +197,16 @@ jobs:
           SLACK_BOT: ${{ secrets.SLACK_BOT_TOKEN_2 }}
           SLACK_CHANNEL: ${{ secrets.SLACK_CHANNEL_ID_2 }}
           SLACK_APP: ${{ secrets.SLACK_APP_TOKEN_2 }}
-          FILTER_PROMPT: ${{ secrets.FILTERING_PROMPT_2 }}
-          RESEARCH_QUERY: ${{ secrets.RESEARCH_QUERY_2 }}
         run: |
           python3 << 'EOF'
           import yaml
           import os
+          
+          # Define research query directly in workflow - same for all databases
+          research_query = "[clonal hematopoiesis] OR [CHIP] OR [computational pathology] OR [cell segmentation] OR [hematology] OR [haematology] OR [blood disorders] OR [hematopoiesis] OR [haematopoiesis] OR [computational hematopathology] OR [single cell profiling] OR [mechanistic modeling] OR [mechanistic modelling] OR [clonal dynamics] OR [foundation models] OR [self-supervised learning] OR [multiple instance learning] OR [multi-omics] OR [multiomics] OR [microscopy image analysis] OR [computational biology] OR [machine learning pathology] OR [AI microscopy] OR [cell classification] OR [cell detection] OR [quantitative microscopy] OR [fluorescence microscopy] OR [cryo-electron microscopy] OR [image processing] OR [deep learning medical] OR [large language models healthcare] OR [AI healthcare] OR [mathematical modeling biology] OR [time-resolved modeling] OR [drug target identification] OR [biomedical image analysis] OR [segmentation] OR [3D segmentation] OR [vision language model]"
+          
+          # Define LLM filtering prompt directly in workflow
+          filtering_prompt = """You are a lab manager at a research lab focusing on computational hematology, blood disorders, and microscopy image analysis, computational pathology and bioinformatics. The lab develops machine learning algorithms for cell segmentation, computational pathology, and single-cell profiling in hematological contexts. Key research areas include clonal hematopoiesis (CHIP), clonal dynamics, mechanistic mathematical modeling of haematopoiesis, and multi-omics approaches to blood cell production and disorders. The lab works extensively with foundation models, self-supervised learning, and multiple instance learning for analyzing microscopic images including bright-field, fluorescence, cryo-electron, and extended depth-of-field microscopy. Research focuses on developing AI-based algorithms for cell detection, classification, and quantification to advance diagnosis and treatment of severe blood disorders. Lab members are interested in computational hematopathology, single cell-based big data analysis for drug target identification, mechanistic modeling of time-resolved hematological data, and large language models/agents in healthcare applications. The lab combines AI with biomedical knowledge to classify individual cells and patients, with particular emphasis on quantitative microscopy image processing and custom machine learning methods for life scientists and pathologists. You are reviewing a list of research papers to determine if they are relevant to your lab. Please answer 'yes' or 'no' to the following question: Is the following research paper relevant?"""
           
           config = {
               "GOOGLE_SPREADSHEET_ID": os.environ.get("GOOGLE_SHEET_ID", ""),
@@ -142,15 +214,15 @@ jobs:
               "NCBI_API_KEY": os.environ.get("NCBI_KEY", ""),
               "LOCAL_ROOT_DIR": ".",
               
-              # Use custom research query or fallback to expanded default with new keywords
-              "query": os.environ.get("RESEARCH_QUERY", "[machine learning] OR [artificial intelligence] OR [deep learning] OR [neural networks] OR [computational biology] OR [bioinformatics] OR [data science] OR [algorithm development] OR [segmentation] OR [3D segmentation] OR [vision language model]"),
+              # Use same query for all databases
+              "query": research_query,
               
               "LLM_FILTERING": True,
               "LLM_PROVIDER": "openai",
               "LANGUAGE_MODEL": "gemini-2.0-flash-lite",
               "OPENAI_API_KEY": os.environ.get("GEMINI_KEY", ""),
               "OPENAI_BASE_URL": "https://generativelanguage.googleapis.com/v1beta/openai/",
-              "FILTERING_PROMPT": os.environ.get("FILTER_PROMPT", "You are a research assistant. Is this paper relevant to machine learning and computational research? Answer only yes or no."),
+              "FILTERING_PROMPT": filtering_prompt,
               
               "SLACK": {
                   "is_posting_on": True,
@@ -164,6 +236,11 @@ jobs:
           
           with open("config.yml", "w") as f:
               yaml.dump(config, f, default_flow_style=False)
+          
+          # Debug output
+          print("Generated config:")
+          print(f"Query: {research_query}")
+          print("Using same query for all databases (PubMed, ArXiv, bioRxiv)")
           EOF
           
       - name: Run PaperBee

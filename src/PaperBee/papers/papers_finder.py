@@ -144,6 +144,7 @@ class PapersFinder:
             with open(self.search_file) as papers_file:
                 articles_dict: List[Dict[str, Any]] = json.load(papers_file)["papers"]
             articles = list(articles_dict)
+            print(f"Found {len(articles)} articles from unified query")
         else:
             if not self.query_biorxiv or not self.query_pub_arx:
                 e = "Both query_biorxiv and query_pubmed_arxiv must be provided if query is not provided."
@@ -161,6 +162,7 @@ class PapersFinder:
                 ],  # Biorxiv requires a different query
                 verbose=False,
             )
+            articles_biorxiv_dict: List[Dict[str, Any]] = []
             if "biorxiv" in self.databases:
                 findpapers.search(
                     self.search_file_biorxiv,
@@ -172,10 +174,13 @@ class PapersFinder:
                     ["biorxiv"],
                     verbose=False,
                 )
+                with open(self.search_file_biorxiv) as papers_file:
+                    articles_biorxiv_dict = json.load(papers_file)["papers"]
+            
             with open(self.search_file_pub_arx) as papers_file:
                 articles_pub_arx_dict: List[Dict[str, Any]] = json.load(papers_file)["papers"]
-            with open(self.search_file_biorxiv) as papers_file:
-                articles_biorxiv_dict: List[Dict[str, Any]] = json.load(papers_file)["papers"]
+            print(f"Found {len(articles_pub_arx_dict)} articles from PubMed/ArXiv")
+            print(f"Found {len(articles_biorxiv_dict)} articles from bioRxiv")
             articles = articles_pub_arx_dict + articles_biorxiv_dict
 
         doi_extractor = PubMedClient()
