@@ -202,12 +202,8 @@ jobs:
           import yaml
           import os
           
-          # Define separate queries for different databases
-          # bioRxiv has strict requirements: only OR, no complex queries, no brackets
-          biorxiv_query = "single cell OR cell OR transcriptomics OR omics OR genomics OR proteomics OR biology OR biomedical OR computational OR bioinformatics OR data science OR machine learning OR IBD OR bowel OR intestinal OR gut OR immune OR inflammation OR cytokine OR organoid OR stem cell OR differentiation OR development OR pathology OR histology OR microscopy OR imaging OR analysis OR algorithm OR method OR tool OR software OR pipeline OR workflow OR integration OR atlas OR database OR repository OR benchmark OR evaluation OR comparison OR spatial OR spatial transcriptomics"
-          
-          # PubMed/ArXiv allows more complex queries with parentheses
-          pubmed_arxiv_query = "(single cell) OR (transcriptomics) OR (omics) OR (genomics) OR (proteomics) OR (computational biology) OR (bioinformatics) OR (machine learning) OR (deep learning) OR (artificial intelligence) OR (IBD) OR (inflammatory bowel disease) OR (bowel) OR (intestinal) OR (gut microbiome) OR (immune system) OR (inflammation) OR (cytokine) OR (T cell) OR (B cell) OR (macrophage) OR (organoid) OR (stem cell) OR (cell differentiation) OR (development) OR (pathology) OR (histology) OR (microscopy) OR (medical imaging) OR (image analysis) OR (algorithm) OR (method) OR (tool) OR (software) OR (pipeline) OR (workflow) OR (data integration) OR (atlas) OR (database) OR (repository) OR (benchmark) OR (evaluation) OR (comparison) OR (spatial transcriptomics) OR (spatial omics)"
+          # Use single query for all databases (original working version)
+          research_query = "[single-cell RNA sequencing] OR [spatial transcriptomics] OR [single-cell analysis] OR [scRNA-seq] OR [single cell atlas] OR [single-cell integration] OR [IBD] OR [inflammatory bowel disease] OR [Crohn disease] OR [ulcerative colitis] OR [mucosal immunology] OR [intestinal inflammation] OR [VEO-IBD] OR [immune-mediated inflammatory diseases] OR [primary immunodeficiencies] OR [secondary immunodeficiencies] OR [autoinflammation] OR [inflammasome biology] OR [NLRP3] OR [cytokine signaling] OR [IL-1B] OR [IL-17] OR [IL-10] OR [IL-23] OR [IL-6] OR [pyroptosis] OR [trained immunity] OR [Nod-like receptors] OR [intestinal epithelial barrier] OR [Tregs] OR [macrophages] OR [dendritic cells] OR [organoids] OR [computational biology] OR [bioinformatics] OR [multiomics] OR [proteomics] OR [machine learning] OR [data integration] OR [benchmarking] OR [computational pathology]"
           
           # Define LLM filtering prompt directly in workflow
           filtering_prompt = """You are a lab manager at a research lab focusing on single-cell RNA sequencing, spatial transcriptomics, multiomics, proteomics, machine learning applications and methods development in computational biology as well as wet lab work, organoids and perturbation. The lab also works with computational pathology, HE images, and intestinal biopsies. Lab research focuses on VEO-IBD, genetics of immune-mediated inflammatory diseases (including genetics of IBD, Crohn's disease, ulcerative colitis), primary and secondary immunodeficiencies, and autoinflammation, with translational applications of single-cell data. Key areas of interest include inflammasome biology (NLRP3, NLRP1-13, Pyrin inflammasome), metabolic pathways (MVK, PMVK), cytokine signaling (IL-1B, IL-17, IL-10, IL-23, IL-6), pyroptosis, trained immunity, Nod-like receptors, small GTPases and GEFs, intestinal epithelial barrier integrity, bacterial handling, and cellular processes including migration, EMT, and EndMT. The lab studies various immune cell types including Tregs, macrophages, antigen presenting cells, and dendritic cells. Lab members are interested in building single-cell atlases, working with single-cell data on the level of patients (donors, individuals) and keeping updated on the most recent methods in single-cell biology and organoids. Another focus of the lab is benchmarking single-cell analysis tools. A specific area of interest is single-cell data integration. You are reviewing a list of research papers to determine if they are relevant to your lab. Please answer 'yes' or 'no' to the following question: Is the following research paper relevant?"""
@@ -218,9 +214,8 @@ jobs:
               "NCBI_API_KEY": os.environ.get("NCBI_KEY", ""),
               "LOCAL_ROOT_DIR": ".",
               
-              # Use separate queries for different databases
-              "query_biorxiv": biorxiv_query,
-              "query_pubmed_arxiv": pubmed_arxiv_query,
+              # Use single query for all databases (original working approach)
+              "query": research_query,
               
               "LLM_FILTERING": True,
               "LLM_PROVIDER": "openai",
@@ -244,12 +239,10 @@ jobs:
           
           # Debug output
           print("Generated config:")
-          print(f"bioRxiv Query: {biorxiv_query}")
-          print(f"PubMed/ArXiv Query: {pubmed_arxiv_query}")
-          print("Using separate optimized queries for different databases")
+          print(f"Query: {research_query}")
+          print("Using same query for all databases (PubMed, ArXiv, bioRxiv)")
           print("Note: Broad queries for maximum coverage - LLM will filter for relevance")
-          print(f"bioRxiv query contains {len(biorxiv_query.split(' OR '))} search terms")
-          print(f"PubMed/ArXiv query contains {len(pubmed_arxiv_query.split(' OR '))} search terms")
+          print(f"Query contains {len(research_query.split(' OR '))} search terms")
           EOF
           
       - name: Run PaperBee
