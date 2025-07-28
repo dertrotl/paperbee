@@ -1,0 +1,51 @@
+FILTERING_PROMPT: 'You are a lab manager at a research lab focusing on computational
+  hematology, blood disorders, and microscopy image analysis, computational pathology
+  and bioinformatics. The lab develops machine learning algorithms for cell segmentation,
+  computational pathology, and single-cell profiling in hematological contexts. Key
+  research areas include clonal hematopoiesis (CHIP), clonal dynamics, mechanistic
+  mathematical modeling of haematopoiesis, and multi-omics approaches to blood cell
+  production and disorders. The lab works extensively with foundation models, self-supervised
+  learning, and multiple instance learning for analyzing microscopic images including
+  bright-field, fluorescence, cryo-electron, and extended depth-of-field microscopy.
+  Research focuses on developing AI-based algorithms for cell detection, classification,
+  and quantification to advance diagnosis and treatment of severe blood disorders.
+  Lab members are interested in computational hematopathology, single cell-based big
+  data analysis for drug target identification, mechanistic modeling of time-resolved
+  hematological data, and large language models/agents in healthcare applications.
+  The lab combines AI with biomedical knowledge to classify individual cells and patients,
+  with particular emphasis on quantitative microscopy image processing and custom
+  machine learning methods for life scientists and pathologists. You are reviewing
+  a list of research papers to determine if they are relevant to your lab. Please
+  answer ''yes'' or ''no'' to the following question: Is the following research paper
+  relevant?'
+GOOGLE_CREDENTIALS_JSON: ./google-credentials.json
+GOOGLE_SPREADSHEET_ID: ''
+LANGUAGE_MODEL: gemini-2.0-flash-lite
+LLM_FILTERING: false
+LLM_PROVIDER: openai
+LOCAL_ROOT_DIR: .
+NCBI_API_KEY: ''
+OPENAI_API_KEY: ''
+OPENAI_BASE_URL: https://generativelanguage.googleapis.com/v1beta/openai/
+SLACK:
+  is_posting_on: false
+TELEGRAM:
+  is_posting_on: false
+ZULIP:
+  is_posting_on: false
+query_biorxiv: hematopoiesis OR haematopoiesis OR hematology OR CHIP OR clonal hematopoiesis
+  OR computational pathology OR single cell OR machine learning OR deep learning OR
+  computer vision OR microscopy OR foundation models OR cell segmentation OR blood
+  disorders OR mathematical modeling
+query_pubmed_arxiv: (hematopoiesis) OR (haematopoiesis) OR (hematology) OR (haematology)
+  OR (blood disorders) OR (computational pathology) OR (cell segmentation) OR (segmentation)
+  OR (3D segmentation) OR (single cell) OR (single-cell) OR (machine learning) OR
+  (deep learning) OR (artificial intelligence) OR (computer vision) OR (image analysis)
+  OR (microscopy) OR (computational biology) OR (multi-omics) OR (multiomics) OR (foundation
+  models) OR (self-supervised learning) OR (cell classification) OR (cell detection)
+  OR (image processing) OR (biomedical image analysis) OR (medical imaging) OR (AI
+  microscopy) OR (quantitative microscopy) OR (fluorescence microscopy) OR (vision
+  language model) OR (large language models) OR (mathematical modeling) OR (mechanistic
+  modeling) OR (drug target identification) OR (spatial transcriptomics) OR (pathology)
+  OR (hematopathology) OR (blood cell) OR (leukemia) OR (lymphoma) OR (myeloma) OR
+  (CHIP) OR (clonal hematopoiesis)
