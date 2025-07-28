@@ -43,11 +43,11 @@ jobs:
           # Fix NCBI timeout issue (increase from 10s to 30s)
           find . -name "utils.py" -path "*/PaperBee/*" -exec sed -i 's/timeout=10/timeout=30/g' {} \;
           
-          # Apply bioRxiv search fix
+          # Apply bioRxiv search fix + comprehensive debug
           python3 << 'EOF'
           import os
           
-          # Find papers_finder.py and apply bioRxiv fix + debug
+          # Find papers_finder.py and apply comprehensive fixes
           finder_files = []
           for root, dirs, files in os.walk('.'):
               if 'papers_finder.py' in files and 'PaperBee' in root:
@@ -58,134 +58,86 @@ jobs:
                   with open(finder_file, 'r') as f:
                       content = f.read()
                   
-                  # Fix bioRxiv loading issue
-                  old_pattern = '''            if "biorxiv" in self.databases:
-                findpapers.search(
-                    self.search_file_biorxiv,
-                    self.query_biorxiv,
-                    self.since,
-                    self.until,
-                    self.limit,
-                    self.limit_per_database,
-                    ["biorxiv"],
-                    verbose=False,
-                )
-            with open(self.search_file_pub_arx) as papers_file:
-                articles_pub_arx_dict: List[Dict[str, Any]] = json.load(papers_file)["papers"]
-            with open(self.search_file_biorxiv) as papers_file:
-                articles_biorxiv_dict: List[Dict[str, Any]] = json.load(papers_file)["papers"]
-            articles = articles_pub_arx_dict + articles_biorxiv_dict'''
+                  # Force comprehensive debug regardless of existing patterns
+                  # 1. Add debug at function start
+                  if 'print("🔍 LLM Debug Start")' not in content:
+                      content = content.replace(
+                          'def find_and_process_papers(self) -> pd.DataFrame:',
+                          '''def find_and_process_papers(self) -> pd.DataFrame:
+        print("🔍 LLM Debug Start")
+        print(f"✅ self.llm_filtering = {self.llm_filtering}")
+        print(f"✅ self.llm_provider = {getattr(self, 'llm_provider', 'NOT_SET')}")
+        print(f"✅ self.model = {getattr(self, 'model', 'NOT_SET')}")'''
+                      )
                   
-                  new_pattern = '''            articles_biorxiv_dict: List[Dict[str, Any]] = []
-            if "biorxiv" in self.databases:
-                findpapers.search(
-                    self.search_file_biorxiv,
-                    self.query_biorxiv,
-                    self.since,
-                    self.until,
-                    self.limit,
-                    self.limit_per_database,
-                    ["biorxiv"],
-                    verbose=False,
-                )
-                with open(self.search_file_biorxiv) as papers_file:
-                    articles_biorxiv_dict = json.load(papers_file)["papers"]
-            
-            with open(self.search_file_pub_arx) as papers_file:
-                articles_pub_arx_dict: List[Dict[str, Any]] = json.load(papers_file)["papers"]
-            print(f"Found {len(articles)} articles from unified query")
-            if len(articles) > 0:
-                print(f"First few titles: {[art.get('title', 'No title')[:50] for art in articles[:3]]}")
-                # Show databases distribution
-                databases_count = {}
-                for art in articles:
-                    for db in art.get('databases', []):
-                        databases_count[db] = databases_count.get(db, 0) + 1
-                print(f"📊 Articles by database: {databases_count}")
-            else:
-                print("⚠️  NO ARTICLES FOUND - this might be a search/API issue!")
-            articles = articles_pub_arx_dict + articles_biorxiv_dict'''
+                  # 2. Add debug after article processing
+                  if 'print("📋 After ArticlesProcessor")' not in content:
+                      content = content.replace(
+                          'self.logger.info(f"Found {len(processed_articles)} articles.")',
+                          '''self.logger.info(f"Found {len(processed_articles)} articles.")
+        print("📋 After ArticlesProcessor")
+        print(f"📊 Articles by source: {processed_articles['Source'].value_counts().to_dict() if len(processed_articles) > 0 else 'Empty'}")'''
+                      )
                   
-                  if old_pattern in content:
-                      content = content.replace(old_pattern, new_pattern)
-                  
-                  # Add debug to LLM filtering section - Fix the pattern matching
-                  old_llm_pattern = '''if self.llm_filtering:
-            llm_filter = LLMFilter(
-                processed_articles,
-                llm_provider=self.llm_provider,
-                model=self.model,
-                filtering_prompt=self.filtering_prompt,
-                OPENAI_API_KEY=self.OPENAI_API_KEY,
-                OPENAI_BASE_URL=self.OPENAI_BASE_URL,
-            )
-            processed_articles = llm_filter.filter_articles()
-            self.logger.info(f"Filtered down to {len(processed_articles)} articles using LLM.")'''
-                  
-                  new_llm_pattern = '''if self.llm_filtering:
-            print(f"🧠 LLM filtering ENABLED: Processing {len(processed_articles)} articles")
-            print(f"📊 Article breakdown by source before LLM: {processed_articles['Source'].value_counts().to_dict()}")
-            llm_filter = LLMFilter(
-                processed_articles,
-                llm_provider=self.llm_provider,
-                model=self.model,
-                filtering_prompt=self.filtering_prompt,
-                OPENAI_API_KEY=self.OPENAI_API_KEY,
-                OPENAI_BASE_URL=self.OPENAI_BASE_URL,
-            )
-            processed_articles = llm_filter.filter_articles()
-            print(f"✅ LLM filtering completed: {len(processed_articles)} articles remain")
-            self.logger.info(f"Filtered down to {len(processed_articles)} articles using LLM.")
-        else:
-            print("⚠️  LLM filtering DISABLED - all articles pass through unfiltered")'''
-                  
-                  # Also add a more general fallback pattern
-                  if old_llm_pattern not in content:
-                      # Try alternative pattern without indentation
-                      old_llm_pattern = '''        if self.llm_filtering:
-            llm_filter = LLMFilter('''
-                      new_llm_pattern = '''        if self.llm_filtering:
-            print(f"🧠 LLM filtering ENABLED: Processing {len(processed_articles)} articles")
-            print(f"📊 Article breakdown by source before LLM: {processed_articles['Source'].value_counts().to_dict()}")
-            llm_filter = LLMFilter('''
-                  
-                  if old_llm_pattern in content and '🧠 LLM filtering ENABLED' not in content:
-                      content = content.replace(old_llm_pattern, new_llm_pattern)
-                      
-                      # Also add the end part
-                      old_end_pattern = '''            processed_articles = llm_filter.filter_articles()
-            self.logger.info(f"Filtered down to {len(processed_articles)} articles using LLM.")'''
-                      new_end_pattern = '''            processed_articles = llm_filter.filter_articles()
-            print(f"✅ LLM filtering completed: {len(processed_articles)} articles remain")
-            self.logger.info(f"Filtered down to {len(processed_articles)} articles using LLM.")
-        else:
-            print("⚠️  LLM filtering DISABLED - all articles pass through unfiltered")'''
-                      
-                      if old_end_pattern in content:
-                          content = content.replace(old_end_pattern, new_end_pattern)
-                      
-                      with open(finder_file, 'w') as f:
-                          f.write(content)
-                      
-                      # Force add debug right after writing
-                      with open(finder_file, 'r') as f:
-                          content = f.read()
-                      
-                      # Add debug to track LLM filtering status
-                      if 'print("🔍 Debug: LLM filtering check")' not in content:
-                          content = content.replace(
-                              'def find_and_process_papers(self) -> pd.DataFrame:',
-                              '''def find_and_process_papers(self) -> pd.DataFrame:
-        print("🔍 Debug: LLM filtering check")
-        print(f"self.llm_filtering = {self.llm_filtering}")'''
-                          )
+                  # 3. Force LLM debug regardless of existing patterns
+                  if 'print("🧠 CHECKING LLM FILTERING")' not in content:
+                      # Find the LLM filtering section and add comprehensive debug
+                      llm_section_start = content.find('if self.llm_filtering:')
+                      if llm_section_start != -1:
+                          # Insert debug right before the if statement
+                          before_if = content[:llm_section_start]
+                          after_if = content[llm_section_start:]
                           
-                          with open(finder_file, 'w') as f:
-                              f.write(content)
-                      
-                      print(f"✅ Applied bioRxiv fix and LLM debug to {finder_file}")
-                  else:
-                      print(f"ℹ️ bioRxiv fix and debug already applied or pattern not found in {finder_file}")
+                          debug_insert = '''        print("🧠 CHECKING LLM FILTERING")
+        print(f"� self.llm_filtering = {self.llm_filtering}")
+        print(f"🔍 type(self.llm_filtering) = {type(self.llm_filtering)}")
+        print(f"🔍 bool(self.llm_filtering) = {bool(self.llm_filtering)}")
+        
+        '''
+                          content = before_if + debug_insert + after_if
+                  
+                  # 4. Add debug inside LLM filtering block
+                  if 'print("🎯 INSIDE LLM BLOCK")' not in content:
+                      content = content.replace(
+                          'if self.llm_filtering:\n            llm_filter = LLMFilter(',
+                          '''if self.llm_filtering:
+            print("🎯 INSIDE LLM BLOCK - LLM filtering is TRUE!")
+            print(f"📊 Processing {len(processed_articles)} articles with LLM")
+            print(f"Article breakdown: {processed_articles['Source'].value_counts().to_dict()}")
+            llm_filter = LLMFilter('''
+                      )
+                  
+                  # 5. Add debug after LLM filtering
+                  if 'print("✅ LLM FILTERING COMPLETED")' not in content:
+                      # Find the line right after llm_filter.filter_articles()
+                      llm_filter_line = 'processed_articles = llm_filter.filter_articles()'
+                      if llm_filter_line in content:
+                          content = content.replace(
+                              llm_filter_line,
+                              llm_filter_line + '''
+            print("✅ LLM FILTERING COMPLETED")
+            print(f"📊 After LLM: {len(processed_articles)} articles remain")
+            if len(processed_articles) > 0:
+                print(f"Final sources: {processed_articles['Source'].value_counts().to_dict()}")'''
+                          )
+                  
+                  # 6. Add else block debug for when LLM is disabled
+                  if 'print("⚠️ LLM FILTERING DISABLED")' not in content:
+                      # Find the pattern after LLM filtering block
+                      pattern_after_llm = 'self.logger.info(f"Filtered down to {len(processed_articles)} articles using LLM.")'
+                      if pattern_after_llm in content:
+                          content = content.replace(
+                              pattern_after_llm,
+                              pattern_after_llm + '''
+        else:
+            print("⚠️ LLM FILTERING DISABLED")
+            print(f"Articles passing through unfiltered: {len(processed_articles)}")'''
+                          )
+
+                  with open(finder_file, 'w') as f:
+                      f.write(content)
+                  
+                  print(f"✅ Applied comprehensive debug to {finder_file}")
                       
               except Exception as e:
                   print(f"⚠️ Error processing {finder_file}: {e}")
