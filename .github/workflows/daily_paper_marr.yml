@@ -6,8 +6,7 @@ on:
     - cron: '0 6 * * 1-5'  # Monday-Friday at 6 AM UTC (8 AM German time during DST)
   workflow_dispatch:
 
-job          # Define research query directly in workflow - same for all databases
-          research_query = "[machine learning] OR [deep learning] OR [artificial intelligence] OR [computer vision] OR [image analysis] OR [microscopy] OR [pathology] OR [hematology] OR [blood] OR [cell] OR [segmentation] OR [classification] OR [detection] OR [computational biology] OR [bioinformatics] OR [data science] OR [neural network] OR [algorithm] OR [biomedical] OR [medical imaging] OR [digital pathology] OR [H&E] OR [hematoxylin] OR [eosin] OR [histology] OR [cytology] OR [flow cytometry] OR [image processing] OR [pattern recognition] OR [feature extraction] OR [morphology] OR [quantitative] OR [analysis] OR [diagnosis] OR [biomarker] OR [phenotype] OR [omics] OR [genomics] OR [transcriptomics] OR [proteomics] OR [metabolomics]"
+jobs:
   fetch-papers:
     runs-on: ubuntu-latest
     timeout-minutes: 30
@@ -203,8 +202,12 @@ job          # Define research query directly in workflow - same for all databas
           import yaml
           import os
           
-          # Define research query directly in workflow - same for all databases
-          research_query = "[hematopoiesis] OR [haematopoiesis] OR [hematology] OR [haematology] OR [blood disorders] OR [computational pathology] OR [cell segmentation] OR [segmentation] OR [3D segmentation] OR [single cell] OR [single-cell] OR [machine learning] OR [deep learning] OR [artificial intelligence] OR [computer vision] OR [image analysis] OR [microscopy] OR [computational biology] OR [multi-omics] OR [multiomics] OR [foundation models] OR [self-supervised learning] OR [cell classification] OR [cell detection] OR [image processing] OR [biomedical image analysis] OR [medical imaging] OR [AI microscopy] OR [quantitative microscopy] OR [fluorescence microscopy] OR [vision language model] OR [large language models] OR [mathematical modeling] OR [mechanistic modeling] OR [drug target identification] OR [spatial] OR [spatial transcriptomics] OR [LLM] OR [language model]"
+          # Define separate queries for different databases
+          # bioRxiv has strict requirements: only OR, no complex queries
+          biorxiv_query = "[hematopoiesis] OR [haematopoiesis] OR [hematology] OR [haematology] OR [blood disorders] OR [computational pathology] OR [cell segmentation] OR [segmentation] OR [3D segmentation] OR [single cell] OR [single-cell] OR [machine learning] OR [deep learning] OR [artificial intelligence] OR [computer vision] OR [image analysis] OR [microscopy] OR [computational biology] OR [multi-omics] OR [multiomics] OR [foundation models] OR [self-supervised learning] OR [cell classification] OR [cell detection] OR [image processing] OR [biomedical image analysis] OR [medical imaging] OR [AI microscopy] OR [quantitative microscopy] OR [fluorescence microscopy] OR [vision language model] OR [large language models] OR [mathematical modeling] OR [mechanistic modeling] OR [drug target identification] OR [spatial] OR [spatial transcriptomics] OR [LLM] OR [language model]"
+          
+          # PubMed/ArXiv allows more complex queries
+          pubmed_arxiv_query = "(hematopoiesis) OR (haematopoiesis) OR (hematology) OR (haematology) OR (blood disorders) OR (computational pathology) OR (cell segmentation) OR (segmentation) OR (3D segmentation) OR (single cell) OR (single-cell) OR (machine learning) OR (deep learning) OR (artificial intelligence) OR (computer vision) OR (image analysis) OR (microscopy) OR (computational biology) OR (multi-omics) OR (multiomics) OR (foundation models) OR (self-supervised learning) OR (cell classification) OR (cell detection) OR (image processing) OR (biomedical image analysis) OR (medical imaging) OR (AI microscopy) OR (quantitative microscopy) OR (fluorescence microscopy) OR (vision language model) OR (large language models) OR (mathematical modeling) OR (mechanistic modeling) OR (drug target identification) OR (spatial transcriptomics) OR (pathology) OR (hematopathology) OR (blood cell) OR (leukemia) OR (lymphoma) OR (myeloma) OR (CHIP) OR (clonal hematopoiesis)"
           
           # Define LLM filtering prompt directly in workflow
           filtering_prompt = """You are a lab manager at a research lab focusing on computational hematology, blood disorders, and microscopy image analysis, computational pathology and bioinformatics. The lab develops machine learning algorithms for cell segmentation, computational pathology, and single-cell profiling in hematological contexts. Key research areas include clonal hematopoiesis (CHIP), clonal dynamics, mechanistic mathematical modeling of haematopoiesis, and multi-omics approaches to blood cell production and disorders. The lab works extensively with foundation models, self-supervised learning, and multiple instance learning for analyzing microscopic images including bright-field, fluorescence, cryo-electron, and extended depth-of-field microscopy. Research focuses on developing AI-based algorithms for cell detection, classification, and quantification to advance diagnosis and treatment of severe blood disorders. Lab members are interested in computational hematopathology, single cell-based big data analysis for drug target identification, mechanistic modeling of time-resolved hematological data, and large language models/agents in healthcare applications. The lab combines AI with biomedical knowledge to classify individual cells and patients, with particular emphasis on quantitative microscopy image processing and custom machine learning methods for life scientists and pathologists. You are reviewing a list of research papers to determine if they are relevant to your lab. Please answer 'yes' or 'no' to the following question: Is the following research paper relevant?"""
@@ -215,8 +218,9 @@ job          # Define research query directly in workflow - same for all databas
               "NCBI_API_KEY": os.environ.get("NCBI_KEY", ""),
               "LOCAL_ROOT_DIR": ".",
               
-              # Use same query for all databases
-              "query": research_query,
+              # Use separate queries for different databases
+              "query_biorxiv": biorxiv_query,
+              "query_pubmed_arxiv": pubmed_arxiv_query,
               
               "LLM_FILTERING": True,
               "LLM_PROVIDER": "openai",
@@ -240,10 +244,12 @@ job          # Define research query directly in workflow - same for all databas
           
           # Debug output
           print("Generated config:")
-          print(f"Query: {research_query}")
-          print("Using same query for all databases (PubMed, ArXiv, bioRxiv)")
-          print("Note: Very broad query terms for maximum coverage - LLM will filter for relevance")
-          print(f"Query contains {len(research_query.split(' OR '))} search terms")
+          print(f"bioRxiv Query: {biorxiv_query}")
+          print(f"PubMed/ArXiv Query: {pubmed_arxiv_query}")
+          print("Using separate optimized queries for different databases")
+          print("Note: Broad queries for maximum coverage - LLM will filter for relevance")
+          print(f"bioRxiv query contains {len(biorxiv_query.split(' OR '))} search terms")
+          print(f"PubMed/ArXiv query contains {len(pubmed_arxiv_query.split(' OR '))} search terms")
           EOF
           
       - name: Run PaperBee
