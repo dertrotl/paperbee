@@ -194,6 +194,17 @@ class PapersFinder:
                     None,
                 )
         articles = [article for article in articles if article.get("url") is not None]
+        
+        if not articles:
+            print("⚠️ No articles found after filtering. This might be due to:")
+            print("   - Query terms being too specific")
+            print("   - Limited papers published in the search timeframe")
+            print("   - Database connectivity issues")
+            return pd.DataFrame(columns=[
+                "DOI", "Date", "PostedDate", "IsPreprint", 
+                "Title", "Keywords", "Preprint", "URL"
+            ])
+            
         processor = ArticlesProcessor(articles, self.today_str)
         processed_articles = processor.articles
         self.logger.info(f"Found {len(processed_articles)} articles.")
