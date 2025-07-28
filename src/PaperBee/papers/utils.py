@@ -28,8 +28,19 @@ class ArticlesProcessor:
             articles (List[dict]): A list of dictionaries where each dictionary contains article data.
             today_str (str): The current date formatted as a string.
         """
-        self.articles = pd.DataFrame.from_dict(articles)
+        self.articles_list = articles
         self.today_str = today_str
+        
+        # Handle empty articles list
+        if not articles:
+            print("⚠️ No articles found, creating empty DataFrame")
+            self.articles = pd.DataFrame(columns=[
+                "DOI", "Date", "PostedDate", "IsPreprint", 
+                "Title", "Keywords", "Preprint", "URL"
+            ])
+            return
+            
+        self.articles = pd.DataFrame.from_dict(articles)
         self.process_articles()
 
     def process_articles(self) -> None:
