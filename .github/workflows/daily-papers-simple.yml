@@ -1,4 +1,4 @@
-# .github/workflows/daily-papers.yml
+# .github/workflows/daily-papers-simple.yml
 name: PaperBee Daily Digest Clinic
 
 on:
@@ -214,10 +214,19 @@ jobs:
               "NCBI_API_KEY": os.environ.get("NCBI_KEY", ""),
               "LOCAL_ROOT_DIR": ".",
               
-              # Use separate queries for each database (MORE RELIABLE)
-              # NO unified query - force separate database handling
+              # CRITICAL: Explicit database activation (like original PaperBee)
+              "databases": ["pubmed", "arxiv", "biorxiv"],
+              
+              # Main query (used when no specific database query defined)
+              "query": research_query,
+              
+              # Database-specific queries (optional but recommended)
               "query_biorxiv": research_query,
               "query_pubmed_arxiv": research_query,
+              
+              # BioRxiv-specific optimizations for stability
+              "limit": 100,
+              "limit_per_database": 25,  # Reduced for bioRxiv stability
               
               "LLM_FILTERING": True,
               "LLM_PROVIDER": "openai",
@@ -240,10 +249,13 @@ jobs:
               yaml.dump(config, f, default_flow_style=False)
           
           # Debug output
-          print("Generated config:")
-          print(f"Query: {research_query}")
-          print("Using same query for all databases (PubMed, ArXiv, bioRxiv)")
-          print("Note: Broad queries for maximum coverage - LLM will filter for relevance")
+          print("✅ Generated config with explicit database activation:")
+          print(f"📊 Databases: {config['databases']}")
+          print(f"🔍 Main query: {research_query[:100]}...")
+          print(f"🧬 BioRxiv query: {config.get('query_biorxiv', 'Using main query')[:100]}...")
+          print(f"📄 PubMed/ArXiv query: {config.get('query_pubmed_arxiv', 'Using main query')[:100]}...")
+          print(f"📊 Limits: total={config.get('limit', 'default')}, per_database={config.get('limit_per_database', 'default')}")
+          print("Note: bioRxiv now explicitly activated with reduced limits for stability")
           print(f"Query contains {len(research_query.split(' OR '))} search terms")
           EOF
           
