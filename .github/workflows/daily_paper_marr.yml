@@ -281,6 +281,7 @@ You are reviewing a list of research papers to determine if they are relevant to
               "LOCAL_ROOT_DIR": ".",
               
               # Use separate queries for each database (MORE RELIABLE)
+              # NO unified query - force separate database handling
               "query_biorxiv": research_query,
               "query_pubmed_arxiv": research_query,
               

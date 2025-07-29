@@ -214,8 +214,10 @@ jobs:
               "NCBI_API_KEY": os.environ.get("NCBI_KEY", ""),
               "LOCAL_ROOT_DIR": ".",
               
-              # Use single query for all databases (original working approach)
-              "query": research_query,
+              # Use separate queries for each database (MORE RELIABLE)
+              # NO unified query - force separate database handling
+              "query_biorxiv": research_query,
+              "query_pubmed_arxiv": research_query,
               
               "LLM_FILTERING": True,
               "LLM_PROVIDER": "openai",
