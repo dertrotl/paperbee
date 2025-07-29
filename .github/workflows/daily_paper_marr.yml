@@ -247,44 +247,7 @@ jobs:
           research_query = "[hematopoiesis] OR [haematopoiesis] OR [hematology] OR [haematology] OR [blood disorders] OR [computational pathology] OR [cell segmentation] OR [segmentation] OR [3D segmentation] OR [single cell] OR [single-cell] OR [machine learning] OR [deep learning] OR [artificial intelligence] OR [computer vision] OR [image analysis] OR [microscopy] OR [computational biology] OR [multi-omics] OR [multiomics] OR [foundation models] OR [self-supervised learning] OR [cell classification] OR [cell detection] OR [image processing] OR [biomedical image analysis] OR [medical imaging] OR [AI microscopy] OR [quantitative microscopy] OR [fluorescence microscopy] OR [vision language model] OR [large language models] OR [mathematical modeling] OR [mechanistic modeling] OR [drug target identification] OR [spatial transcriptomics] OR [pathology] OR [hematopathology] OR [blood cell] OR [leukemia] OR [lymphoma] OR [myeloma] OR [CHIP] OR [clonal hematopoiesis] OR [LLM] OR [language model] OR [morphological profiling] OR [cell painting] OR [representation learning] OR [organoid detection] OR [organoid segmentation] OR [holography] OR [digital in-line holography]"
           
           # Define LLM filtering prompt directly in workflow - SELECTIVE FILTERING
-          filtering_prompt = """You are a selective lab manager at a computational biomedical research lab. You must be STRICT but not overly narrow in selecting relevant papers. The lab focuses on:
-
-CORE RESEARCH AREAS (prioritize these):
-1. Computational hematology and blood disorders with ML/AI approaches
-2. Computational pathology (digital pathology, pathology AI, histopathology analysis)
-3. Cell segmentation and classification (any biological context with computational methods)
-4. Computer vision and image analysis for biomedical applications
-5. Machine learning for microscopy image analysis (any biological samples)
-6. Single-cell analysis with computational methods (preferably but not exclusively hematopoiesis)
-7. Clonal hematopoiesis (CHIP) and clonal dynamics with computational methods
-8. Mechanistic mathematical modeling of biological systems
-9. Foundation models and self-supervised learning for medical/biological imaging
-10. Multi-omics approaches with computational analysis
-11. AI-based algorithms for medical diagnosis and biological discovery
-12. Morphological profiling and representation learning for cellular phenotypes
-13. Organoid detection, segmentation, and analysis
-14. Advanced microscopy techniques with computational components
-
-STRICT EXCLUSION CRITERIA - IMMEDIATELY REJECT if paper is about:
-- Pure clinical studies without computational methodology
-- Drug discovery without computational modeling or AI components
-- General AI/ML methodology papers without clear biomedical application
-- Social sciences, economics, or non-biomedical applications
-- Pure wet-lab methodology without computational analysis
-- Infectious disease studies without computational modeling aspects
-- General bioinformatics without novel computational methodology
-
-DECISION RULES:
-- Paper must involve computational methods, AI/ML, or advanced imaging analysis
-- Must have clear biomedical or biological application
-- Computational pathology, microscopy, and segmentation papers are highly relevant
-- Hematology focus is preferred but not required if computationally interesting
-- When in doubt about computational relevance, lean towards 'yes'
-- Aim to select maximum 35-45 high-quality papers per day
-
-You are reviewing research papers for daily digest. Be selective but not overly restrictive - papers with strong computational methodology for biomedical applications should pass.
-
-Answer ONLY 'yes' or 'no': Is this paper relevant for our computational biomedical research with focus on pathology, microscopy, and biological image analysis?"""
+          filtering_prompt = """You are a selective lab manager at a computational biomedical research lab. You must be STRICT but not overly narrow in selecting relevant papers. The lab focuses on: CORE RESEARCH AREAS (prioritize these): 1. Computational hematology and blood disorders with ML/AI approaches 2. Computational pathology (digital pathology, pathology AI, histopathology analysis) 3. Cell segmentation and classification (any biological context with computational methods) 4. Computer vision and image analysis for biomedical applications 5. Machine learning for microscopy image analysis (any biological samples) 6. Single-cell analysis with computational methods (preferably but not exclusively hematopoiesis) 7. Clonal hematopoiesis (CHIP) and clonal dynamics with computational methods 8. Mechanistic mathematical modeling of biological systems 9. Foundation models and self-supervised learning for medical/biological imaging 10. Multi-omics approaches with computational analysis 11. AI-based algorithms for medical diagnosis and biological discovery 12. Morphological profiling and representation learning for cellular phenotypes 13. Organoid detection, segmentation, and analysis 14. Advanced microscopy techniques with computational components. STRICT EXCLUSION CRITERIA - IMMEDIATELY REJECT if paper is about: Pure clinical studies without computational methodology, Drug discovery without computational modeling or AI components, General AI/ML methodology papers without clear biomedical application, Social sciences economics or non-biomedical applications, Pure wet-lab methodology without computational analysis, Infectious disease studies without computational modeling aspects, General bioinformatics without novel computational methodology. DECISION RULES: Paper must involve computational methods AI/ML or advanced imaging analysis, Must have clear biomedical or biological application, Computational pathology microscopy and segmentation papers are highly relevant, Hematology focus is preferred but not required if computationally interesting, When in doubt about computational relevance lean towards yes, Aim to select maximum 35-45 high-quality papers per day. You are reviewing research papers for daily digest. Be selective but not overly restrictive - papers with strong computational methodology for biomedical applications should pass. Answer ONLY 'yes' or 'no': Is this paper relevant for our computational biomedical research with focus on pathology microscopy and biological image analysis?"""
           
           config = {
               "GOOGLE_SPREADSHEET_ID": os.environ.get("GOOGLE_SHEET_ID", ""),
