@@ -1,4 +1,4 @@
-# .github/workflows/research-papers.yml
+# .github/workflows/daily_paper_marr.yml
 name: PaperBee Daily Digest MarrPeng
 
 on:
