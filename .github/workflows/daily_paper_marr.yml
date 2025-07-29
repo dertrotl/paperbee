@@ -13,17 +13,7 @@ jobs:
     
     steps:
       - name: Checkout repository
-          - name: Run PaperBee
-        env:
-          NCBI_API_KEY: ${{ secrets.NCBI_API_KEY }}
-        run: |
-          echo "🩸 Starting PaperBee Research Digest"
-          echo "📅 Search window: ${{ steps.search_days.outputs.since_days }} days"
-          echo "🔧 NCBI timeout: 45s | Gemini 2.5 Flash Lite rate limit: 4.5s"
-          echo "🛠️ Enhanced error handling: NCBI connection failures, XML parsing errors"
-          echo "💬 Slack optimization: Batched papers to prevent 50-block limit errors"
-          echo "🔍 Filtering: Selective computational biomedical focus (pathology, microscopy, segmentation)"
-          paperbee post --config config.yml --since ${{ steps.search_days.outputs.since_days }}: actions/checkout@v4
+        uses: actions/checkout@v4
         
       - name: Set up Python
         uses: actions/setup-python@v4
@@ -304,9 +294,12 @@ jobs:
         env:
           NCBI_API_KEY: ${{ secrets.NCBI_API_KEY }}
         run: |
-          echo "� Starting PaperBee Research Digest"
+          echo "🩸 Starting PaperBee Research Digest"
           echo "📅 Search window: ${{ steps.search_days.outputs.since_days }} days"
-          echo "🔧 NCBI timeout: 30s | Gemini 2.5 Flash Lite rate limit: 4.5s"
+          echo "🔧 NCBI timeout: 45s | Gemini 2.5 Flash Lite rate limit: 4.5s"
+          echo "🛠️ Enhanced error handling: NCBI connection failures, XML parsing errors"
+          echo "💬 Slack optimization: Batched papers to prevent 50-block limit errors"
+          echo "🔍 Filtering: Selective computational biomedical focus (pathology, microscopy, segmentation)"
           paperbee post --config config.yml --since ${{ steps.search_days.outputs.since_days }}
           
       - name: Clean up
