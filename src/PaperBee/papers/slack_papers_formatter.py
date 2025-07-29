@@ -58,6 +58,48 @@ class SlackPaperPublisher:
 
         return papers, preprints
 
+    def _send_multiple_slack_messages(self, message_blocks: List[Dict[str, Any]], header: str):
+        """
+        Send multiple Slack messages if the total number of blocks exceeds Slack's limit.
+        
+        Args:
+            message_blocks: List of message blocks to send
+            header: Header text for the message
+            
+        Returns:
+            Last response from Slack API
+        """
+        # Split blocks into chunks of max 45 blocks (keeping 5 blocks buffer for safety)
+        max_blocks_per_message = 45
+        block_chunks = [message_blocks[i:i+max_blocks_per_message] for i in range(0, len(message_blocks), max_blocks_per_message)]
+        
+        last_response = None
+        for i, chunk in enumerate(block_chunks):
+            try:
+                # Add continuation header for subsequent messages
+                if i > 0:
+                    chunk_header = f"📄 Papers digest continued (part {i+1}/{len(block_chunks)})..."
+                    chunk = [{"type": "section", "text": {"type": "mrkdwn", "text": chunk_header}}] + chunk
+                
+                response = self.client.chat_postMessage(
+                    channel=self.channel_id,
+                    blocks=chunk,
+                    text=header if i == 0 else f"Papers digest part {i+1}",
+                    unfurl_links=False,
+                    unfurl_media=False,
+                )
+                last_response = response
+                self.logger.info(f"Published papers batch {i+1}/{len(block_chunks)} to Slack: {response}")
+                
+                # Small delay between messages to avoid rate limiting
+                import time
+                time.sleep(1)
+                
+            except Exception as e:
+                self.logger.error(f"Error publishing papers batch {i+1} to Slack: {e}")
+                
+        return last_response
+
     def publish_papers_to_slack(
         self,
         papers: List[str],
@@ -82,6 +124,8 @@ class SlackPaperPublisher:
             footer = (
                 f"*View all papers:* <https://docs.google.com/spreadsheets/d/{spreadsheet_id}|Google Sheet> :books:"
             )
+            
+            # Create message blocks with paper batching to respect Slack's 50-block limit
             message_blocks: List[Dict[str, Any]] = [
                 {"type": "section", "text": {"type": "mrkdwn", "text": header}},
                 {"type": "divider"},
@@ -90,11 +134,16 @@ class SlackPaperPublisher:
                     "text": {"type": "mrkdwn", "text": "*Preprints:*:point_down:"},
                 },
             ]
+            
+            # Combine multiple preprints per block to reduce block count
             if preprints:
-                for paper in preprints:
+                # Group preprints into batches of 3 per block to stay within limits
+                preprint_batches = [preprints[i:i+3] for i in range(0, len(preprints), 3)]
+                for batch in preprint_batches:
+                    combined_text = "\n\n".join(batch)
                     paper_section = {
                         "type": "section",
-                        "text": {"type": "mrkdwn", "text": paper},
+                        "text": {"type": "mrkdwn", "text": combined_text},
                     }
                     message_blocks.append(paper_section)
             else:
@@ -102,16 +151,22 @@ class SlackPaperPublisher:
                     "type": "section",
                     "text": {"type": "mrkdwn", "text": "No preprints found today."},
                 })
+                
             message_blocks.append({"type": "divider"})
             message_blocks.append({
                 "type": "section",
                 "text": {"type": "mrkdwn", "text": "*Papers:*:point_down:"},
             })
+            
+            # Combine multiple papers per block to reduce block count
             if papers:
-                for paper in papers:
+                # Group papers into batches of 3 per block to stay within limits
+                paper_batches = [papers[i:i+3] for i in range(0, len(papers), 3)]
+                for batch in paper_batches:
+                    combined_text = "\n\n".join(batch)
                     paper_section = {
                         "type": "section",
-                        "text": {"type": "mrkdwn", "text": paper},
+                        "text": {"type": "mrkdwn", "text": combined_text},
                     }
                     message_blocks.append(paper_section)
             else:
@@ -119,6 +174,7 @@ class SlackPaperPublisher:
                     "type": "section",
                     "text": {"type": "mrkdwn", "text": "No papers found today."},
                 })
+                
             message_blocks.append({"type": "divider"})
             message_blocks.append({"type": "section", "text": {"type": "mrkdwn", "text": footer}})
             message_blocks.append({
@@ -132,6 +188,13 @@ class SlackPaperPublisher:
                     "text": "Posted with `slack-papers-app` <https://github.com/theislab/slack_papers_bot|GitHub>",
                 },
             })
+            
+            # Additional safety check: if still too many blocks, split into multiple messages
+            if len(message_blocks) > 50:
+                self.logger.warning(f"Message has {len(message_blocks)} blocks, splitting into multiple messages")
+                # Send multiple messages if needed
+                return self._send_multiple_slack_messages(message_blocks, header)
+            
             if not self.channel_id:
                 self.logger.error("Channel ID is not provided.")
                 return None

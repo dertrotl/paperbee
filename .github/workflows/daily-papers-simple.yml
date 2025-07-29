@@ -40,8 +40,9 @@ jobs:
           
       - name: Apply performance fixes
         run: |
-          # Fix NCBI timeout issue (increase from 10s to 30s)
-          find . -name "utils.py" -path "*/PaperBee/*" -exec sed -i 's/timeout=10/timeout=30/g' {} \;
+          # Fix NCBI timeout issue (increase from 10s to 45s for stability)
+          find . -name "utils.py" -path "*/PaperBee/*" -exec sed -i 's/timeout=10/timeout=45/g' {} \;
+          find . -name "utils.py" -path "*/PaperBee/*" -exec sed -i 's/timeout=30/timeout=45/g' {} \;
           
           # Apply bioRxiv search fix
           python3 << 'EOF'
@@ -111,12 +112,12 @@ jobs:
                   print(f"⚠️ Error processing {finder_file}: {e}")
           EOF
           
-          # Fix XML parsing errors in DOI extraction
+          # Comprehensive NCBI error handling with multiple timeout patterns
           python3 << 'EOF'
           import os
           import re
           
-          # Find and patch utils.py for XML error handling
+          # Find and patch utils.py for comprehensive NCBI error handling
           utils_files = []
           for root, dirs, files in os.walk('.'):
               if 'utils.py' in files and 'PaperBee' in root:
@@ -127,23 +128,53 @@ jobs:
                   with open(utils_file, 'r') as f:
                       content = f.read()
                   
-                  # Replace the problematic XML parsing line
-                  old_pattern = 'root = ET.fromstring(fetch_response.content)  # Using defusedxml for parsing'
-                  new_pattern = '''try:
+                  # Replace various timeout patterns with comprehensive error handling
+                  patterns_to_replace = [
+                      ('fetch_response = requests.get(ncbi_url, timeout=45)', 
+                       '''try:
+                          fetch_response = requests.get(ncbi_url, timeout=45)
+                      except (requests.exceptions.ConnectionError, requests.exceptions.Timeout, requests.exceptions.RequestException) as e:
+                          print(f"⚠️ NCBI connection failed: {str(e)[:50]}")
+                          return None'''),
+                      ('fetch_response = requests.get(ncbi_url, timeout=30)',
+                       '''try:
+                          fetch_response = requests.get(ncbi_url, timeout=45)
+                      except (requests.exceptions.ConnectionError, requests.exceptions.Timeout, requests.exceptions.RequestException) as e:
+                          print(f"⚠️ NCBI connection failed: {str(e)[:50]}")
+                          return None'''),
+                      ('fetch_response = requests.get(ncbi_url, timeout=10)',
+                       '''try:
+                          fetch_response = requests.get(ncbi_url, timeout=45)
+                      except (requests.exceptions.ConnectionError, requests.exceptions.Timeout, requests.exceptions.RequestException) as e:
+                          print(f"⚠️ NCBI connection failed: {str(e)[:50]}")
+                          return None''')
+                  ]
+                  
+                  changes_made = False
+                  for old_pattern, new_pattern in patterns_to_replace:
+                      if old_pattern in content and 'NCBI connection failed' not in content:
+                          content = content.replace(old_pattern, new_pattern)
+                          changes_made = True
+                  
+                  # Also handle XML parsing errors
+                  xml_old_pattern = 'root = ET.fromstring(fetch_response.content)  # Using defusedxml for parsing'
+                  xml_new_pattern = '''try:
                       root = ET.fromstring(fetch_response.content)  # Using defusedxml for parsing
                   except (ET.ParseError, Exception) as e:
                       print(f"⚠️ XML parsing failed, skipping DOI extraction: {str(e)[:50]}")
                       return None'''
                   
-                  if old_pattern in content and 'XML parsing failed' not in content:
-                      content = content.replace(old_pattern, new_pattern)
-                      
+                  if xml_old_pattern in content and 'XML parsing failed' not in content:
+                      content = content.replace(xml_old_pattern, xml_new_pattern)
+                      changes_made = True
+                  
+                  if changes_made:
                       with open(utils_file, 'w') as f:
                           f.write(content)
                       
-                      print(f"✅ Applied XML error handling to {utils_file}")
+                      print(f"✅ Applied comprehensive NCBI error handling to {utils_file}")
                   else:
-                      print(f"ℹ️ XML error handling already applied or pattern not found in {utils_file}")
+                      print(f"ℹ️ NCBI error handling already applied or patterns not found in {utils_file}")
                       
               except Exception as e:
                   print(f"⚠️ Error processing {utils_file}: {e}")
@@ -205,8 +236,40 @@ jobs:
           # Use single query for all databases (original working version)
           research_query = "[single-cell RNA sequencing] OR [spatial transcriptomics] OR [single-cell analysis] OR [scRNA-seq] OR [single cell atlas] OR [single-cell integration] OR [IBD] OR [inflammatory bowel disease] OR [Crohn disease] OR [ulcerative colitis] OR [mucosal immunology] OR [intestinal inflammation] OR [VEO-IBD] OR [immune-mediated inflammatory diseases] OR [primary immunodeficiencies] OR [secondary immunodeficiencies] OR [autoinflammation] OR [inflammasome biology] OR [NLRP3] OR [cytokine signaling] OR [IL-1B] OR [IL-17] OR [IL-10] OR [IL-23] OR [IL-6] OR [pyroptosis] OR [trained immunity] OR [Nod-like receptors] OR [intestinal epithelial barrier] OR [Tregs] OR [macrophages] OR [dendritic cells] OR [organoids] OR [computational biology] OR [bioinformatics] OR [multiomics] OR [proteomics] OR [machine learning] OR [data integration] OR [benchmarking] OR [computational pathology]"
           
-          # Define LLM filtering prompt directly in workflow
-          filtering_prompt = """You are a lab manager at a research lab focusing on single-cell RNA sequencing, spatial transcriptomics, multiomics, proteomics, machine learning applications and methods development in computational biology as well as wet lab work, organoids and perturbation. The lab also works with computational pathology, HE images, and intestinal biopsies. Lab research focuses on VEO-IBD, genetics of immune-mediated inflammatory diseases (including genetics of IBD, Crohn's disease, ulcerative colitis), primary and secondary immunodeficiencies, and autoinflammation, with translational applications of single-cell data. Key areas of interest include inflammasome biology (NLRP3, NLRP1-13, Pyrin inflammasome), metabolic pathways (MVK, PMVK), cytokine signaling (IL-1B, IL-17, IL-10, IL-23, IL-6), pyroptosis, trained immunity, Nod-like receptors, small GTPases and GEFs, intestinal epithelial barrier integrity, bacterial handling, and cellular processes including migration, EMT, and EndMT. The lab studies various immune cell types including Tregs, macrophages, antigen presenting cells, and dendritic cells. Lab members are interested in building single-cell atlases, working with single-cell data on the level of patients (donors, individuals) and keeping updated on the most recent methods in single-cell biology and organoids. Another focus of the lab is benchmarking single-cell analysis tools. A specific area of interest is single-cell data integration. You are reviewing a list of research papers to determine if they are relevant to your lab. Please answer 'yes' or 'no' to the following question: Is the following research paper relevant?"""
+          # Define LLM filtering prompt directly in workflow - STRICT FILTERING
+          filtering_prompt = """You are a highly selective lab manager at a specialized research lab. You must be EXTREMELY STRICT in selecting only the most relevant papers. The lab focuses specifically on:
+
+CORE RESEARCH AREAS (only these qualify):
+1. Single-cell RNA sequencing methodology, analysis tools, or applications
+2. Spatial transcriptomics techniques and computational methods
+3. IBD/Crohn's disease/ulcerative colitis with molecular mechanisms
+4. VEO-IBD (very early onset IBD) genetics and pathways
+5. Inflammasome biology (NLRP3, NLRP1-13, Pyrin) with mechanistic insights
+6. Primary/secondary immunodeficiencies with genetic or cellular analysis
+7. Single-cell multiomics integration and computational methods
+8. Intestinal epithelial barrier dysfunction at cellular/molecular level
+
+STRICT EXCLUSION CRITERIA - IMMEDIATELY REJECT if paper is about:
+- General machine learning without single-cell applications
+- Clinical studies without mechanistic insights
+- Cancer research (unless specifically intestinal/IBD-related)
+- Drug discovery without IBD/immunodeficiency context
+- General proteomics/metabolomics without single-cell focus
+- Artificial intelligence applications outside genomics
+- General inflammatory diseases not related to IBD/gut
+- Methodological papers without single-cell relevance
+- Case reports or clinical observations without molecular data
+
+DECISION RULES:
+- Paper must directly address at least ONE core research area
+- Must provide mechanistic insights or novel methodology
+- Must be immediately applicable to lab's specific research
+- When in doubt, REJECT - be highly conservative
+- Aim to select maximum 20-30 truly exceptional papers per day
+
+You are reviewing research papers for daily digest. Be ruthlessly selective - only papers that would make lab members say "we need to read this immediately" should pass.
+
+Answer ONLY 'yes' or 'no': Is this paper directly relevant and exceptional for our specialized research focus?"""
           
           config = {
               "GOOGLE_SPREADSHEET_ID": os.environ.get("GOOGLE_SHEET_ID", ""),
@@ -265,7 +328,9 @@ jobs:
         run: |
           echo "🐝 Starting PaperBee Daily Digest"
           echo "📅 Search window: ${{ steps.search_days.outputs.since_days }} days"
-          echo "🔧 NCBI timeout: 30s | Gemini 2.5 Flash Lite rate limit: 4.5s"
+          echo "🔧 NCBI timeout: 45s | Gemini 2.5 Flash Lite rate limit: 4.5s"
+          echo "🛠️ Enhanced error handling: NCBI connection failures, XML parsing errors"
+          echo "💬 Slack optimization: Batched papers to prevent 50-block limit errors"
           paperbee post --config config.yml --since ${{ steps.search_days.outputs.since_days }}
           
       - name: Clean up
