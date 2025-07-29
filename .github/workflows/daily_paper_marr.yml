@@ -13,7 +13,17 @@ jobs:
     
     steps:
       - name: Checkout repository
-        uses: actions/checkout@v4
+          - name: Run PaperBee
+        env:
+          NCBI_API_KEY: ${{ secrets.NCBI_API_KEY }}
+        run: |
+          echo "🩸 Starting PaperBee Research Digest"
+          echo "📅 Search window: ${{ steps.search_days.outputs.since_days }} days"
+          echo "🔧 NCBI timeout: 45s | Gemini 2.5 Flash Lite rate limit: 4.5s"
+          echo "🛠️ Enhanced error handling: NCBI connection failures, XML parsing errors"
+          echo "💬 Slack optimization: Batched papers to prevent 50-block limit errors"
+          echo "🔍 Filtering: Selective computational biomedical focus (pathology, microscopy, segmentation)"
+          paperbee post --config config.yml --since ${{ steps.search_days.outputs.since_days }}: actions/checkout@v4
         
       - name: Set up Python
         uses: actions/setup-python@v4
@@ -40,8 +50,9 @@ jobs:
           
       - name: Apply performance fixes
         run: |
-          # Fix NCBI timeout issue (increase from 10s to 30s)
-          find . -name "utils.py" -path "*/PaperBee/*" -exec sed -i 's/timeout=10/timeout=30/g' {} \;
+          # Fix NCBI timeout issue (increase from 10s to 45s for stability)
+          find . -name "utils.py" -path "*/PaperBee/*" -exec sed -i 's/timeout=10/timeout=45/g' {} \;
+          find . -name "utils.py" -path "*/PaperBee/*" -exec sed -i 's/timeout=30/timeout=45/g' {} \;
           
           # Apply bioRxiv search fix
           python3 << 'EOF'
@@ -111,12 +122,12 @@ jobs:
                   print(f"⚠️ Error processing {finder_file}: {e}")
           EOF
           
-          # Fix XML parsing errors in DOI extraction
+          # Comprehensive NCBI error handling with multiple timeout patterns
           python3 << 'EOF'
           import os
           import re
           
-          # Find and patch utils.py for XML error handling
+          # Find and patch utils.py for comprehensive NCBI error handling
           utils_files = []
           for root, dirs, files in os.walk('.'):
               if 'utils.py' in files and 'PaperBee' in root:
@@ -127,23 +138,53 @@ jobs:
                   with open(utils_file, 'r') as f:
                       content = f.read()
                   
-                  # Replace the problematic XML parsing line
-                  old_pattern = 'root = ET.fromstring(fetch_response.content)  # Using defusedxml for parsing'
-                  new_pattern = '''try:
+                  # Replace various timeout patterns with comprehensive error handling
+                  patterns_to_replace = [
+                      ('fetch_response = requests.get(ncbi_url, timeout=45)', 
+                       '''try:
+                          fetch_response = requests.get(ncbi_url, timeout=45)
+                      except (requests.exceptions.ConnectionError, requests.exceptions.Timeout, requests.exceptions.RequestException) as e:
+                          print(f"⚠️ NCBI connection failed: {str(e)[:50]}")
+                          return None'''),
+                      ('fetch_response = requests.get(ncbi_url, timeout=30)',
+                       '''try:
+                          fetch_response = requests.get(ncbi_url, timeout=45)
+                      except (requests.exceptions.ConnectionError, requests.exceptions.Timeout, requests.exceptions.RequestException) as e:
+                          print(f"⚠️ NCBI connection failed: {str(e)[:50]}")
+                          return None'''),
+                      ('fetch_response = requests.get(ncbi_url, timeout=10)',
+                       '''try:
+                          fetch_response = requests.get(ncbi_url, timeout=45)
+                      except (requests.exceptions.ConnectionError, requests.exceptions.Timeout, requests.exceptions.RequestException) as e:
+                          print(f"⚠️ NCBI connection failed: {str(e)[:50]}")
+                          return None''')
+                  ]
+                  
+                  changes_made = False
+                  for old_pattern, new_pattern in patterns_to_replace:
+                      if old_pattern in content and 'NCBI connection failed' not in content:
+                          content = content.replace(old_pattern, new_pattern)
+                          changes_made = True
+                  
+                  # Also handle XML parsing errors
+                  xml_old_pattern = 'root = ET.fromstring(fetch_response.content)  # Using defusedxml for parsing'
+                  xml_new_pattern = '''try:
                       root = ET.fromstring(fetch_response.content)  # Using defusedxml for parsing
                   except (ET.ParseError, Exception) as e:
                       print(f"⚠️ XML parsing failed, skipping DOI extraction: {str(e)[:50]}")
                       return None'''
                   
-                  if old_pattern in content and 'XML parsing failed' not in content:
-                      content = content.replace(old_pattern, new_pattern)
-                      
+                  if xml_old_pattern in content and 'XML parsing failed' not in content:
+                      content = content.replace(xml_old_pattern, xml_new_pattern)
+                      changes_made = True
+                  
+                  if changes_made:
                       with open(utils_file, 'w') as f:
                           f.write(content)
                       
-                      print(f"✅ Applied XML error handling to {utils_file}")
+                      print(f"✅ Applied comprehensive NCBI error handling to {utils_file}")
                   else:
-                      print(f"ℹ️ XML error handling already applied or pattern not found in {utils_file}")
+                      print(f"ℹ️ NCBI error handling already applied or patterns not found in {utils_file}")
                       
               except Exception as e:
                   print(f"⚠️ Error processing {utils_file}: {e}")
@@ -205,8 +246,45 @@ jobs:
           # Use single query for all databases (original working version)
           research_query = "[hematopoiesis] OR [haematopoiesis] OR [hematology] OR [haematology] OR [blood disorders] OR [computational pathology] OR [cell segmentation] OR [segmentation] OR [3D segmentation] OR [single cell] OR [single-cell] OR [machine learning] OR [deep learning] OR [artificial intelligence] OR [computer vision] OR [image analysis] OR [microscopy] OR [computational biology] OR [multi-omics] OR [multiomics] OR [foundation models] OR [self-supervised learning] OR [cell classification] OR [cell detection] OR [image processing] OR [biomedical image analysis] OR [medical imaging] OR [AI microscopy] OR [quantitative microscopy] OR [fluorescence microscopy] OR [vision language model] OR [large language models] OR [mathematical modeling] OR [mechanistic modeling] OR [drug target identification] OR [spatial transcriptomics] OR [pathology] OR [hematopathology] OR [blood cell] OR [leukemia] OR [lymphoma] OR [myeloma] OR [CHIP] OR [clonal hematopoiesis] OR [LLM] OR [language model] OR [morphological profiling] OR [cell painting] OR [representation learning] OR [organoid detection] OR [organoid segmentation] OR [holography] OR [digital in-line holography]"
           
-          # Define LLM filtering prompt directly in workflow
-          filtering_prompt = """You are a lab manager at a research lab focusing on computational hematology, blood disorders, and microscopy image analysis, computational pathology and bioinformatics. The lab develops machine learning algorithms for cell segmentation, computational pathology, and single-cell profiling in hematological contexts. Key research areas include clonal hematopoiesis (CHIP), clonal dynamics, mechanistic mathematical modeling of haematopoiesis, and multi-omics approaches to blood cell production and disorders. The lab works extensively with foundation models, self-supervised learning, and multiple instance learning for analyzing microscopic images including bright-field, fluorescence, cryo-electron, and extended depth-of-field microscopy. Research focuses on developing AI-based algorithms for cell detection, classification, and quantification to advance diagnosis and treatment of severe blood disorders. Lab members are interested in computational hematopathology, single cell-based big data analysis for drug target identification, mechanistic modeling of time-resolved hematological data, and large language models/agents in healthcare applications. The lab combines AI with biomedical knowledge to classify individual cells and patients, with particular emphasis on quantitative microscopy image processing and custom machine learning methods for life scientists and pathologists. Additionally, the lab works on morphological profiling, cell painting assays, representation learning for cellular phenotypes, organoid detection and segmentation, holography, and digital in-line holography for advanced microscopy applications. You should be INCLUSIVE rather than exclusive in your filtering. Papers that are even tangentially related to machine learning, computational biology, single-cell analysis, hematology, pathology, image analysis, morphological profiling, cell painting, organoid research, or holographic microscopy should be considered relevant. When in doubt, choose 'yes' rather than 'no'. You are reviewing a list of research papers to determine if they are relevant to your lab. Please answer 'yes' or 'no' to the following question: Is the following research paper relevant?"""
+          # Define LLM filtering prompt directly in workflow - SELECTIVE FILTERING
+          filtering_prompt = """You are a selective lab manager at a computational biomedical research lab. You must be STRICT but not overly narrow in selecting relevant papers. The lab focuses on:
+
+CORE RESEARCH AREAS (prioritize these):
+1. Computational hematology and blood disorders with ML/AI approaches
+2. Computational pathology (digital pathology, pathology AI, histopathology analysis)
+3. Cell segmentation and classification (any biological context with computational methods)
+4. Computer vision and image analysis for biomedical applications
+5. Machine learning for microscopy image analysis (any biological samples)
+6. Single-cell analysis with computational methods (preferably but not exclusively hematopoiesis)
+7. Clonal hematopoiesis (CHIP) and clonal dynamics with computational methods
+8. Mechanistic mathematical modeling of biological systems
+9. Foundation models and self-supervised learning for medical/biological imaging
+10. Multi-omics approaches with computational analysis
+11. AI-based algorithms for medical diagnosis and biological discovery
+12. Morphological profiling and representation learning for cellular phenotypes
+13. Organoid detection, segmentation, and analysis
+14. Advanced microscopy techniques with computational components
+
+STRICT EXCLUSION CRITERIA - IMMEDIATELY REJECT if paper is about:
+- Pure clinical studies without computational methodology
+- Drug discovery without computational modeling or AI components
+- General AI/ML methodology papers without clear biomedical application
+- Social sciences, economics, or non-biomedical applications
+- Pure wet-lab methodology without computational analysis
+- Infectious disease studies without computational modeling aspects
+- General bioinformatics without novel computational methodology
+
+DECISION RULES:
+- Paper must involve computational methods, AI/ML, or advanced imaging analysis
+- Must have clear biomedical or biological application
+- Computational pathology, microscopy, and segmentation papers are highly relevant
+- Hematology focus is preferred but not required if computationally interesting
+- When in doubt about computational relevance, lean towards 'yes'
+- Aim to select maximum 35-45 high-quality papers per day
+
+You are reviewing research papers for daily digest. Be selective but not overly restrictive - papers with strong computational methodology for biomedical applications should pass.
+
+Answer ONLY 'yes' or 'no': Is this paper relevant for our computational biomedical research with focus on pathology, microscopy, and biological image analysis?"""
           
           config = {
               "GOOGLE_SPREADSHEET_ID": os.environ.get("GOOGLE_SHEET_ID", ""),
