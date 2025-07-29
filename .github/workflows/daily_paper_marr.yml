@@ -9,7 +9,7 @@ on:
 jobs:
   fetch-papers:
     runs-on: ubuntu-latest
-    timeout-minutes: 30
+    timeout-minutes: 60
     
     steps:
       - name: Checkout repository
@@ -116,7 +116,7 @@ jobs:
           import os
           import re
           
-          # Find and patch utils.py for comprehensive error handling
+          # Find and patch utils.py for XML error handling
           utils_files = []
           for root, dirs, files in os.walk('.'):
               if 'utils.py' in files and 'PaperBee' in root:
@@ -127,35 +127,23 @@ jobs:
                   with open(utils_file, 'r') as f:
                       content = f.read()
                   
-                  # Replace the problematic NCBI request with comprehensive error handling
-                  old_pattern = 'fetch_response = requests.get(fetch_url, timeout=30)  # Added timeout'
+                  # Replace the problematic XML parsing line
+                  old_pattern = 'root = ET.fromstring(fetch_response.content)  # Using defusedxml for parsing'
                   new_pattern = '''try:
-                      fetch_response = requests.get(fetch_url, timeout=45)  # Increased timeout
-                  except (requests.exceptions.ConnectionError, requests.exceptions.Timeout, 
-                          requests.exceptions.RequestException) as e:
-                      print(f"⚠️ NCBI connection failed, skipping DOI extraction: {str(e)[:100]}")
+                      root = ET.fromstring(fetch_response.content)  # Using defusedxml for parsing
+                  except (ET.ParseError, Exception) as e:
+                      print(f"⚠️ XML parsing failed, skipping DOI extraction: {str(e)[:50]}")
                       return None'''
                   
-                  if old_pattern in content and 'NCBI connection failed' not in content:
+                  if old_pattern in content and 'XML parsing failed' not in content:
                       content = content.replace(old_pattern, new_pattern)
-                      
-                      # Also fix XML parsing
-                      xml_old = 'root = ET.fromstring(fetch_response.content)  # Using defusedxml for parsing'
-                      xml_new = '''try:
-                          root = ET.fromstring(fetch_response.content)  # Using defusedxml for parsing
-                      except (ET.ParseError, Exception) as e:
-                          print(f"⚠️ XML parsing failed, skipping DOI extraction: {str(e)[:50]}")
-                          return None'''
-                      
-                      if xml_old in content and 'XML parsing failed' not in content:
-                          content = content.replace(xml_old, xml_new)
                       
                       with open(utils_file, 'w') as f:
                           f.write(content)
                       
-                      print(f"✅ Applied comprehensive NCBI error handling to {utils_file}")
+                      print(f"✅ Applied XML error handling to {utils_file}")
                   else:
-                      print(f"ℹ️ NCBI error handling already applied or pattern not found in {utils_file}")
+                      print(f"ℹ️ XML error handling already applied or pattern not found in {utils_file}")
                       
               except Exception as e:
                   print(f"⚠️ Error processing {utils_file}: {e}")
@@ -277,7 +265,7 @@ jobs:
         run: |
           echo "� Starting PaperBee Research Digest"
           echo "📅 Search window: ${{ steps.search_days.outputs.since_days }} days"
-          echo "🔧 NCBI timeout: 45s | Gemini 2.5 Flash Lite rate limit: 4.5s"
+          echo "🔧 NCBI timeout: 30s | Gemini 2.5 Flash Lite rate limit: 4.5s"
           paperbee post --config config.yml --since ${{ steps.search_days.outputs.since_days }}
           
       - name: Clean up
