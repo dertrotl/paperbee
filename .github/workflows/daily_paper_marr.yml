@@ -59,7 +59,7 @@ jobs:
                   with open(finder_file, 'r') as f:
                       content = f.read()
                   
-                  # Fix bioRxiv loading issue
+                  # Fix bioRxiv loading issue AND add debug info
                   old_pattern = '''            if "biorxiv" in self.databases:
                 findpapers.search(
                     self.search_file_biorxiv,
@@ -79,6 +79,7 @@ jobs:
                   
                   new_pattern = '''            articles_biorxiv_dict: List[Dict[str, Any]] = []
             if "biorxiv" in self.databases:
+                print(f"🧬 Searching bioRxiv with query: {self.query_biorxiv[:100]}...")
                 findpapers.search(
                     self.search_file_biorxiv,
                     self.query_biorxiv,
@@ -89,13 +90,21 @@ jobs:
                     ["biorxiv"],
                     verbose=False,
                 )
-                with open(self.search_file_biorxiv) as papers_file:
-                    articles_biorxiv_dict = json.load(papers_file)["papers"]
+                try:
+                    with open(self.search_file_biorxiv) as papers_file:
+                        articles_biorxiv_dict = json.load(papers_file)["papers"]  
+                    print(f"🧬 Found {len(articles_biorxiv_dict)} articles from bioRxiv")
+                except Exception as e:
+                    print(f"⚠️ Error reading bioRxiv results: {e}")
+                    articles_biorxiv_dict = []
+            else:
+                print("⚠️ bioRxiv not in databases list")
             
             with open(self.search_file_pub_arx) as papers_file:
                 articles_pub_arx_dict: List[Dict[str, Any]] = json.load(papers_file)["papers"]
-            print(f"Found {len(articles_pub_arx_dict)} articles from PubMed/ArXiv")
-            print(f"Found {len(articles_biorxiv_dict)} articles from bioRxiv")
+            print(f"📄 Found {len(articles_pub_arx_dict)} articles from PubMed/ArXiv")
+            print(f"🧬 Found {len(articles_biorxiv_dict)} articles from bioRxiv")
+            print(f"📊 Total articles before deduplication: {len(articles_pub_arx_dict) + len(articles_biorxiv_dict)}")
             articles = articles_pub_arx_dict + articles_biorxiv_dict'''
                   
                   if old_pattern in content:
@@ -104,7 +113,7 @@ jobs:
                       with open(finder_file, 'w') as f:
                           f.write(content)
                       
-                      print(f"✅ Applied bioRxiv fix to {finder_file}")
+                      print(f"✅ Applied enhanced bioRxiv fix with debug info to {finder_file}")
                   else:
                       print(f"ℹ️ bioRxiv fix already applied or pattern not found in {finder_file}")
                       
@@ -251,23 +260,23 @@ jobs:
               "Happy Pixels": {
                   "emoji": "🖼️",
                   "query": "[computer vision] OR [image analysis] OR [image processing] OR [image segmentation] OR [cell segmentation] OR [3D segmentation] OR [microscopy] OR [fluorescence microscopy] OR [quantitative microscopy] OR [AI microscopy] OR [biomedical image analysis] OR [medical imaging] OR [deep learning] AND [imaging] OR [machine learning] AND [microscopy] OR [foundation models] AND [imaging] OR [self-supervised learning] AND [images] OR [cell classification] OR [cell detection] OR [organoid detection] OR [organoid segmentation] OR [holography] OR [digital holography]",
-                  "filter": "You are reviewing papers for the Happy Pixels research group focused on computational imaging and computer vision in biomedical contexts. ACCEPT papers about: Image analysis algorithms for biological/medical data, Computer vision methods for microscopy or medical imaging, Cell/organoid segmentation and detection methods, AI/ML approaches for image processing in biology/medicine, Novel imaging techniques with computational analysis, Foundation models or self-supervised learning for biological images, 3D imaging and analysis methods for biological samples. REJECT: Pure clinical imaging without computational methodology, General computer vision without biomedical application, Wet-lab protocols without imaging analysis, Papers focused solely on hardware without computational methods. Target: 8-12 highly relevant papers per day. Answer ONLY 'yes' or 'no': Is this paper relevant for computational imaging and computer vision in biomedical research?",
+                  "filter": "You are reviewing papers for the Happy Pixels research group focused on computational imaging and computer vision in biomedical contexts. ACCEPT papers about: Image analysis algorithms for biological/medical data, Computer vision methods for microscopy or medical imaging, Cell/organoid segmentation and detection methods, AI/ML approaches for image processing in biology/medicine, Novel imaging techniques with computational analysis, Foundation models or self-supervised learning for biological images, 3D imaging and analysis methods for biological samples, Microscopy image processing and analysis, Medical image analysis and computer vision, Biomedical visualization and imaging techniques. REJECT ONLY: Pure clinical studies without any computational methodology, General computer vision with no biomedical application, Social sciences or economics papers, Drug discovery without imaging components. Be LIBERAL in acceptance - if there's any computational imaging or biomedical image analysis component, ACCEPT it. Answer ONLY 'yes' or 'no': Is this paper relevant for computational imaging and computer vision in biomedical research?",
                   "limit": 200,
-                  "limit_per_database": 35
+                  "limit_per_database": 100
               },
               "Omics and Dynamics": {
                   "emoji": "🧬",
                   "query": "[single cell] OR [single-cell] OR [multi-omics] OR [multiomics] OR [spatial transcriptomics] OR [mathematical modeling] OR [mechanistic modeling] OR [clonal hematopoiesis] OR [CHIP] OR [clonal dynamics] OR [hematopoiesis] OR [computational biology] AND [dynamics] OR [systems biology] OR [mathematical] AND [biology] OR [modeling] AND [hematopoiesis] OR [omics] AND [computational] OR [transcriptomics] AND [analysis]",
-                  "filter": "You are reviewing papers for the Omics and Dynamics research group focused on computational analysis of biological systems and dynamics. ACCEPT papers about: Single-cell omics analysis with computational methods, Multi-omics integration and computational approaches, Mathematical/mechanistic modeling of biological systems, Clonal hematopoiesis (CHIP) and clonal dynamics analysis, Spatial transcriptomics with computational analysis, Systems biology approaches to understand dynamics, Computational methods for omics data integration, Hematopoiesis modeling and dynamics analysis. REJECT: Pure experimental omics without computational analysis, Clinical studies without modeling components, General bioinformatics without novel methodology, Infectious disease studies without dynamics modeling. Target: 8-12 highly relevant papers per day. Answer ONLY 'yes' or 'no': Is this paper relevant for computational omics analysis and biological dynamics modeling?",
+                  "filter": "You are reviewing papers for the Omics and Dynamics research group focused on computational analysis of biological systems and dynamics. ACCEPT papers about: Single-cell omics analysis with computational methods, Multi-omics integration and computational approaches, Mathematical/mechanistic modeling of biological systems, Clonal hematopoiesis (CHIP) and clonal dynamics analysis, Spatial transcriptomics with computational analysis, Systems biology approaches to understand dynamics, Computational methods for omics data integration, Hematopoiesis modeling and dynamics analysis, Transcriptomics studies with computational analysis, Genomics and proteomics with computational components, Mathematical modeling of any biological system. REJECT ONLY: Pure wet-lab experimental studies without computational analysis, Clinical trials without omics/modeling components, Social sciences papers, Studies with no computational or mathematical analysis. Be LIBERAL - if there's any computational omics, transcriptomics, or mathematical modeling, ACCEPT it. Answer ONLY 'yes' or 'no': Is this paper relevant for computational omics analysis and biological dynamics modeling?",
                   "limit": 200,
-                  "limit_per_database": 35
+                  "limit_per_database": 100
               },
               "Histopathology": {
                   "emoji": "🔬",
                   "query": "[computational pathology] OR [digital pathology] OR [pathology] AND [AI] OR [histopathology] OR [hematopathology] OR [pathology] AND [machine learning] OR [pathology] AND [deep learning] OR [morphological profiling] OR [cell painting] OR [representation learning] AND [pathology] OR [blood disorders] AND [computational] OR [hematology] AND [AI] OR [leukemia] AND [computational] OR [lymphoma] AND [computational] OR [myeloma] AND [computational]",
-                  "filter": "You are reviewing papers for the Histopathology/Cytohistopathology research group focused on computational pathology and blood disorders. ACCEPT papers about: Computational pathology and digital pathology methods, AI/ML approaches for histopathological analysis, Hematopathology with computational components, Morphological profiling and representation learning for pathology, Blood disorders analysis with computational methods, AI-based diagnosis in pathology contexts, Machine learning for hematological malignancies, Computational analysis of pathological samples. REJECT: Pure clinical pathology without computational methods, General hematology without AI/computational components, Drug discovery without pathology focus, Basic cell biology without pathological context. Target: 8-12 highly relevant papers per day. Answer ONLY 'yes' or 'no': Is this paper relevant for computational pathology and hematopathological analysis?",
+                  "filter": "You are reviewing papers for the Histopathology/Cytohistopathology research group focused on computational pathology and blood disorders. ACCEPT papers about: Computational pathology and digital pathology methods, AI/ML approaches for histopathological analysis, Hematopathology with computational components, Morphological profiling and representation learning for pathology, Blood disorders analysis with computational methods, AI-based diagnosis in pathology contexts, Machine learning for hematological malignancies, Computational analysis of pathological samples, Any hematology study with computational/AI components, Cancer research with computational pathology aspects, Medical AI and machine learning applications. REJECT ONLY: Pure clinical pathology reports without computational methods, General clinical studies without AI/computational components, Social sciences papers, Studies with no computational analysis. Be LIBERAL - if there's any computational pathology, hematology with AI/ML, or blood disorder analysis with computational methods, ACCEPT it. Answer ONLY 'yes' or 'no': Is this paper relevant for computational pathology and hematopathological analysis?",
                   "limit": 200,
-                  "limit_per_database": 35
+                  "limit_per_database": 100
               }
           }
           
