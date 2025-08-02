@@ -12,7 +12,16 @@ jobs:
     timeout-minutes: 60
     
     steps:
-      - name: Checkout repository
+      - name: Checkout rep              # Run PaperBee for this group
+              try:
+                  print(f"\n🚀 Starting PaperBee for {group_name}...")
+                  print(f"📅 Search window: ${{ steps.search_days.outputs.since_days }} days")
+                  print(f"⏱️ Timeout: 20 minutes per group")
+                  print(f"🔍 Searching in: PubMed, ArXiv, bioRxiv")
+                  print(f"📋 Expected process: Search → Filter → Google Sheets → Results")
+                  print("")
+                  
+                  result = subprocess.run([y
         uses: actions/checkout@v4
         
       - name: Set up Python
@@ -229,6 +238,15 @@ jobs:
           SLACK_CHANNEL: ${{ secrets.SLACK_CHANNEL_ID_2 }}
           SLACK_APP: ${{ secrets.SLACK_APP_TOKEN_2 }}
         run: |
+          echo "🩸 Starting PaperBee Multi-Group Research Digest"
+          echo "📅 Search window: ${{ steps.search_days.outputs.since_days }} days"
+          echo "🔧 NCBI timeout: 45s | Gemini 2.5 Flash Lite rate limit: 4.5s"
+          echo "🛠️ Enhanced error handling: NCBI connection failures, XML parsing errors"
+          echo "💬 Slack optimization: Multi-group consolidated messaging"
+          echo "🔍 Processing: 3 focused interest groups with individual filtering"
+          echo "📊 Limits per group: 200 total, 35 per database (600 total capacity)"
+          echo ""
+          
           python3 << 'EOF'
           import yaml
           import os
@@ -243,23 +261,31 @@ jobs:
                   "emoji": "🖼️",
                   "query": "[computer vision] OR [image analysis] OR [image processing] OR [image segmentation] OR [cell segmentation] OR [3D segmentation] OR [microscopy] OR [fluorescence microscopy] OR [quantitative microscopy] OR [AI microscopy] OR [biomedical image analysis] OR [medical imaging] OR [deep learning] AND [imaging] OR [machine learning] AND [microscopy] OR [foundation models] AND [imaging] OR [self-supervised learning] AND [images] OR [cell classification] OR [cell detection] OR [organoid detection] OR [organoid segmentation] OR [holography] OR [digital holography]",
                   "filter": "You are reviewing papers for the Happy Pixels research group focused on computational imaging and computer vision in biomedical contexts. ACCEPT papers about: Image analysis algorithms for biological/medical data, Computer vision methods for microscopy or medical imaging, Cell/organoid segmentation and detection methods, AI/ML approaches for image processing in biology/medicine, Novel imaging techniques with computational analysis, Foundation models or self-supervised learning for biological images, 3D imaging and analysis methods for biological samples. REJECT: Pure clinical imaging without computational methodology, General computer vision without biomedical application, Wet-lab protocols without imaging analysis, Papers focused solely on hardware without computational methods. Target: 8-12 highly relevant papers per day. Answer ONLY 'yes' or 'no': Is this paper relevant for computational imaging and computer vision in biomedical research?",
-                  "limit": 100
+                  "limit": 200,
+                  "limit_per_database": 35
               },
               "Omics and Dynamics": {
                   "emoji": "🧬",
                   "query": "[single cell] OR [single-cell] OR [multi-omics] OR [multiomics] OR [spatial transcriptomics] OR [mathematical modeling] OR [mechanistic modeling] OR [clonal hematopoiesis] OR [CHIP] OR [clonal dynamics] OR [hematopoiesis] OR [computational biology] AND [dynamics] OR [systems biology] OR [mathematical] AND [biology] OR [modeling] AND [hematopoiesis] OR [omics] AND [computational] OR [transcriptomics] AND [analysis]",
                   "filter": "You are reviewing papers for the Omics and Dynamics research group focused on computational analysis of biological systems and dynamics. ACCEPT papers about: Single-cell omics analysis with computational methods, Multi-omics integration and computational approaches, Mathematical/mechanistic modeling of biological systems, Clonal hematopoiesis (CHIP) and clonal dynamics analysis, Spatial transcriptomics with computational analysis, Systems biology approaches to understand dynamics, Computational methods for omics data integration, Hematopoiesis modeling and dynamics analysis. REJECT: Pure experimental omics without computational analysis, Clinical studies without modeling components, General bioinformatics without novel methodology, Infectious disease studies without dynamics modeling. Target: 8-12 highly relevant papers per day. Answer ONLY 'yes' or 'no': Is this paper relevant for computational omics analysis and biological dynamics modeling?",
-                  "limit": 100
+                  "limit": 200,
+                  "limit_per_database": 35
               },
               "Histopathology": {
                   "emoji": "🔬",
                   "query": "[computational pathology] OR [digital pathology] OR [pathology] AND [AI] OR [histopathology] OR [hematopathology] OR [pathology] AND [machine learning] OR [pathology] AND [deep learning] OR [morphological profiling] OR [cell painting] OR [representation learning] AND [pathology] OR [blood disorders] AND [computational] OR [hematology] AND [AI] OR [leukemia] AND [computational] OR [lymphoma] AND [computational] OR [myeloma] AND [computational]",
                   "filter": "You are reviewing papers for the Histopathology/Cytohistopathology research group focused on computational pathology and blood disorders. ACCEPT papers about: Computational pathology and digital pathology methods, AI/ML approaches for histopathological analysis, Hematopathology with computational components, Morphological profiling and representation learning for pathology, Blood disorders analysis with computational methods, AI-based diagnosis in pathology contexts, Machine learning for hematological malignancies, Computational analysis of pathological samples. REJECT: Pure clinical pathology without computational methods, General hematology without AI/computational components, Drug discovery without pathology focus, Basic cell biology without pathological context. Target: 8-12 highly relevant papers per day. Answer ONLY 'yes' or 'no': Is this paper relevant for computational pathology and hematopathological analysis?",
-                  "limit": 100
+                  "limit": 200,
+                  "limit_per_database": 35
               }
           }
           
           all_papers = []
+          
+          print("🎯 PROCESSING OVERVIEW:")
+          for i, (group_name, group_config) in enumerate(interest_groups.items(), 1):
+              print(f"  {i}. {group_config['emoji']} {group_name}: {len(group_config['query'].split(' OR '))} search terms")
+          print("")
           
           for group_name, group_config in interest_groups.items():
               print(f"\n{group_config['emoji']} Processing {group_name} group...")
@@ -275,7 +301,7 @@ jobs:
                   "query_biorxiv": group_config["query"],
                   "query_pubmed_arxiv": group_config["query"],
                   "limit": group_config["limit"],
-                  "limit_per_database": 8,
+                  "limit_per_database": group_config["limit_per_database"],
                   "LLM_FILTERING": True,
                   "LLM_PROVIDER": "openai",
                   "LANGUAGE_MODEL": "gemini-2.5-flash-lite",
@@ -292,49 +318,79 @@ jobs:
               with open(config_file, "w") as f:
                   yaml.dump(config, f, default_flow_style=False)
               
+              print(f"📋 Config for {group_name}:")
+              print(f"   🔍 Query: {group_config['query'][:150]}...")
+              print(f"   📊 Limits: total={group_config['limit']}, per_db={group_config['limit_per_database']}")
+              print(f"   🗃️ Databases: {config['databases']}")
+              print(f"   🤖 LLM: {config['LANGUAGE_MODEL']} with filtering")
+              
               # Run PaperBee for this group
               try:
-                  print(f"🔍 Running query: {group_config['query'][:100]}...")
+                  print(f"\n� Starting PaperBee for {group_name}...")
+                  print(f"📅 Search window: ${{ steps.search_days.outputs.since_days }} days")
+                  
                   result = subprocess.run([
                       "paperbee", "post", 
                       "--config", config_file, 
                       "--since", "${{ steps.search_days.outputs.since_days }}"
-                  ], capture_output=True, text=True, timeout=900)  # 15 min timeout per group
+                  ], capture_output=True, text=True, timeout=1200)  # 20 min timeout per group
+                  
+                  print(f"\n📤 PaperBee output for {group_name}:")
+                  print("="*60)
+                  print(result.stdout)
+                  if result.stderr:
+                      print(f"⚠️ Stderr: {result.stderr}")
+                  print("="*60)
                   
                   if result.returncode == 0:
                       print(f"✅ {group_name} completed successfully")
-                      # Try to read results from Google Sheet or local files
-                      # For now, we'll parse the output to extract paper count
+                      # Try to read results from output
                       output_lines = result.stdout.split('\n')
                       paper_count = 0
+                      raw_count = 0
+                      
+                      # Parse various output patterns
                       for line in output_lines:
                           if 'papers selected after filtering' in line.lower():
                               try:
                                   paper_count = int(line.split()[0])
                               except:
                                   pass
+                          elif 'found' in line.lower() and 'articles' in line.lower():
+                              try:
+                                  numbers = [int(s) for s in line.split() if s.isdigit()]
+                                  if numbers:
+                                      raw_count += numbers[0]
+                              except:
+                                  pass
+                      
+                      print(f"📈 Results for {group_name}: {raw_count} raw → {paper_count} filtered")
                       
                       all_papers.append({
                           "group": group_name,
                           "emoji": group_config["emoji"],
                           "count": paper_count,
+                          "raw_count": raw_count,
                           "status": "success"
                       })
                   else:
-                      print(f"❌ {group_name} failed: {result.stderr}")
+                      print(f"❌ {group_name} failed with return code {result.returncode}")
+                      print(f"Error details: {result.stderr}")
                       all_papers.append({
                           "group": group_name,
                           "emoji": group_config["emoji"],
                           "count": 0,
+                          "raw_count": 0,
                           "status": "failed"
                       })
                       
               except subprocess.TimeoutExpired:
-                  print(f"⏰ {group_name} timed out")
+                  print(f"⏰ {group_name} timed out after 20 minutes")
                   all_papers.append({
                       "group": group_name,
                       "emoji": group_config["emoji"],
                       "count": 0,
+                      "raw_count": 0,
                       "status": "timeout"
                   })
               except Exception as e:
@@ -343,6 +399,7 @@ jobs:
                       "group": group_name,
                       "emoji": group_config["emoji"],
                       "count": 0,
+                      "raw_count": 0,
                       "status": "error"
                   })
               
@@ -373,6 +430,7 @@ jobs:
           
           if slack_token and slack_channel:
               total_papers = sum(p["count"] for p in all_papers if p["status"] == "success")
+              total_raw = sum(p.get("raw_count", 0) for p in all_papers if p["status"] == "success")
               
               # Create structured message
               blocks = [
@@ -387,22 +445,24 @@ jobs:
                       "type": "section",
                       "text": {
                           "type": "mrkdwn",
-                          "text": f"*Daily research digest for {group_config.get('date', 'today')}*\nProcessed across three research focus areas:"
+                          "text": f"*Daily research digest*\nProcessed {total_raw} raw papers → {total_papers} filtered across three research focus areas:"
                       }
                   }
               ]
               
               # Add results for each group
               for paper_info in all_papers:
-                  if paper_info["status"] == "success" and paper_info["count"] > 0:
+                  if paper_info["status"] == "success":
+                      raw_count = paper_info.get("raw_count", 0)
+                      filter_ratio = f" ({raw_count}→{paper_info['count']})" if raw_count > 0 else ""
                       blocks.append({
                           "type": "section",
                           "text": {
                               "type": "mrkdwn",
-                              "text": f"{paper_info['emoji']} *{paper_info['group']}*: {paper_info['count']} papers\n_Check Google Sheet for detailed results_"
+                              "text": f"{paper_info['emoji']} *{paper_info['group']}*: {paper_info['count']} papers{filter_ratio}\n_Check Google Sheet for detailed results_"
                           }
                       })
-                  elif paper_info["status"] != "success":
+                  else:
                       blocks.append({
                           "type": "section",
                           "text": {
@@ -417,7 +477,7 @@ jobs:
                   "elements": [
                       {
                           "type": "mrkdwn",
-                          "text": f"🤖 Automated by PaperBee | 📊 Total: {total_papers} papers | ⏰ {len(all_papers)} groups processed"
+                          "text": f"🤖 PaperBee Multi-Pipeline | 📊 {total_raw}→{total_papers} papers | ⏰ {len(all_papers)} groups | 🔍 Enhanced limits & debugging"
                       }
                   ]
               })
@@ -443,9 +503,12 @@ jobs:
           
           # Final summary
           print(f"\n📋 FINAL SUMMARY:")
-          print(f"🔢 Total papers found: {total_papers}")
+          total_papers = sum(p["count"] for p in all_papers if p["status"] == "success")
+          total_raw = sum(p.get("raw_count", 0) for p in all_papers if p["status"] == "success")
+          print(f"🔢 Total papers: {total_raw} raw → {total_papers} filtered")
           for paper_info in all_papers:
-              print(f"  {paper_info['emoji']} {paper_info['group']}: {paper_info['count']} papers ({paper_info['status']})")
+              raw_info = f" ({paper_info.get('raw_count', 0)} raw)" if paper_info.get('raw_count', 0) > 0 else ""
+              print(f"  {paper_info['emoji']} {paper_info['group']}: {paper_info['count']} papers{raw_info} ({paper_info['status']})")
           
           EOF
           
