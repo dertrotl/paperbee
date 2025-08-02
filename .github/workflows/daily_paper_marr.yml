@@ -12,16 +12,7 @@ jobs:
     timeout-minutes: 60
     
     steps:
-      - name: Checkout rep              # Run PaperBee for this group
-              try:
-                  print(f"\n🚀 Starting PaperBee for {group_name}...")
-                  print(f"📅 Search window: ${{ steps.search_days.outputs.since_days }} days")
-                  print(f"⏱️ Timeout: 20 minutes per group")
-                  print(f"🔍 Searching in: PubMed, ArXiv, bioRxiv")
-                  print(f"📋 Expected process: Search → Filter → Google Sheets → Results")
-                  print("")
-                  
-                  result = subprocess.run([y
+      - name: Checkout repository
         uses: actions/checkout@v4
         
       - name: Set up Python
