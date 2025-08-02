@@ -220,7 +220,7 @@ jobs:
                   print(f"⚠️ Error processing {llm_file}: {e}")
           EOF
           
-      - name: Create config
+      - name: Run Multi-Group Pipeline
         env:
           GOOGLE_SHEET_ID: ${{ secrets.GOOGLE_SPREADSHEET_ID_2 }}
           NCBI_KEY: ${{ secrets.NCBI_API_KEY }}
@@ -232,77 +232,224 @@ jobs:
           python3 << 'EOF'
           import yaml
           import os
+          import json
+          import subprocess
+          import tempfile
+          from pathlib import Path
           
-          # Use single query for all databases (original working version)
-          research_query = "[hematopoiesis] OR [haematopoiesis] OR [hematology] OR [haematology] OR [blood disorders] OR [computational pathology] OR [cell segmentation] OR [segmentation] OR [3D segmentation] OR [single cell] OR [single-cell] OR [machine learning] OR [deep learning] OR [artificial intelligence] OR [computer vision] OR [image analysis] OR [microscopy] OR [computational biology] OR [multi-omics] OR [multiomics] OR [foundation models] OR [self-supervised learning] OR [cell classification] OR [cell detection] OR [image processing] OR [biomedical image analysis] OR [medical imaging] OR [AI microscopy] OR [quantitative microscopy] OR [fluorescence microscopy] OR [vision language model] OR [large language models] OR [mathematical modeling] OR [mechanistic modeling] OR [drug target identification] OR [spatial transcriptomics] OR [pathology] OR [hematopathology] OR [blood cell] OR [leukemia] OR [lymphoma] OR [myeloma] OR [CHIP] OR [clonal hematopoiesis] OR [LLM] OR [language model] OR [morphological profiling] OR [cell painting] OR [representation learning] OR [organoid detection] OR [organoid segmentation] OR [holography] OR [digital in-line holography]"
+          # Define three focused interest groups with specific queries and filters
+          interest_groups = {
+              "Happy Pixels": {
+                  "emoji": "🖼️",
+                  "query": "[computer vision] OR [image analysis] OR [image processing] OR [image segmentation] OR [cell segmentation] OR [3D segmentation] OR [microscopy] OR [fluorescence microscopy] OR [quantitative microscopy] OR [AI microscopy] OR [biomedical image analysis] OR [medical imaging] OR [deep learning] AND [imaging] OR [machine learning] AND [microscopy] OR [foundation models] AND [imaging] OR [self-supervised learning] AND [images] OR [cell classification] OR [cell detection] OR [organoid detection] OR [organoid segmentation] OR [holography] OR [digital holography]",
+                  "filter": "You are reviewing papers for the Happy Pixels research group focused on computational imaging and computer vision in biomedical contexts. ACCEPT papers about: Image analysis algorithms for biological/medical data, Computer vision methods for microscopy or medical imaging, Cell/organoid segmentation and detection methods, AI/ML approaches for image processing in biology/medicine, Novel imaging techniques with computational analysis, Foundation models or self-supervised learning for biological images, 3D imaging and analysis methods for biological samples. REJECT: Pure clinical imaging without computational methodology, General computer vision without biomedical application, Wet-lab protocols without imaging analysis, Papers focused solely on hardware without computational methods. Target: 8-12 highly relevant papers per day. Answer ONLY 'yes' or 'no': Is this paper relevant for computational imaging and computer vision in biomedical research?",
+                  "limit": 100
+              },
+              "Omics and Dynamics": {
+                  "emoji": "🧬",
+                  "query": "[single cell] OR [single-cell] OR [multi-omics] OR [multiomics] OR [spatial transcriptomics] OR [mathematical modeling] OR [mechanistic modeling] OR [clonal hematopoiesis] OR [CHIP] OR [clonal dynamics] OR [hematopoiesis] OR [computational biology] AND [dynamics] OR [systems biology] OR [mathematical] AND [biology] OR [modeling] AND [hematopoiesis] OR [omics] AND [computational] OR [transcriptomics] AND [analysis]",
+                  "filter": "You are reviewing papers for the Omics and Dynamics research group focused on computational analysis of biological systems and dynamics. ACCEPT papers about: Single-cell omics analysis with computational methods, Multi-omics integration and computational approaches, Mathematical/mechanistic modeling of biological systems, Clonal hematopoiesis (CHIP) and clonal dynamics analysis, Spatial transcriptomics with computational analysis, Systems biology approaches to understand dynamics, Computational methods for omics data integration, Hematopoiesis modeling and dynamics analysis. REJECT: Pure experimental omics without computational analysis, Clinical studies without modeling components, General bioinformatics without novel methodology, Infectious disease studies without dynamics modeling. Target: 8-12 highly relevant papers per day. Answer ONLY 'yes' or 'no': Is this paper relevant for computational omics analysis and biological dynamics modeling?",
+                  "limit": 100
+              },
+              "Histopathology": {
+                  "emoji": "🔬",
+                  "query": "[computational pathology] OR [digital pathology] OR [pathology] AND [AI] OR [histopathology] OR [hematopathology] OR [pathology] AND [machine learning] OR [pathology] AND [deep learning] OR [morphological profiling] OR [cell painting] OR [representation learning] AND [pathology] OR [blood disorders] AND [computational] OR [hematology] AND [AI] OR [leukemia] AND [computational] OR [lymphoma] AND [computational] OR [myeloma] AND [computational]",
+                  "filter": "You are reviewing papers for the Histopathology/Cytohistopathology research group focused on computational pathology and blood disorders. ACCEPT papers about: Computational pathology and digital pathology methods, AI/ML approaches for histopathological analysis, Hematopathology with computational components, Morphological profiling and representation learning for pathology, Blood disorders analysis with computational methods, AI-based diagnosis in pathology contexts, Machine learning for hematological malignancies, Computational analysis of pathological samples. REJECT: Pure clinical pathology without computational methods, General hematology without AI/computational components, Drug discovery without pathology focus, Basic cell biology without pathological context. Target: 8-12 highly relevant papers per day. Answer ONLY 'yes' or 'no': Is this paper relevant for computational pathology and hematopathological analysis?",
+                  "limit": 100
+              }
+          }
           
-          # Define LLM filtering prompt directly in workflow - SELECTIVE FILTERING
-          filtering_prompt = """You are a selective lab manager at a computational biomedical research lab. You must be STRICT but not overly narrow in selecting relevant papers. The lab focuses on: CORE RESEARCH AREAS (prioritize these): 1. Computational hematology and blood disorders with ML/AI approaches 2. Computational pathology (digital pathology, pathology AI, histopathology analysis) 3. Cell segmentation and classification (any biological context with computational methods) 4. Computer vision and image analysis for biomedical applications 5. Machine learning for microscopy image analysis (any biological samples) 6. Single-cell analysis with computational methods (preferably but not exclusively hematopoiesis) 7. Clonal hematopoiesis (CHIP) and clonal dynamics with computational methods 8. Mechanistic mathematical modeling of biological systems 9. Foundation models and self-supervised learning for medical/biological imaging 10. Multi-omics approaches with computational analysis 11. AI-based algorithms for medical diagnosis and biological discovery 12. Morphological profiling and representation learning for cellular phenotypes 13. Organoid detection, segmentation, and analysis 14. Advanced microscopy techniques with computational components. STRICT EXCLUSION CRITERIA - IMMEDIATELY REJECT if paper is about: Pure clinical studies without computational methodology, Drug discovery without computational modeling or AI components, General AI/ML methodology papers without clear biomedical application, Social sciences economics or non-biomedical applications, Pure wet-lab methodology without computational analysis, Infectious disease studies without computational modeling aspects, General bioinformatics without novel computational methodology. DECISION RULES: Paper must involve computational methods AI/ML or advanced imaging analysis, Must have clear biomedical or biological application, Computational pathology microscopy and segmentation papers are highly relevant, Hematology focus is preferred but not required if computationally interesting, When in doubt about computational relevance lean towards yes, Aim to select maximum 35-45 high-quality papers per day. You are reviewing research papers for daily digest. Be selective but not overly restrictive - papers with strong computational methodology for biomedical applications should pass. Answer ONLY 'yes' or 'no': Is this paper relevant for our computational biomedical research with focus on pathology microscopy and biological image analysis?"""
+          all_papers = []
           
-          config = {
-              "GOOGLE_SPREADSHEET_ID": os.environ.get("GOOGLE_SHEET_ID", ""),
-              "GOOGLE_CREDENTIALS_JSON": "./google-credentials.json",
-              "NCBI_API_KEY": os.environ.get("NCBI_KEY", ""),
-              "LOCAL_ROOT_DIR": ".",
+          for group_name, group_config in interest_groups.items():
+              print(f"\n{group_config['emoji']} Processing {group_name} group...")
               
-              # CRITICAL: Explicit database activation (like original PaperBee)
-              "databases": ["pubmed", "arxiv", "biorxiv"],
+              # Create config for this group
+              config = {
+                  "GOOGLE_SPREADSHEET_ID": os.environ.get("GOOGLE_SHEET_ID", ""),
+                  "GOOGLE_CREDENTIALS_JSON": "./google-credentials.json",
+                  "NCBI_API_KEY": os.environ.get("NCBI_KEY", ""),
+                  "LOCAL_ROOT_DIR": ".",
+                  "databases": ["pubmed", "arxiv", "biorxiv"],
+                  "query": group_config["query"],
+                  "query_biorxiv": group_config["query"],
+                  "query_pubmed_arxiv": group_config["query"],
+                  "limit": group_config["limit"],
+                  "limit_per_database": 8,
+                  "LLM_FILTERING": True,
+                  "LLM_PROVIDER": "openai",
+                  "LANGUAGE_MODEL": "gemini-2.5-flash-lite",
+                  "OPENAI_API_KEY": os.environ.get("GEMINI_KEY", ""),
+                  "OPENAI_BASE_URL": "https://generativelanguage.googleapis.com/v1beta/openai/",
+                  "FILTERING_PROMPT": group_config["filter"],
+                  "SLACK": {"is_posting_on": False},  # Disable individual posting
+                  "TELEGRAM": {"is_posting_on": False},
+                  "ZULIP": {"is_posting_on": False}
+              }
               
-              # Main query (used when no specific database query defined)
-              "query": research_query,
+              # Create temporary config file
+              config_file = f"config_{group_name.lower().replace(' ', '_')}.yml"
+              with open(config_file, "w") as f:
+                  yaml.dump(config, f, default_flow_style=False)
               
-              # Database-specific queries (optional but recommended)
-              "query_biorxiv": research_query,
-              "query_pubmed_arxiv": research_query,
+              # Run PaperBee for this group
+              try:
+                  print(f"🔍 Running query: {group_config['query'][:100]}...")
+                  result = subprocess.run([
+                      "paperbee", "post", 
+                      "--config", config_file, 
+                      "--since", "${{ steps.search_days.outputs.since_days }}"
+                  ], capture_output=True, text=True, timeout=900)  # 15 min timeout per group
+                  
+                  if result.returncode == 0:
+                      print(f"✅ {group_name} completed successfully")
+                      # Try to read results from Google Sheet or local files
+                      # For now, we'll parse the output to extract paper count
+                      output_lines = result.stdout.split('\n')
+                      paper_count = 0
+                      for line in output_lines:
+                          if 'papers selected after filtering' in line.lower():
+                              try:
+                                  paper_count = int(line.split()[0])
+                              except:
+                                  pass
+                      
+                      all_papers.append({
+                          "group": group_name,
+                          "emoji": group_config["emoji"],
+                          "count": paper_count,
+                          "status": "success"
+                      })
+                  else:
+                      print(f"❌ {group_name} failed: {result.stderr}")
+                      all_papers.append({
+                          "group": group_name,
+                          "emoji": group_config["emoji"],
+                          "count": 0,
+                          "status": "failed"
+                      })
+                      
+              except subprocess.TimeoutExpired:
+                  print(f"⏰ {group_name} timed out")
+                  all_papers.append({
+                      "group": group_name,
+                      "emoji": group_config["emoji"],
+                      "count": 0,
+                      "status": "timeout"
+                  })
+              except Exception as e:
+                  print(f"💥 {group_name} error: {str(e)}")
+                  all_papers.append({
+                      "group": group_name,
+                      "emoji": group_config["emoji"],
+                      "count": 0,
+                      "status": "error"
+                  })
               
-              # BioRxiv-specific optimizations for stability
-              "limit": 100,
-              "limit_per_database": 25,  # Reduced for bioRxiv stability
-              
-              "LLM_FILTERING": True,
-              "LLM_PROVIDER": "openai",
-              "LANGUAGE_MODEL": "gemini-2.5-flash-lite",  # Upgraded to 2.5 Flash Lite
-              "OPENAI_API_KEY": os.environ.get("GEMINI_KEY", ""),
-              "OPENAI_BASE_URL": "https://generativelanguage.googleapis.com/v1beta/openai/",
-              "FILTERING_PROMPT": filtering_prompt,
-              
+              # Clean up config file
+              try:
+                  os.remove(config_file)
+              except:
+                  pass
+          
+          # Send consolidated Slack message
+          print(f"\n📤 Sending consolidated Slack message...")
+          
+          # Create final summary config for Slack posting
+          summary_config = {
               "SLACK": {
                   "is_posting_on": True,
                   "bot_token": os.environ.get("SLACK_BOT", ""),
                   "channel_id": os.environ.get("SLACK_CHANNEL", ""),
                   "app_token": os.environ.get("SLACK_APP", "")
-              },
-              "TELEGRAM": {"is_posting_on": False},
-              "ZULIP": {"is_posting_on": False}
+              }
           }
           
-          with open("config.yml", "w") as f:
-              yaml.dump(config, f, default_flow_style=False)
+          # Send summary via custom Slack message
+          import requests
           
-          # Debug output
-          print("✅ Generated config with explicit database activation:")
-          print(f"📊 Databases: {config['databases']}")
-          print(f"🔍 Main query: {research_query[:100]}...")
-          print(f"🧬 BioRxiv query: {config.get('query_biorxiv', 'Using main query')[:100]}...")
-          print(f"📄 PubMed/ArXiv query: {config.get('query_pubmed_arxiv', 'Using main query')[:100]}...")
-          print(f"📊 Limits: total={config.get('limit', 'default')}, per_database={config.get('limit_per_database', 'default')}")
-          print("Note: bioRxiv now explicitly activated with reduced limits for stability")
-          print(f"Query contains {len(research_query.split(' OR '))} search terms")
+          slack_token = os.environ.get("SLACK_BOT", "")
+          slack_channel = os.environ.get("SLACK_CHANNEL", "")
+          
+          if slack_token and slack_channel:
+              total_papers = sum(p["count"] for p in all_papers if p["status"] == "success")
+              
+              # Create structured message
+              blocks = [
+                  {
+                      "type": "header",
+                      "text": {
+                          "type": "plain_text",
+                          "text": f"🩸 MarrLab Daily Papers - {total_papers} papers found"
+                      }
+                  },
+                  {
+                      "type": "section",
+                      "text": {
+                          "type": "mrkdwn",
+                          "text": f"*Daily research digest for {group_config.get('date', 'today')}*\nProcessed across three research focus areas:"
+                      }
+                  }
+              ]
+              
+              # Add results for each group
+              for paper_info in all_papers:
+                  if paper_info["status"] == "success" and paper_info["count"] > 0:
+                      blocks.append({
+                          "type": "section",
+                          "text": {
+                              "type": "mrkdwn",
+                              "text": f"{paper_info['emoji']} *{paper_info['group']}*: {paper_info['count']} papers\n_Check Google Sheet for detailed results_"
+                          }
+                      })
+                  elif paper_info["status"] != "success":
+                      blocks.append({
+                          "type": "section",
+                          "text": {
+                              "type": "mrkdwn",
+                              "text": f"{paper_info['emoji']} *{paper_info['group']}*: Processing {paper_info['status']}"
+                          }
+                      })
+              
+              # Add footer
+              blocks.append({
+                  "type": "context",
+                  "elements": [
+                      {
+                          "type": "mrkdwn",
+                          "text": f"🤖 Automated by PaperBee | 📊 Total: {total_papers} papers | ⏰ {len(all_papers)} groups processed"
+                      }
+                  ]
+              })
+              
+              # Send to Slack
+              try:
+                  response = requests.post(
+                      "https://slack.com/api/chat.postMessage",
+                      headers={"Authorization": f"Bearer {slack_token}"},
+                      json={
+                          "channel": slack_channel,
+                          "blocks": blocks
+                      }
+                  )
+                  
+                  if response.status_code == 200 and response.json().get("ok"):
+                      print("✅ Consolidated Slack message sent successfully")
+                  else:
+                      print(f"❌ Slack API error: {response.text}")
+                      
+              except Exception as e:
+                  print(f"💥 Slack sending error: {str(e)}")
+          
+          # Final summary
+          print(f"\n📋 FINAL SUMMARY:")
+          print(f"🔢 Total papers found: {total_papers}")
+          for paper_info in all_papers:
+              print(f"  {paper_info['emoji']} {paper_info['group']}: {paper_info['count']} papers ({paper_info['status']})")
+          
           EOF
-          
-      - name: Run PaperBee
-        env:
-          NCBI_API_KEY: ${{ secrets.NCBI_API_KEY }}
-        run: |
-          echo "🩸 Starting PaperBee Research Digest"
-          echo "📅 Search window: ${{ steps.search_days.outputs.since_days }} days"
-          echo "🔧 NCBI timeout: 45s | Gemini 2.5 Flash Lite rate limit: 4.5s"
-          echo "🛠️ Enhanced error handling: NCBI connection failures, XML parsing errors"
-          echo "💬 Slack optimization: Batched papers to prevent 50-block limit errors"
-          echo "🔍 Filtering: Selective computational biomedical focus (pathology, microscopy, segmentation)"
-          paperbee post --config config.yml --since ${{ steps.search_days.outputs.since_days }}
           
       - name: Clean up
         if: always()
         run: |
-          rm -f google-credentials.json config.yml
+          rm -f google-credentials.json config_*.yml
