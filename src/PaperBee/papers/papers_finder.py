@@ -164,22 +164,41 @@ class PapersFinder:
                 verbose=False,
             )
             articles_biorxiv_dict: List[Dict[str, Any]] = []
-            if "biorxiv" in self.databases:
-                findpapers.search(
-                    self.search_file_biorxiv,
-                    self.query_biorxiv,
-                    self.since,
-                    self.until,
-                    self.limit,
-                    self.limit_per_database,
-                    ["biorxiv"],
-                    verbose=False,
-                )
-                with open(self.search_file_biorxiv) as papers_file:
-                    articles_biorxiv_dict = json.load(papers_file)["papers"]
+            # IMPROVED bioRxiv handling
+            articles_biorxiv_dict: List[Dict[str, Any]] = []
+            if "biorxiv" in self.databases and self.query_biorxiv:
+                print(f"🧬 Searching bioRxiv with query: {self.query_biorxiv[:100]}...")
+                try:
+                    findpapers.search(
+                        self.search_file_biorxiv,
+                        self.query_biorxiv,
+                        self.since,
+                        self.until,
+                        self.limit,
+                        self.limit_per_database,
+                        ["biorxiv"],
+                        verbose=False,
+                    )
+                    
+                    if os.path.exists(self.search_file_biorxiv):
+                        with open(self.search_file_biorxiv) as papers_file:
+                            biorxiv_data = json.load(papers_file)
+                            articles_biorxiv_dict = biorxiv_data.get("papers", [])
+                        print(f"🧬 Found {len(articles_biorxiv_dict)} articles from bioRxiv")
+                    else:
+                        print("⚠️ bioRxiv search file not created")
+                except Exception as e:
+                    print(f"⚠️ Error during bioRxiv search: {e}")
+                    articles_biorxiv_dict = []
+            else:
+                if "biorxiv" in self.databases:
+                    print("⚠️ bioRxiv in databases but no query_biorxiv provided")
+                else:
+                    print("ℹ️ bioRxiv not in databases list")
             
             with open(self.search_file_pub_arx) as papers_file:
-                articles_pub_arx_dict: List[Dict[str, Any]] = json.load(papers_file)["papers"]
+                papers_data = json.load(papers_file)
+                articles_pub_arx_dict: List[Dict[str, Any]] = papers_data.get("papers", [])
             print(f"Found {len(articles_pub_arx_dict)} articles from PubMed/ArXiv")
             print(f"Found {len(articles_biorxiv_dict)} articles from bioRxiv")
             articles = articles_pub_arx_dict + articles_biorxiv_dict
@@ -187,18 +206,96 @@ class PapersFinder:
             if articles:
                 print(f"Sample titles: {[art.get('title', 'No title')[:50] + '...' for art in articles[:3]]}")
 
-        # DOI extraction and URL filtering
+        # OPTIMIZED DOI extraction and URL filtering - Multiple strategies
+        print(f"📊 Before URL processing: {len(articles)} articles")
         doi_extractor = PubMedClient()
-        for article in tqdm(articles):
+        articles_with_urls = []
+        articles_without_urls = []
+        doi_extraction_stats = {"existing_doi": 0, "url_extracted": 0, "api_found": 0, "fallback": 0}
+        
+        for article in tqdm(articles, desc="Processing DOI/URLs"):
+            doi_found = False
+            
+            # Strategy 1: Check if DOI already exists in article data
+            existing_doi = article.get("doi") or article.get("DOI")
+            if existing_doi and existing_doi.strip():
+                # Clean up DOI (remove doi: prefix if present)
+                clean_doi = existing_doi.replace("doi:", "").strip()
+                if clean_doi.startswith("10."):
+                    article["url"] = f"https://doi.org/{clean_doi}"
+                    articles_with_urls.append(article)
+                    doi_extraction_stats["existing_doi"] += 1
+                    continue
+            
+            # Strategy 2: Extract DOI from existing URLs
+            doi_url = None
+            for url in article.get("urls", []):
+                if "doi.org" in url and "/10." in url:
+                    doi_url = url
+                    break
+                elif "/doi/10." in url:
+                    # Extract DOI from other URL formats
+                    doi_part = url.split("/doi/")[-1]
+                    if doi_part and doi_part.startswith("10."):
+                        doi_url = f"https://doi.org/{doi_part}"
+                        break
+                elif "dx.doi.org" in url:
+                    # Handle dx.doi.org URLs
+                    doi_url = url.replace("dx.doi.org", "doi.org")
+                    break
+            
+            if doi_url:
+                article["url"] = doi_url
+                articles_with_urls.append(article)
+                doi_extraction_stats["url_extracted"] += 1
+                continue
+            
+            # Strategy 3: PubMed API lookup (only for PubMed articles)
             if "PubMed" in article["databases"]:
-                doi = doi_extractor.get_doi_from_title(article["title"], ncbi_api_key=self.ncbi_api_key)
-                article["url"] = f"https://doi.org/{doi}" if doi else None
+                try:
+                    doi = doi_extractor.get_doi_from_title(
+                        article["title"], 
+                        ncbi_api_key=self.ncbi_api_key
+                    )
+                    if doi and doi.strip():
+                        clean_doi = doi.replace("doi:", "").strip()
+                        if clean_doi.startswith("10."):
+                            article["url"] = f"https://doi.org/{clean_doi}"
+                            articles_with_urls.append(article)
+                            doi_extraction_stats["api_found"] += 1
+                            continue
+                except Exception as e:
+                    print(f"⚠️ DOI API lookup failed for: {article['title'][:50]}... Error: {str(e)[:50]}")
+            
+            # Strategy 4: Use best available URL or create fallback
+            best_url = None
+            for url in article.get("urls", []):
+                if url.startswith("http") and not url.startswith("https://doi.org"):
+                    best_url = url
+                    break
+            
+            if best_url:
+                article["url"] = best_url
+                articles_without_urls.append(article)
             else:
-                article["url"] = next(
-                    (s for s in article["urls"] if s.startswith("https://doi.org")),
-                    None,
-                )
-        articles = [article for article in articles if article.get("url") is not None]
+                # Last resort: create intelligent search URL
+                search_title = article["title"].replace(" ", "+").replace("(", "").replace(")", "")[:150]
+                if "PubMed" in article["databases"]:
+                    article["url"] = f"https://pubmed.ncbi.nlm.nih.gov/?term={search_title}"
+                elif "bioRxiv" in article["databases"] or "biorxiv" in article["databases"]:
+                    article["url"] = f"https://www.biorxiv.org/search/{search_title}"
+                elif "ArXiv" in article["databases"] or "arxiv" in article["databases"]:
+                    article["url"] = f"https://arxiv.org/search/?query={search_title}"
+                else:
+                    article["url"] = f"https://scholar.google.com/scholar?q={search_title}"
+                articles_without_urls.append(article)
+            
+            doi_extraction_stats["fallback"] += 1
+        
+        articles = articles_with_urls + articles_without_urls
+        print(f"📊 After URL processing: {len(articles)} articles ({len(articles_with_urls)} with proper DOI, {len(articles_without_urls)} with fallback)")
+        print(f"📊 DOI extraction stats: {doi_extraction_stats}")
+        print(f"📊 First few titles: {[art.get('title', 'No title')[:50] for art in articles[:3]]}")
         
         if not articles:
             print("⚠️ No articles found after filtering. This might be due to:")

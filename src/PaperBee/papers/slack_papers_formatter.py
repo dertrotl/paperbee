@@ -79,7 +79,7 @@ class SlackPaperPublisher:
                 # Add continuation header for subsequent messages
                 if i > 0:
                     chunk_header = f"📄 Papers digest continued (part {i+1}/{len(block_chunks)})..."
-                    chunk = [{"type": "section", "text": {"type": "mrkdwn", "text": chunk_header}}] + chunk
+                    chunk = [{"type": "section", "text": {"type": "mrkdwn", "text": chunk_header}}, *chunk]
                 
                 response = self.client.chat_postMessage(
                     channel=self.channel_id,
@@ -96,7 +96,7 @@ class SlackPaperPublisher:
                 time.sleep(1)
                 
             except Exception as e:
-                self.logger.error(f"Error publishing papers batch {i+1} to Slack: {e}")
+                self.logger.exception(f"Error publishing papers batch {i+1} to Slack: {e}")
                 
         return last_response
 
@@ -106,6 +106,7 @@ class SlackPaperPublisher:
         preprints: List[str],
         today: str,
         spreadsheet_id: str,
+        custom_header: Optional[str] = None,
     ) -> Optional[SlackResponse]:
         """
         Publishes the formatted papers and preprints to the specified Slack channel.
@@ -115,12 +116,24 @@ class SlackPaperPublisher:
             preprints (List[str]): A list of formatted preprints.
             today (str): The date for the publication (used in the footer message).
             spreadsheet_id (str): The ID of the Google Spreadsheet containing the papers.
+            custom_header (Optional[str]): Custom header message for the post.
 
         Returns:
             Optional[dict]: The Slack API response on success, or None if there is an error.
         """
         try:
-            header = "Good morning :coffee: Here are today's papers! Enjoy your reading! :wave:\n"
+            # Check for custom group header from environment
+            group_name = os.getenv("PAPERBEE_GROUP_NAME")
+            group_emoji = os.getenv("PAPERBEE_GROUP_EMOJI")
+            
+            if group_name and group_emoji:
+                from datetime import date
+                today_date = date.today().strftime("%B %d, %Y")
+                header = f"{group_emoji} *{group_name} Research Papers* - {today_date}\n"
+            elif custom_header:
+                header = custom_header
+            else:
+                header = "Good morning :coffee: Here are today's papers! Enjoy your reading! :wave:\n"
             footer = (
                 f"*View all papers:* <https://docs.google.com/spreadsheets/d/{spreadsheet_id}|Google Sheet> :books:"
             )
