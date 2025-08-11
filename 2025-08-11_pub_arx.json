@@ -1,0 +1,15 @@
+{
+  "databases": [
+    "pubmed"
+  ],
+  "limit": 1200,
+  "limit_per_database": 400,
+  "number_of_papers": 0,
+  "number_of_papers_by_database": {},
+  "papers": [],
+  "processed_at": "2025-08-11 12:52:39",
+  "publication_types": null,
+  "query": "[hematology]",
+  "since": "2025-08-10",
+  "until": "2025-08-11"
+}

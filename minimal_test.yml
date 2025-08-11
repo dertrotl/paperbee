@@ -1,0 +1,16 @@
+GOOGLE_SPREADSHEET_ID: test_id
+GOOGLE_CREDENTIALS_JSON: ./test_creds.json  
+NCBI_API_KEY: dummy_key
+LOCAL_ROOT_DIR: .
+databases: [pubmed]
+query_biorxiv: "[hematology]"
+query_pubmed_arxiv: "[hematology]"
+limit: 10
+limit_per_database: 5
+LLM_FILTERING: false
+SLACK:
+  is_posting_on: false
+TELEGRAM:
+  is_posting_on: false  
+ZULIP:
+  is_posting_on: false
