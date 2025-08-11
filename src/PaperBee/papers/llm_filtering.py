@@ -102,26 +102,46 @@ class LLMFilter:
             )
             content = response["message"]["content"]
         elif isinstance(client, OpenAI):
-            # Use OpenAI API
-            # Gemini rate limiting: 30 RPM = 2 seconds minimum, use 3.5s for safety
-            time.sleep(3.5)
-            response = client.chat.completions.create(  # type: ignore[assignment]
-                model=model,
-                messages=[
-                    {"role": "system", "content": filtering_prompt},
-                    {"role": "user", "content": message},
-                ],
-            )
-            # OpenAI returns an object with 'choices', Ollama does not
-            content = response.choices[0].message.content  # type: ignore[attr-defined]
+            # Use OpenAI API with improved error handling and rate limiting
+            try:
+                # Different rate limits based on model
+                if "gemini" in model.lower():
+                    time.sleep(4.5)  # Gemini 2.5 Flash Lite: ~13 RPM max
+                elif "gpt-4" in model.lower():
+                    time.sleep(3.1)  # GPT-4: ~20 RPM
+                else:
+                    time.sleep(0.2)  # GPT-3.5: ~60 RPM
+                    
+                response = client.chat.completions.create(  # type: ignore[assignment]
+                    model=model,
+                    messages=[
+                        {"role": "system", "content": filtering_prompt},
+                        {"role": "user", "content": message},
+                    ],
+                    temperature=0.1,  # Lower temperature for more consistent results
+                )
+                content = response.choices[0].message.content  # type: ignore[attr-defined]
+            except Exception as e:
+                print(f"⚠️ LLM API error: {str(e)[:50]}... - defaulting to ACCEPT")
+                return True  # Default to accepting papers when LLM fails
         else:
             e = "Invalid client type. Use 'OpenAI' or 'Ollama'."
             raise TypeError(e)
 
         if content is not None:
-            return "yes" in content.lower()
+            content_lower = content.lower()
+            # More permissive matching - look for positive indicators
+            if any(word in content_lower for word in ["yes", "relevant", "accept", "include", "interesting"]):
+                return True
+            elif any(word in content_lower for word in ["no", "not relevant", "reject", "exclude", "unrelated"]):
+                return False
+            else:
+                # If unclear, default to accepting (less restrictive)
+                print(f"⚠️ Unclear LLM response for '{title[:30]}...': '{content[:50]}...' - defaulting to ACCEPT")
+                return True
         else:
-            return False
+            # Default to accepting when content is None
+            return True
 
     def filter_articles(self) -> pd.DataFrame:
         """

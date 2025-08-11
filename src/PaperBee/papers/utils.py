@@ -71,40 +71,42 @@ class ArticlesProcessor:
             lambda dbs: "FALSE" if "PubMed" in dbs else "TRUE"
         )
 
+    def _process_keywords(self, kws):
+        """Process keywords from various formats."""
+        if isinstance(kws, list):
+            # Only apply [2:] slicing if the keyword looks like a tag (starts with special chars)
+            processed = []
+            for kw in kws:
+                if isinstance(kw, str) and len(kw) > 2 and kw.startswith(('["', "['", '[', '"', "'")):
+                    processed.append(kw[2:] if kw.startswith('["') or kw.startswith("['") else kw[1:])
+                else:
+                    processed.append(str(kw))
+            return ", ".join(processed)
+        elif isinstance(kws, str):
+            return kws
+        else:
+            return ""
+
+    def _extract_primary_source(self, dbs):
+        """Extract primary database source with priority."""
+        if isinstance(dbs, list):
+            # Priority: PubMed > bioRxiv > ArXiv
+            if "PubMed" in dbs:
+                return "PubMed"
+            elif "bioRxiv" in dbs:
+                return "bioRxiv"
+            elif "ArXiv" in dbs:
+                return "ArXiv"
+            else:
+                return dbs[0] if dbs else "Unknown"
+        else:
+            return str(dbs) if dbs else "Unknown"
+
     def rename_and_process_columns(self) -> None:
         """Renames columns and processes keywords."""
         self.articles["Title"] = self.articles["title"]
-        # Fix keywords processing - handle both list and string cases
-        def process_keywords(kws):
-            if isinstance(kws, list):
-                # Only apply [2:] slicing if the keyword looks like a tag (starts with special chars)
-                processed = []
-                for kw in kws:
-                    if isinstance(kw, str) and len(kw) > 2 and kw.startswith(('["', "['", '[', '"', "'")):
-                        processed.append(kw[2:] if kw.startswith('["') or kw.startswith("['") else kw[1:])
-                    else:
-                        processed.append(str(kw))
-                return ", ".join(processed)
-            elif isinstance(kws, str):
-                return kws
-            else:
-                return ""
-        self.articles["Keywords"] = self.articles["keywords"].apply(process_keywords)
-        # Extract primary source/journal from databases
-        def extract_primary_source(dbs):
-            if isinstance(dbs, list):
-                # Priority: PubMed > bioRxiv > ArXiv
-                if "PubMed" in dbs:
-                    return "PubMed"
-                elif "bioRxiv" in dbs:
-                    return "bioRxiv"
-                elif "ArXiv" in dbs:
-                    return "ArXiv"
-                else:
-                    return dbs[0] if dbs else "Unknown"
-            else:
-                return str(dbs) if dbs else "Unknown"
-        self.articles["Source"] = self.articles["databases"].apply(extract_primary_source)
+        self.articles["Keywords"] = self.articles["keywords"].apply(self._process_keywords)
+        self.articles["Source"] = self.articles["databases"].apply(self._extract_primary_source)
         self.articles["URL"] = self.articles["url"]
 
     def select_last_columns(self) -> None:
@@ -154,13 +156,19 @@ class PubMedClient:
 
         for _ in range(n_retries):
             try:
-                search_response = requests.get(search_url, timeout=30)  # Added timeout
+                search_response = requests.get(search_url, timeout=45)  # Increased timeout
+                search_response.raise_for_status()  # Raise exception for bad status codes
                 search_data = search_response.json()
 
                 # NCBI does not allow more than 3 requests per second (10 with an API key)
                 if seconds_to_wait:
                     sleep(seconds_to_wait)
 
+                # Check if response structure is correct
+                if "esearchresult" not in search_data:
+                    print(f"⚠️ Unexpected NCBI response structure: {str(search_data)[:100]}")
+                    return None
+                    
                 pubmed_id = (
                     search_data["esearchresult"]["idlist"][0] if search_data["esearchresult"]["idlist"] else None
                 )
@@ -168,22 +176,38 @@ class PubMedClient:
                     return None
                 else:
                     break
-            except Exception as e:
-                print(f"Error fetching DOI from PubMed: {e}")
-                print("Increasing timeout and retrying...")
+            except requests.exceptions.RequestException as e:
+                print(f"⚠️ NCBI search request failed: {str(e)[:50]}")
+                if _ == n_retries - 1:  # Last retry
+                    return None
                 seconds_to_wait *= 2
-
                 if seconds_to_wait:
                     sleep(seconds_to_wait)
-
+                continue
+            except (KeyError, IndexError, ValueError) as e:
+                print(f"⚠️ NCBI response parsing error: {str(e)[:50]}")
+                return None
+            except Exception as e:
+                print(f"⚠️ Unexpected error in NCBI search: {str(e)[:50]}")
+                if _ == n_retries - 1:  # Last retry
+                    return None
+                seconds_to_wait *= 2
+                if seconds_to_wait:
+                    sleep(seconds_to_wait)
                 continue
 
         if seconds_to_wait:
             sleep(seconds_to_wait)
-        fetch_url = f"{base_url}efetch.fcgi?db=pubmed&id={pubmed_id}&retmode=xml"
-        fetch_response = requests.get(fetch_url, timeout=30)  # Added timeout
+            
         try:
+            fetch_url = f"{base_url}efetch.fcgi?db=pubmed&id={pubmed_id}&retmode=xml"
+            fetch_response = requests.get(fetch_url, timeout=45)  # Increased timeout
+            fetch_response.raise_for_status()
+            
             root = ET.fromstring(fetch_response.content)  # Using defusedxml for parsing
+        except requests.exceptions.RequestException as e:
+            print(f"⚠️ NCBI fetch request failed: {str(e)[:50]}")
+            return None
         except (ET.ParseError, Exception) as e:
             print(f"⚠️ XML parsing failed, skipping DOI extraction: {str(e)[:50]}")
             return None

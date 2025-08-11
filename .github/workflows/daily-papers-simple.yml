@@ -236,8 +236,27 @@ jobs:
           # Use single query for all databases (original working version)
           research_query = "[single-cell RNA sequencing] OR [spatial transcriptomics] OR [single-cell analysis] OR [scRNA-seq] OR [single cell atlas] OR [single-cell integration] OR [IBD] OR [inflammatory bowel disease] OR [Crohn disease] OR [ulcerative colitis] OR [mucosal immunology] OR [intestinal inflammation] OR [VEO-IBD] OR [immune-mediated inflammatory diseases] OR [primary immunodeficiencies] OR [secondary immunodeficiencies] OR [autoinflammation] OR [inflammasome biology] OR [NLRP3] OR [cytokine signaling] OR [IL-1B] OR [IL-17] OR [IL-10] OR [IL-23] OR [IL-6] OR [pyroptosis] OR [trained immunity] OR [Nod-like receptors] OR [intestinal epithelial barrier] OR [Tregs] OR [macrophages] OR [dendritic cells] OR [organoids] OR [computational biology] OR [bioinformatics] OR [multiomics] OR [proteomics] OR [machine learning] OR [data integration] OR [benchmarking] OR [computational pathology]"
           
-          # Define LLM filtering prompt directly in workflow - STRICT FILTERING
-          filtering_prompt = """You are a highly selective lab manager at a specialized research lab. You must be EXTREMELY STRICT in selecting only the most relevant papers. The lab focuses specifically on: CORE RESEARCH AREAS (only these qualify): 1. Single-cell RNA sequencing methodology, analysis tools, or applications 2. Spatial transcriptomics techniques and computational methods 3. IBD/Crohn's disease/ulcerative colitis with molecular mechanisms 4. VEO-IBD (very early onset IBD) genetics and pathways 5. Inflammasome biology (NLRP3, NLRP1-13, Pyrin) with mechanistic insights 6. Primary/secondary immunodeficiencies with genetic or cellular analysis 7. Single-cell multiomics integration and computational methods 8. Intestinal epithelial barrier dysfunction at cellular/molecular level. STRICT EXCLUSION CRITERIA - IMMEDIATELY REJECT if paper is about: General machine learning without single-cell applications, Clinical studies without mechanistic insights, Cancer research (unless specifically intestinal/IBD-related), Drug discovery without IBD/immunodeficiency context, General proteomics/metabolomics without single-cell focus, Artificial intelligence applications outside genomics, General inflammatory diseases not related to IBD/gut, Methodological papers without single-cell relevance, Case reports or clinical observations without molecular data. DECISION RULES: Paper must directly address at least ONE core research area, Must provide mechanistic insights or novel methodology, Must be immediately applicable to lab's specific research, When in doubt REJECT - be highly conservative, Aim to select maximum 20-30 truly exceptional papers per day. You are reviewing research papers for daily digest. Be ruthlessly selective - only papers that would make lab members say 'we need to read this immediately' should pass. Answer ONLY 'yes' or 'no': Is this paper directly relevant and exceptional for our specialized research focus?"""
+          # Define LLM filtering prompt directly in workflow - BALANCED FILTERING
+          filtering_prompt = """You are a lab manager at a research lab focusing on single-cell analysis, IBD research, and computational biology. The lab is interested in:
+
+RELEVANT AREAS:
+- Single-cell RNA sequencing, spatial transcriptomics, and multi-omics approaches
+- IBD, Crohn's disease, ulcerative colitis research with molecular insights  
+- Inflammasome biology and immune signaling pathways
+- Primary and secondary immunodeficiencies with mechanistic studies
+- Computational biology, bioinformatics tools, and data analysis methods
+- Intestinal biology, mucosal immunology, and epithelial barrier function
+- Machine learning applications in genomics and biomedical research
+
+ACCEPTANCE CRITERIA:
+- Papers directly addressing any of the above research areas
+- Novel methodologies or computational tools relevant to our work
+- Mechanistic studies providing biological insights
+- Clinical studies with strong molecular/computational components
+
+BE INCLUSIVE rather than exclusive - if a paper could be interesting or useful to researchers in these areas, include it. When uncertain, lean toward acceptance.
+
+Answer 'yes' or 'no': Is this paper potentially relevant to our research focus?"""
           
           config = {
               "GOOGLE_SPREADSHEET_ID": os.environ.get("GOOGLE_SHEET_ID", ""),
@@ -256,8 +275,8 @@ jobs:
               "query_pubmed_arxiv": research_query,
               
               # BioRxiv-specific optimizations for stability
-              "limit": 100,
-              "limit_per_database": 25,  # Reduced for bioRxiv stability
+              "limit": 300,
+              "limit_per_database": 100,  # Increased for better coverage
               
               "LLM_FILTERING": True,
               "LLM_PROVIDER": "openai",
