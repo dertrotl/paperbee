@@ -162,3 +162,4 @@ cython_debug/
 # PyCharm
 #  JetBrains specific template is maintained in a separate JetBrains.gitignore
 #.idea/
+temp_venv/
