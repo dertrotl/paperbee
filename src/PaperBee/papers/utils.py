@@ -158,11 +158,19 @@ class PubMedClient:
             try:
                 search_response = requests.get(search_url, timeout=45)  # Increased timeout
                 search_response.raise_for_status()  # Raise exception for bad status codes
+                
+                # Check for rate limiting
+                if search_response.status_code == 429:
+                    print(f"⚠️ NCBI rate limit hit, waiting longer...")
+                    sleep(5)  # Wait 5 seconds on rate limit
+                    continue
+                    
                 search_data = search_response.json()
 
                 # NCBI does not allow more than 3 requests per second (10 with an API key)
+                # Increase wait time for safety
                 if seconds_to_wait:
-                    sleep(seconds_to_wait)
+                    sleep(max(seconds_to_wait, 0.4))  # At least 400ms between requests
 
                 # Check if response structure is correct
                 if "esearchresult" not in search_data:
@@ -178,9 +186,13 @@ class PubMedClient:
                     break
             except requests.exceptions.RequestException as e:
                 print(f"⚠️ NCBI search request failed: {str(e)[:50]}")
+                # Handle rate limiting specifically
+                if "429" in str(e) or "Too Many Requests" in str(e):
+                    print(f"⚠️ Rate limited, waiting 5 seconds...")
+                    sleep(5)
                 if _ == n_retries - 1:  # Last retry
                     return None
-                seconds_to_wait *= 2
+                seconds_to_wait = min(seconds_to_wait * 2, 2.0)  # Cap at 2 seconds
                 if seconds_to_wait:
                     sleep(seconds_to_wait)
                 continue
@@ -197,11 +209,18 @@ class PubMedClient:
                 continue
 
         if seconds_to_wait:
-            sleep(seconds_to_wait)
+            sleep(max(seconds_to_wait, 0.5))  # At least 500ms before fetch
             
         try:
             fetch_url = f"{base_url}efetch.fcgi?db=pubmed&id={pubmed_id}&retmode=xml"
             fetch_response = requests.get(fetch_url, timeout=45)  # Increased timeout
+            
+            # Check for rate limiting on fetch too
+            if fetch_response.status_code == 429:
+                print(f"⚠️ NCBI fetch rate limit hit, waiting...")
+                sleep(5)
+                fetch_response = requests.get(fetch_url, timeout=45)
+                
             fetch_response.raise_for_status()
             
             root = ET.fromstring(fetch_response.content)  # Using defusedxml for parsing

@@ -76,7 +76,7 @@ jobs:
               
               "LLM_FILTERING": True,
               "LLM_PROVIDER": "openai",
-              "LANGUAGE_MODEL": "gpt-4o-mini",
+              "LANGUAGE_MODEL": "gemini-2.0-flash-exp",
               "OPENAI_API_KEY": os.environ.get("GEMINI_KEY", ""),
               "OPENAI_BASE_URL": "https://generativelanguage.googleapis.com/v1beta/openai/",
               
