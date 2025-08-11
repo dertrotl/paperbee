@@ -1,0 +1,247 @@
+# .github/workflows/daily_paper_marr.yml
+name: PaperBee Daily Digest MarrPeng
+
+on:
+  schedule:
+    - cron: '0 6 * * 1-5'  # Monday-Friday at 6 AM UTC (8 AM German time during DST)
+  workflow_dispatch:
+
+jobs:
+  fetch-papers:
+    runs-on: ubuntu-latest
+    timeout-minutes: 60
+    
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+        
+      - name: Set up Python
+        uses: actions/setup-python@v4
+        with:
+          python-version: '3.11'
+          
+      - name: Install dependencies
+        run: |
+          pip install -e .
+          
+      - name: Create Google credentials file
+        run: |
+          echo '${{ secrets.GOOGLE_CREDENTIALS_JSON }}' > google-credentials.json
+          
+      - name: Determine search window
+        id: search_days
+        run: |
+          DAY_OF_WEEK=$(date +%u)
+          if [ "$DAY_OF_WEEK" -eq 1 ]; then
+            echo "since_days=2" >> $GITHUB_OUTPUT
+          else
+            echo "since_days=1" >> $GITHUB_OUTPUT
+          fi
+          
+      - name: Run Multi-Group Pipeline
+        env:
+          GOOGLE_SHEET_ID: ${{ secrets.GOOGLE_SPREADSHEET_ID_2 }}
+          NCBI_KEY: ${{ secrets.NCBI_API_KEY }}
+          GEMINI_KEY: ${{ secrets.GEMINI_API_KEY }}
+          SLACK_BOT: ${{ secrets.SLACK_BOT_TOKEN_2 }}
+          SLACK_CHANNEL: ${{ secrets.SLACK_CHANNEL_ID_2 }}
+          SLACK_APP: ${{ secrets.SLACK_APP_TOKEN_2 }}
+        run: |
+          echo "🔬 Starting PaperBee Multi-Group Research Digest"
+          echo "📅 Search window: ${{ steps.search_days.outputs.since_days }} days"
+          echo ""
+          
+          python3 << 'EOF'
+          import yaml
+          import os
+          import json
+          import subprocess
+          import tempfile
+          from pathlib import Path
+          
+          # Define three focused interest groups
+          interest_groups = {
+              "Happy Pixels": {
+                  "emoji": "🖼️",
+                  "query_biorxiv": "[computer vision] OR [image analysis] OR [image processing] OR [image segmentation] OR [cell segmentation] OR [3D segmentation] OR [microscopy] OR [fluorescence microscopy] OR [quantitative microscopy] OR [AI microscopy] OR [biomedical image analysis] OR [medical imaging] OR [deep learning imaging] OR [machine learning microscopy] OR [foundation models imaging] OR [self-supervised learning images] OR [cell classification] OR [cell detection] OR [organoid detection] OR [organoid segmentation] OR [holography] OR [digital holography]",
+                  "query_pubmed_arxiv": "([computer vision] OR [image analysis] OR [image processing] OR [image segmentation]) AND ([microscopy] OR [medical imaging] OR [biomedical imaging]) AND NOT ([proteomics] OR [genomics without imaging])",
+                  "filter": "You are a lab manager at a research lab focusing on computational imaging and computer vision in biomedical contexts. Lab members are interested in image analysis algorithms, computer vision methods for microscopy, and AI/ML approaches for biological image processing. You are reviewing research papers to determine if they are relevant to your lab. Please answer 'yes' or 'no' to the following question: Is the following research paper relevant?",
+                  "limit": 400,
+                  "limit_per_database": 150
+              },
+              "Omics and Dynamics": {
+                  "emoji": "🧬",
+                  "query_biorxiv": "[single cell] OR [single-cell] OR [multi-omics] OR [multiomics] OR [spatial transcriptomics] OR [mathematical modeling] OR [mechanistic modeling] OR [clonal hematopoiesis] OR [CHIP] OR [clonal dynamics] OR [hematopoiesis] OR [computational biology dynamics] OR [systems biology] OR [mathematical biology] OR [modeling hematopoiesis] OR [omics computational] OR [transcriptomics analysis]",
+                  "query_pubmed_arxiv": "([single-cell transcriptomics] OR [spatial transcriptomics] OR [multi-omics] OR [computational biology]) AND ([dynamics] OR [modeling] OR [hematopoiesis] OR [clonal evolution]) AND NOT ([proteomics without transcriptomics] OR [drug discovery])",
+                  "filter": "You are a lab manager at a research lab focusing on computational analysis of biological systems and dynamics. Lab members are interested in single-cell omics analysis, mathematical modeling of biological systems, and clonal hematopoiesis research. You are reviewing research papers to determine if they are relevant to your lab. Please answer 'yes' or 'no' to the following question: Is the following research paper relevant?",
+                  "limit": 400,
+                  "limit_per_database": 150
+              },
+              "Histopathology": {
+                  "emoji": "🔬",
+                  "query_biorxiv": "[computational pathology] OR [digital pathology] OR [pathology AI] OR [histopathology] OR [hematopathology] OR [pathology machine learning] OR [pathology deep learning] OR [morphological profiling] OR [cell painting] OR [representation learning pathology] OR [blood disorders computational] OR [hematology AI] OR [leukemia computational] OR [lymphoma computational] OR [myeloma computational]",
+                  "query_pubmed_arxiv": "([computational pathology] OR [digital pathology] OR [pathology]) AND ([AI] OR [machine learning] OR [deep learning] OR [computational analysis]) AND ([hematology] OR [blood disorders] OR [histopathology]) AND NOT ([pure clinical studies] OR [case reports without AI])",
+                  "filter": "You are a lab manager at a research lab focusing on computational pathology and blood disorders. Lab members are interested in AI/ML approaches for histopathological analysis, hematopathology with computational components, and digital pathology methods. You are reviewing research papers to determine if they are relevant to your lab. Please answer 'yes' or 'no' to the following question: Is the following research paper relevant?",
+                  "limit": 400,
+                  "limit_per_database": 150
+              }
+          }
+          
+          all_papers = []
+          
+          print(f"🎯 PROCESSING OVERVIEW:")
+          for i, (group_name, group_config) in enumerate(interest_groups.items(), 1):
+              biorxiv_terms = len(group_config['query_biorxiv'].split(' OR '))
+              pubmed_terms = len(group_config['query_pubmed_arxiv'].split(' OR '))
+              print(f"  {i}. {group_config['emoji']} {group_name}: {biorxiv_terms} bioRxiv terms, {pubmed_terms} PubMed/ArXiv terms")
+          print("")
+          
+          for group_name, group_config in interest_groups.items():
+              print(f"\n{group_config['emoji']} Processing {group_name} group...")
+              
+              # Create config for this group
+              config = {
+                  "GOOGLE_SPREADSHEET_ID": os.environ.get("GOOGLE_SHEET_ID", ""),
+                  "GOOGLE_CREDENTIALS_JSON": "./google-credentials.json",
+                  "NCBI_API_KEY": os.environ.get("NCBI_KEY", ""),
+                  "LOCAL_ROOT_DIR": ".",
+                  "databases": ["pubmed", "arxiv", "biorxiv"],
+                  "query_biorxiv": group_config["query_biorxiv"],
+                  "query_pubmed_arxiv": group_config["query_pubmed_arxiv"],
+                  "limit": group_config["limit"],
+                  "limit_per_database": group_config["limit_per_database"],
+                  "LLM_FILTERING": True,
+                  "LLM_PROVIDER": "openai",
+                  "LANGUAGE_MODEL": "gpt-4o-mini",
+                  "OPENAI_API_KEY": os.environ.get("GEMINI_KEY", ""),
+                  "OPENAI_BASE_URL": "https://generativelanguage.googleapis.com/v1beta/openai/",
+                  "FILTERING_PROMPT": group_config["filter"],
+                  "SLACK": {
+                      "is_posting_on": True,
+                      "bot_token": os.environ.get("SLACK_BOT", ""),
+                      "channel_id": os.environ.get("SLACK_CHANNEL", ""),
+                      "app_token": os.environ.get("SLACK_APP", "")
+                  },
+                  "TELEGRAM": {"is_posting_on": False},
+                  "ZULIP": {"is_posting_on": False}
+              }
+              
+              # Create temporary config file
+              config_file = f"config_{group_name.lower().replace(' ', '_')}.yml"
+              with open(config_file, "w") as f:
+                  yaml.dump(config, f, default_flow_style=False)
+              
+              print(f"📋 Config for {group_name}:")
+              print(f"   🧬 BioRxiv query: {group_config['query_biorxiv'][:100]}...")
+              print(f"   📄 PubMed/ArXiv query: {group_config['query_pubmed_arxiv'][:100]}...")
+              print(f"   📊 Limits: total={group_config['limit']}, per_db={group_config['limit_per_database']}")
+              print(f"   🗃️ Databases: {config['databases']}")
+              print(f"   🤖 LLM: {config['LANGUAGE_MODEL']}")
+              
+              # Run PaperBee for this group
+              try:
+                  print(f"\n🚀 Starting PaperBee for {group_name}...")
+                  print(f"📅 Search window: ${{ steps.search_days.outputs.since_days }} days")
+                  
+                  # Set environment variable for group-specific header
+                  env = os.environ.copy()
+                  env["PAPERBEE_GROUP_NAME"] = group_name
+                  env["PAPERBEE_GROUP_EMOJI"] = group_config["emoji"]
+                  
+                  result = subprocess.run([
+                      "paperbee", "post", 
+                      "--config", config_file, 
+                      "--since", "${{ steps.search_days.outputs.since_days }}"
+                  ], capture_output=True, text=True, timeout=1200, env=env)  # 20 min timeout per group
+                  
+                  print(f"\n📤 PaperBee output for {group_name}:")
+                  print("="*60)
+                  print(result.stdout)
+                  if result.stderr:
+                      print(f"⚠️ Stderr: {result.stderr}")
+                  print("="*60)
+                  
+                  if result.returncode == 0:
+                      print(f"✅ {group_name} completed successfully")
+                      # Try to read results from output
+                      output_lines = result.stdout.split('\n')
+                      paper_count = 0
+                      raw_count = 0
+                      
+                      # Parse various output patterns
+                      for line in output_lines:
+                          if 'papers selected after filtering' in line.lower():
+                              try:
+                                  paper_count = int(line.split()[0])
+                              except:
+                                  pass
+                          elif 'found' in line.lower() and 'articles' in line.lower():
+                              try:
+                                  numbers = [int(s) for s in line.split() if s.isdigit()]
+                                  if numbers:
+                                      raw_count += numbers[0]
+                              except:
+                                  pass
+                      
+                      print(f"📈 Results for {group_name}: {raw_count} raw → {paper_count} filtered")
+                      
+                      all_papers.append({
+                          "group": group_name,
+                          "emoji": group_config["emoji"],
+                          "count": paper_count,
+                          "raw_count": raw_count,
+                          "status": "success"
+                      })
+                  else:
+                      print(f"❌ {group_name} failed with return code {result.returncode}")
+                      print(f"Error details: {result.stderr}")
+                      all_papers.append({
+                          "group": group_name,
+                          "emoji": group_config["emoji"],
+                          "count": 0,
+                          "raw_count": 0,
+                          "status": "failed"
+                      })
+                      
+              except subprocess.TimeoutExpired:
+                  print(f"⏰ {group_name} timed out after 20 minutes")
+                  all_papers.append({
+                      "group": group_name,
+                      "emoji": group_config["emoji"],
+                      "count": 0,
+                      "raw_count": 0,
+                      "status": "timeout"
+                  })
+              except Exception as e:
+                  print(f"💥 {group_name} error: {str(e)}")
+                  all_papers.append({
+                      "group": group_name,
+                      "emoji": group_config["emoji"],
+                      "count": 0,
+                      "raw_count": 0,
+                      "status": "error"
+                  })
+              
+              # Clean up config file
+              try:
+                  os.remove(config_file)
+              except:
+                  pass
+          
+          # Final summary for console only
+          print(f"\n📋 FINAL SUMMARY:")
+          total_papers = sum(p["count"] for p in all_papers if p["status"] == "success")
+          total_raw = sum(p.get("raw_count", 0) for p in all_papers if p["status"] == "success")
+          print(f"🔢 Total papers: {total_raw} raw → {total_papers} filtered")
+          for paper_info in all_papers:
+              raw_info = f" ({paper_info.get('raw_count', 0)} raw)" if paper_info.get('raw_count', 0) > 0 else ""
+              print(f"  {paper_info['emoji']} {paper_info['group']}: {paper_info['count']} papers{raw_info} ({paper_info['status']})")
+          
+          print(f"\n📝 Note: Each group posted their papers separately to Slack")
+          
+          EOF
+          
+      - name: Clean up
+        if: always()
+        run: |
+          rm -f google-credentials.json config_*.yml
