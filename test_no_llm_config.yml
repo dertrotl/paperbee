@@ -1,0 +1,32 @@
+GOOGLE_SPREADSHEET_ID: "dummy_test_id"
+GOOGLE_CREDENTIALS_JSON: "./dummy_creds.json"
+NCBI_API_KEY: "dummy_key"
+LOCAL_ROOT_DIR: "."
+
+# Database configuration - focus on bioRxiv and PubMed (where medical papers are)
+databases: ["pubmed", "biorxiv"]
+
+# Test configuration with LLM filtering DISABLED first
+# This will help isolate whether the issue is in search or filtering
+
+# Simplified queries for testing
+query_biorxiv: "[single-cell] OR [IBD] OR [inflammatory bowel disease] OR [Crohn] OR [organoids] OR [computational biology]"
+
+query_pubmed_arxiv: "[single-cell RNA sequencing] OR [IBD] OR [inflammatory bowel disease] OR [Crohn disease] OR [organoids] OR [computational biology]"
+
+# Small limits for testing
+limit: 50
+limit_per_database: 25
+
+# DISABLE LLM filtering for initial testing
+LLM_FILTERING: false
+
+# Posting configuration - disabled for testing
+SLACK:
+  is_posting_on: false
+
+TELEGRAM:
+  is_posting_on: false
+
+ZULIP:
+  is_posting_on: false

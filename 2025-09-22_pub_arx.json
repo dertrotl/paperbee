@@ -1,0 +1,1600 @@
+{
+  "databases": [
+    "pubmed"
+  ],
+  "limit": 1200,
+  "limit_per_database": 400,
+  "number_of_papers": 35,
+  "number_of_papers_by_database": {
+    "PubMed": 35
+  },
+  "papers": [
+    {
+      "abstract": "Despite advances in clinical proteomics, translating protein biomarker discoveries into clinical use remains challenging due to the technical complexity of the validation process. Targeted MS-based proteomic approaches such as parallel reaction monitoring (PRM) offer sensitive and specific assays for biomarker translation. In this study, we developed a multiplex PRM assay using the Stellar mass spectrometry platform to quantify 57 plasma proteins, including 24 FDA-approved biomarkers. Loading curves (11 points) were performed at 4 sample throughputs (100, 144, 180, and 300 samples per day) using independently optimized and scheduled PRM methods. Following optimization, an inflammatory bowel disease (IBD) cohort of plasma samples (493 IBD, 509 matched controls) was analyzed at a throughput of 180 samples per day. To monitor system performance, the study also included over 1000 additional injections for system suitability tests, low-, middle-, and high-quality controls, washes, and blanks. Using this approach, we observed high quantifiability (linearity, sensitivity, and reproducibility) in the PRM assay and consistent data acquisition across a large cohort. We also validated the candidate IBD markers, C-reactive protein and orosomucoid protein, identified in a recent discovery experiment.",
+      "authors": [
+        "Qin Fu",
+        "Philip M Remes",
+        "Jihyeon Lee",
+        "Cristina Jacob",
+        "Dalin Li",
+        "Manasa Vegesna",
+        "Koen Raedschelders",
+        "Ali Haghani",
+        "Emebet Mengesha",
+        "Philip Debbas",
+        "Esthelle Hoedt",
+        "Sandy Joung",
+        "Susan Cheng",
+        "Scott Peterman",
+        "Justyna Fert-Bober",
+        "Gil Y Melmed",
+        "Dermot P B McGovern",
+        "Christopher I Murray",
+        "Jennifer E Van Eyk"
+      ],
+      "categories": null,
+      "citations": null,
+      "comments": null,
+      "databases": [
+        "PubMed"
+      ],
+      "doi": null,
+      "keywords": [
+        "N Validation proteomics",
+        "N Targeted peptides",
+        "N Clinical biomarker translation",
+        "N Inflammatory bowel disease"
+      ],
+      "number_of_pages": null,
+      "pages": "e202507610",
+      "publication": {
+        "category": "Journal",
+        "cite_score": null,
+        "is_potentially_predatory": false,
+        "isbn": null,
+        "issn": "1521-3773",
+        "publisher": null,
+        "sjr": null,
+        "snip": null,
+        "subject_areas": [],
+        "title": "Angewandte Chemie (International ed. in English)"
+      },
+      "publication_date": "2025-09-22",
+      "selected": null,
+      "title": "Development and Clinical Evaluation of a Multiplexed Health Surveillance Panel Using Ultra High-Throughput PRM-MS in an Inflammatory Bowel Disease Cohort.",
+      "urls": []
+    },
+    {
+      "abstract": "Intestinal epithelial cells (IECs) serve as both a physical barrier and a source of robust antiviral interferon (IFN) response. As such, they constitute the primary barrier that enteric viruses, such as rotavirus, need to overcome to initiate infection. The gut is characterized by very low oxygen levels (hypoxia) within the lumen, resulting in a unique hypoxic physiological environment in which rotavirus infection occurs. Depending on the tissues or viruses, conflicting results have been described for the role of hypoxia in regulating viral infections, where hypoxia could have either a proviral or antiviral function. Since intestinal epithelial cells naturally exist in a hypoxic environment, it is essential to investigate how these conditions affect rotavirus infection. We found that hypoxia promotes rotavirus infection, resulting in increased virus replication and production of infectious virus particles. We showed that this increased production of rotavirus particles under hypoxia is due to a decreased induction of IFNs, leading to a decreased expression of IFN stimulated genes and antiviral protection. RNA sequencing showed a robust decrease in ISG production in hypoxia for both rotavirus infection and poly I:C transfection, suggesting a conserved inhibition of IECs' IFN response to viral pathogen challenges under hypoxic conditions. Functional analyses revealed that hypoxia impairs signal transduction leading to IFN expression by negatively regulating the activation of the master signaling molecule TBK1. Mechanistically, we determined that hypoxia induces the expression of the protein phosphatase PP2A which is responsible for the hypoxia-induced impairment of TBK1 activation. Importantly, we confirmed that this hypoxia-mediated dampening of immune response was not restricted to rotavirus infection but dampened the IFN induction of a broad range of viruses and immune stimuli. Together, we propose that hypoxia creates an immune-suppressive environment through downregulation of IFN, representing a novel proviral mechanism for hypoxia in the human gastro-intestinal tract.",
+      "authors": [
+        "Sorin O Jacobs",
+        "Stephanie Muenchau",
+        "Zina M Uckeley",
+        "Gianna V Passarelli",
+        "Asher David",
+        "Skyler Briggs",
+        "James M Burke",
+        "Megan L Stanifer",
+        "Steeve Boulant"
+      ],
+      "categories": null,
+      "citations": null,
+      "comments": null,
+      "databases": [
+        "PubMed"
+      ],
+      "doi": null,
+      "keywords": [
+        "N type III interferon",
+        "N rotavirus",
+        "N intestinal organoids",
+        "N hypoxia",
+        "N Intestinal epithelial cells",
+        "N antiviral response"
+      ],
+      "number_of_pages": null,
+      "pages": "2560593",
+      "publication": {
+        "category": "Journal",
+        "cite_score": null,
+        "is_potentially_predatory": false,
+        "isbn": null,
+        "issn": "1949-0984",
+        "publisher": null,
+        "sjr": null,
+        "snip": null,
+        "subject_areas": [],
+        "title": "Gut microbes"
+      },
+      "publication_date": "2025-09-22",
+      "selected": null,
+      "title": "Hypoxia increases susceptibility of human intestinal epithelial cells to rotavirus infection through repression of interferon induction.",
+      "urls": []
+    },
+    {
+      "abstract": "http://www.w3.org/1998/Math/MathML \u27f6 http://www.w3.org/1998/Math/MathML \u27f6 Understanding the cellular origins and early evolutionary dynamics that drive the initiation of carcinogenesis is critical to advancing early detection and prevention strategies. By characterizing key molecular, cellular and niche events at the precancerous tipping point of early gastric cancer (EGC), we aimed to develop more precise screening tools and design targeted interventions to prevent malignant transformation at this stage. We utilized our AI models to integrate spatial multimodal data from nine EGC endoscopic submucosal dissection (ESD) samples (covering sequential stages from normal to cancer), construct a spatial-temporal profile of disease progression, and identify a critical tipping point (PMC_P) characterized by an immune-suppressive microenvironment during early cancer development. At this stage, inflammatory pit mucous cells with stemness (PMC_2) interact with fibroblasts via NAMPT  ITGA5/ITGB1 and with macrophages via AREG  EGFR/ERBB2 signaling, fostering cancer initiation. We established gastric precancerous cell lines and organoids to demonstrate that NAMPT and AREG promote cellular proliferation in vitro. Furthermore, in the transgenic CEA-SV40 mouse model, targeting AREG and/or NAMPT disrupted key cell interactions, inhibited the JAK-STAT, MAPK, and NF\u03baB pathways, and reduced PD-L1 expression, which was also confirmed by western blot in vitro. These interventions delayed disease progression, reversed the immunosuppressive microenvironment, and prevented malignant transformation. Clinical validation was conducted using endoscopically resected EGC specimens. Our study provides a precise spatiotemporal depiction of EGC development and identifies novel diagnostic markers and therapeutic targets for early intervention.",
+      "authors": [
+        "Pingting Gao",
+        "Chunman Zuo",
+        "Wei Yuan",
+        "Jiabin Cai",
+        "Xiaoqiang Chai",
+        "Ruijie Gong",
+        "Jia Yu",
+        "Lu Yao",
+        "Wei Su",
+        "Zuqiang Liu",
+        "Shengli Lin",
+        "Yun Wang",
+        "Mingyan Cai",
+        "Lili Ma",
+        "Quanlin Li",
+        "Pinghong Zhou"
+      ],
+      "categories": null,
+      "citations": null,
+      "comments": null,
+      "databases": [
+        "PubMed"
+      ],
+      "doi": null,
+      "keywords": [],
+      "number_of_pages": null,
+      "pages": "313",
+      "publication": {
+        "category": "Journal",
+        "cite_score": null,
+        "is_potentially_predatory": false,
+        "isbn": null,
+        "issn": "2059-3635",
+        "publisher": null,
+        "sjr": null,
+        "snip": null,
+        "subject_areas": [],
+        "title": "Signal transduction and targeted therapy"
+      },
+      "publication_date": "2025-09-22",
+      "selected": null,
+      "title": "Spatiotemporal multi-omics analysis uncovers NAD-dependent immunosuppressive niche triggering early gastric cancer.",
+      "urls": []
+    },
+    {
+      "abstract": "Mycobacterial infections remain a global public health challenge. Each year, high rates of morbidity and mortality worldwide are a consequence of chronic respiratory infections due to Mycobacteria. According to the World Health Organization (WHO), in 2023, 10.8\u2009million individuals fell ill with Mycobacterium tuberculosis (Mtb), resulting in an estimated 1.25\u2009million deaths. This positions tuberculosis (TB) as the leading cause of death from a single pathogen worldwide after the coronavirus disease (COVID-19) pandemic. On the other hand, the cases of people affected by nontuberculous mycobacteria (NTM) have risen globally, but the precise incidence and prevalence of both pulmonary and extrapulmonary disease remain unknown. In Europe, nontuberculous mycobacterial pulmonary diseases affect between 0.2 and 2.9 per 100\u2009000 individuals, mainly patients with cystic fibrosis (CF) and non-CF bronchiectasis. The diagnosis and treatment of mycobacterial infections are challenging and complex, frequently requiring long-duration treatments with several antibiotics, which in most cases leads to poor patient outcomes. As the role of immune cells has been extensively assessed, in this Review, we summarize the current knowledge about the contribution of epithelial cells in the early steps of Mycobacteria infections. Additionally, we describe how human lung organoid technology provides new tools to better understand host-Mycobacteria interactions in the airways and test new therapeutic targets.",
+      "authors": [
+        "Stephen Adonai Leon-Icaza",
+        "Romain Verg\u00e9",
+        "Raoul Mazars",
+        "Laurence Berry",
+        "C\u00e9line Cougoule"
+      ],
+      "categories": null,
+      "citations": null,
+      "comments": null,
+      "databases": [
+        "PubMed"
+      ],
+      "doi": null,
+      "keywords": [
+        "N infection modeling",
+        "N host\u2010directed therapies",
+        "N airway defense mechanisms",
+        "N Mycobacteria",
+        "N lung organoids"
+      ],
+      "number_of_pages": null,
+      "pages": null,
+      "publication": {
+        "category": "Journal",
+        "cite_score": null,
+        "is_potentially_predatory": false,
+        "isbn": null,
+        "issn": "1742-4658",
+        "publisher": null,
+        "sjr": null,
+        "snip": null,
+        "subject_areas": [],
+        "title": "The FEBS journal"
+      },
+      "publication_date": "2025-09-21",
+      "selected": null,
+      "title": "Lung organoids as a human system for Mycobacteria infection modeling and drug testing.",
+      "urls": []
+    },
+    {
+      "abstract": "Immunotherapy has revolutionized cancer treatment; however, only 10-30% of patients experience durable survival benefits, while most malignancies remain resistant. In melanoma, vitiligo-like depigmentation is a frequent and generally mild immune-related adverse event, whose presence correlates positively with enhanced antitumor immune responses and prolonged patient survival. By performing comparative analyses between vitiligo and melanoma, we established a biomarker panel-designated the vitiligo signature (VGS)-that differentiates \"cold\" from \"hot\" tumors with high accuracy. Leveraging a deep learning-based efficacy prediction system (DLEPS), we identified and validated Fulvestrant as a candidate capable of enhancing anti-programmed cell death ligand 1 (PD L1) therapy in preclinical models. Single cell RNA sequencing revealed that Fulvestrant expanded cytotoxic T cell populations, while immunofluorescence and flow cytometry confirmed markedly increased CD8\u207a T cell infiltration into tumor tissue. Mechanistic investigations demonstrated that Fulvestrant activates the C\u2500C motif chemokine 5 (CCL5), major histocompatibility complex class I (MHC I), and type II interferon (IFN II) signaling pathways, thereby potentiating antitumor immunity. Collectively, our study introduces a precision approach for patient stratification in immunotherapy and highlights Fulvestrant as a promising component of immunotherapy based combination strategies warranting clinical evaluation.",
+      "authors": [
+        "Jie Zhu",
+        "Liting Huang",
+        "Suzhen Bi",
+        "WeiKaixin Kong",
+        "Wanting Feng",
+        "Yingjia Li",
+        "Zhengwei Xie",
+        "Peipei Shan",
+        "Sujie Zhu"
+      ],
+      "categories": null,
+      "citations": null,
+      "comments": null,
+      "databases": [
+        "PubMed"
+      ],
+      "doi": null,
+      "keywords": [
+        "N Fulvestrant",
+        "N immunotherapy",
+        "N vitiligo"
+      ],
+      "number_of_pages": null,
+      "pages": "e03979",
+      "publication": {
+        "category": "Journal",
+        "cite_score": null,
+        "is_potentially_predatory": false,
+        "isbn": null,
+        "issn": "2198-3844",
+        "publisher": null,
+        "sjr": null,
+        "snip": null,
+        "subject_areas": [],
+        "title": "Advanced science (Weinheim, Baden-Wurttemberg, Germany)"
+      },
+      "publication_date": "2025-09-20",
+      "selected": null,
+      "title": "Vitiligo Signature-Based Drug Screening Identifies Fulvestrant as a Novel Immunotherapy Combination Strategy.",
+      "urls": []
+    },
+    {
+      "abstract": "BACKGROUND BACKGROUND Solid tumor immune suppression requires cooperation of tumor cells, local immune cells, peripheral circulating immune cells, and evolution of immune cell trajectories between peripheral and local environments. This study addresses a significant knowledge gap by characterizing peripheral and local immune environments in IDH Mutant (IDH-Mut) and IDH wildtype (IDH-WT) gliomas and defines novel immunological states with prognostic relevance across the glioma landscape.\nMETHODS METHODS We analyzed local and peripheral immune phenotypes in a cohort of 18 (6 IDH-Mut and 12 IDH-WT) gliomas with distinct genetic characteristics using paired human tumor and peripheral blood mononuclear cells (PBMCs) with single-cell RNA-sequencing (scRNA-seq).\nRESULTS RESULTS Our analyses revealed unique intratumoral and peripheral immune cellular ontogenies, including na\u00efve CD4+ T cell enrichment in the IDH-Mut peripheral immune compartment, monocyte enrichment in IDH-WT glioma PBMCs, and emergence of a unique population of GZMH+ CD8+ T cells preferentially in the IDH-Mut microenvironment. Additionally, we found upregulation of TNF-\u03b1 signaling and inflammatory response pathways in IDH-Mut-glioma-associated peripheral lymphoid cells versus IDH-WT tumors and identified a novel population of microglia-like cells in the peripheral blood of glioma patients with complement-interfacing characteristics. Applying intratumoral transcriptomic deconvolution via The Cancer Genome Atlas revealed genotype-independent, prognostic immune signatures across the malignant glioma landscape.\nCONCLUSIONS CONCLUSIONS This study reveals variable expression of immune phenotypes in adult gliomas stratified by IDH status and characterizes immune compartment and genotype-dependent differences in the immunologic glioma landscape. These genotype-dependent, tumor and circulating immune ontogenies should guide future diagnostic and immunotherapeutic considerations in malignant glioma.",
+      "authors": [
+        "Jonathan H Sussman",
+        "Anthony R Cillo",
+        "Sajeev Kohli",
+        "Carly Cardello",
+        "Jonathan Patterson",
+        "Ebrar Akca",
+        "Angelo Angione",
+        "David Moon",
+        "Katharine Krueger",
+        "Ali Ghamari",
+        "Emily Xu",
+        "Jessica Xu",
+        "Antonio C Tarbay",
+        "Alex Li",
+        "Bhargavi R Budihal",
+        "Xiaoran Zhang",
+        "Omar Elghawy",
+        "Wojciech K Panek",
+        "Prajwal Rajappa",
+        "Kai Tan",
+        "Dario A A Vignali",
+        "Tullia C Bruno",
+        "Nduka M Amankulor"
+      ],
+      "categories": null,
+      "citations": null,
+      "comments": null,
+      "databases": [
+        "PubMed"
+      ],
+      "doi": null,
+      "keywords": [
+        "N tumor immune microenvironment",
+        "N single-cell sequencing",
+        "N immunotherapy",
+        "N IDH Mutant glioma",
+        "N circulating immune cells"
+      ],
+      "number_of_pages": null,
+      "pages": null,
+      "publication": {
+        "category": "Journal",
+        "cite_score": null,
+        "is_potentially_predatory": false,
+        "isbn": null,
+        "issn": "1523-5866",
+        "publisher": null,
+        "sjr": null,
+        "snip": null,
+        "subject_areas": [],
+        "title": "Neuro-oncology"
+      },
+      "publication_date": "2025-09-20",
+      "selected": null,
+      "title": "Single-cell profiling of peripheral and local immune compartments reveal unique genotype-independent prognostic immune signatures across IDH-stratified glioma.",
+      "urls": []
+    },
+    {
+      "abstract": "Finite replicative potential is a defining feature of non-transformed somatic cells, first established by Leonard Hayflick in vitro using WI-38 human lung fibroblasts. Once proliferative capacity is exhausted due to telomere shortening, cells enter into a state called replicative senescence, which can be avoided through ectopic expression of telomerase reverse transcriptase (hTERT). As WI-38 cells approach replicative arrest, molecular pathways linked to mechanotransduction are induced, including YAP signaling, but the potential interplay between replicative lifespan and the mechanical environment of the cell remains unexplored. Here, we investigate the influence of mechanosensation on the trajectory towards replicative arrest taken by WI-38 cells by growing cells on substrates of varying stiffnesses. Matrix softening slowed proliferation, altered cellular phenotypes, and shortened proliferative lifespan while hTERT expression abrogated or reduced these responses. Our analyses of bulk and single-cell RNA-sequencing and ATAC-sequencing revealed the emergence of a unique G1 transcriptional state on soft substrates, characterized by an AP-1 transcription factor program, which failed to manifest with hTERT expression. Together, these findings reveal how the mechanical environment alters WI-38 cell proliferative lifespan and dictates unique paths towards growth arrest.",
+      "authors": [
+        "Alyssa M Kaiser",
+        "Amirali Selahi",
+        "Wenjun Kong",
+        "J Graham Ruby"
+      ],
+      "categories": null,
+      "citations": null,
+      "comments": null,
+      "databases": [
+        "PubMed"
+      ],
+      "doi": null,
+      "keywords": [
+        "N Telomeres",
+        "N Fibroblasts",
+        "N Transcriptomics",
+        "N Extracellular matrix",
+        "N Stiffness",
+        "N Senescence"
+      ],
+      "number_of_pages": null,
+      "pages": null,
+      "publication": {
+        "category": "Journal",
+        "cite_score": null,
+        "is_potentially_predatory": false,
+        "isbn": null,
+        "issn": "2509-2723",
+        "publisher": null,
+        "sjr": null,
+        "snip": null,
+        "subject_areas": [],
+        "title": "GeroScience"
+      },
+      "publication_date": "2025-09-20",
+      "selected": null,
+      "title": "Substrate stiffness dictates unique paths towards proliferative arrest in WI-38 cells.",
+      "urls": []
+    },
+    {
+      "abstract": "BACKGROUND BACKGROUND The pathogenesis of large/giant congenital melanocytic nevi (L/GCMN) remains poorly understood, presenting significant challenges for its treatment. To date, no treatment guidelines for L/GCMN have been established. Moreover, single-cell technologies have not been applied in L/GCMN research, impeding an understanding of the disease at the cellular level.\nOBJECTIVES OBJECTIVE To elaborate on the transcriptomic landscape of cells in the skin microenvironment of L/GCMN, explore the crucial molecular mechanisms of melanocyte pathological changes, and investigate their interactions with other cells.\nMETHODS METHODS We used a combination of single-cell and bulk RNA sequencing of lesional and non-lesional skin samples from patients with L/GCMN and healthy skin samples. Moreover, we also conducted western blotting, qRT-PCR, immunohistochemical, and multiplex immunofluorescence to validate our results. Additionally, we isolated primary nevomelanocytes and explored the impact of TBX2 on the biological functions of nevomelanocytes.\nRESULTS RESULTS Patients with L/GCMN have a higher density of melanocytes and enhanced functions in melanin-synthesis-related processes. TBX2 serves as a core transcription factor for a melanocyte sub-population that is specifically expressed in GCMN. It is closely associated with nevomelanocytes proliferation and melanin synthesis. Additionally, abnormal activation of the PTN-PTPRZ1 and IGF1-IGF1R signaling pathways has been detected in L/GCMN melanocytes.\nCONCLUSIONS CONCLUSIONS The study provides initial insights into the transcriptional landscape and cellular interaction networks of L/GCMN, laying a foundation for further exploration of its molecular mechanisms.",
+      "authors": [
+        "Wei Tan",
+        "Zhuo Chen",
+        "Mingyuan Xu",
+        "Jiashe Chen",
+        "Nanhui Wu",
+        "Fei Wu",
+        "Yongyi Xie",
+        "Ruoqi Wang",
+        "Xiaoxiang Xu",
+        "Yeqiang Liu",
+        "Dan Deng"
+      ],
+      "categories": null,
+      "citations": null,
+      "comments": null,
+      "databases": [
+        "PubMed"
+      ],
+      "doi": null,
+      "keywords": [],
+      "number_of_pages": null,
+      "pages": null,
+      "publication": {
+        "category": "Journal",
+        "cite_score": null,
+        "is_potentially_predatory": false,
+        "isbn": null,
+        "issn": "1365-2133",
+        "publisher": null,
+        "sjr": null,
+        "snip": null,
+        "subject_areas": [],
+        "title": "The British journal of dermatology"
+      },
+      "publication_date": "2025-09-20",
+      "selected": null,
+      "title": "Single-cell RNA sequencing reveals transcriptomic landscape and potential targets for large/giant congenital melanocytic nevi.",
+      "urls": []
+    },
+    {
+      "abstract": "BACKGROUND BACKGROUND Various intestinal ultrasound (IUS) scoring systems combining different measurable parameters have been designed for inflammatory bowel disease (IBD), both Crohn's disease (CD) and ulcerative colitis (UC). We aimed to provide an extensive systematic review of all the IUS scores developed for both CD and UC, adding a particular focus on the subsequent validation studies.\nMETHODS METHODS For the systematic search, the PubMed and EMBASE databases were screened from their inception until November 15, 2024. All articles proposing IUS scores for patients with IBD, both adults and children, were included.\nRESULTS RESULTS A total of 6381 studies were identified, and 23 studies evaluating 23 scores were finally included in the systematic review. Fifteen and 6 studies included patients with CD and UC, respectively, while 3 included a pediatric IBD population. The gold standard for developing the IUS score was endoscopy in 83% of the studies. The most relevant parameters included into the scores were bowel wall thickness, vascularity, bowel wall stratification, and inflammatory fat. The pooled sensitivity, specificity, and accuracy of the included IUS scores were 68% to 100%, 57% to 100%, and 72% to 91%, respectively, in the development studies. Only 6 of 23 studies assessed the interrater agreement of the developed scores. Thirteen scores out of the 23 included in the systematic review underwent a validation, with only 7 having been validated in more than 2 different cohorts.\nCONCLUSIONS CONCLUSIONS IUS scoring systems are easy-to-use tools for standardizing communication among sonographers. Recent validation studies for a few scores have confirmed their applicability to daily IBD practice.",
+      "authors": [
+        "Tommaso Innocenti",
+        "Carmen Rocco",
+        "Luca Scarallo",
+        "Paolo Lionetti",
+        "Andrea Galli",
+        "Gabriele Dragoni"
+      ],
+      "categories": null,
+      "citations": null,
+      "comments": null,
+      "databases": [
+        "PubMed"
+      ],
+      "doi": null,
+      "keywords": [
+        "N inflammatory bowel disease",
+        "N intestinal ultrasound",
+        "N score"
+      ],
+      "number_of_pages": null,
+      "pages": null,
+      "publication": {
+        "category": "Journal",
+        "cite_score": null,
+        "is_potentially_predatory": false,
+        "isbn": null,
+        "issn": "1536-4844",
+        "publisher": null,
+        "sjr": null,
+        "snip": null,
+        "subject_areas": [],
+        "title": "Inflammatory bowel diseases"
+      },
+      "publication_date": "2025-09-20",
+      "selected": null,
+      "title": "Systematic Review of Available Intestinal Ultrasound Scores for Inflammatory Bowel Disease and Update on Validation Studies.",
+      "urls": []
+    },
+    {
+      "abstract": "Tumor-associated fibroblasts (CAFs) regulate tumorigenesis, tumor cell proliferation, and metastasis via secreting related regulatory factors; however, the evidence for CAFs in regulating development of upper tract urothelial carcinoma (UTUC) remains unclear. Here, by utilizing single-cell RNA sequencing (scRNA-seq), single-nucleus RNA sequencing (snRNA-seq), SpaTial enhanced resolution omics-sequencing (Stereo-seq), and UTUC immunofluorescence chip cohort to construct the first comprehensive microenvironmental atlas of CAFs, we investigated the roles of CAFs in UTUC progression. Through hierarchical clustering and the copy number variation (CNV) scores of UTUC epithelial cells, we first classified tumor epithelial cells into high-malignant, medium-malignant, and low-malignant potential categories. We found that the myofibroblastic CAFs1 (myCAFs1) and myCAFs2 subclusters exhibited significant interaction signals with all three types of epithelial cells, among which high-malignant epithelial cells (HMECs) exhibited pronounced communication signals with CAFs, and FN1 and COL1A1 generated by CAFs played critical roles in this process, suggesting that the progression of UTUC may be attributed to the activation of tumor cells by CAFs. Both myCAFs1 and myCAFs2 simultaneously affect bladder urothelial carcinoma (BUC) prognosis, with the risk model showing good consistency across cohorts. The study constructs a multi-omics landscape of UTUC and identify common prognostic markers shared with BUC.",
+      "authors": [
+        "Yu Xiao",
+        "Junfeng Yang",
+        "Mengjie Sun",
+        "Yongfu Li",
+        "Qinyin Liu",
+        "Jinjun Leng",
+        "Maolin Yang",
+        "Jinrui Wang",
+        "Hongju Li",
+        "Caifeng Yang",
+        "Changfen Luo",
+        "Jiahong Li",
+        "Longli Kang",
+        "Fen Huang",
+        "Yanhong Yu",
+        "Chuanmao Zhang"
+      ],
+      "categories": null,
+      "citations": null,
+      "comments": null,
+      "databases": [
+        "PubMed"
+      ],
+      "doi": null,
+      "keywords": [
+        "N cancer-associated fibroblasts",
+        "N upper tract urothelial carcinoma",
+        "N multi-omics research",
+        "N tumor microenvironment"
+      ],
+      "number_of_pages": null,
+      "pages": null,
+      "publication": {
+        "category": "Journal",
+        "cite_score": null,
+        "is_potentially_predatory": false,
+        "isbn": null,
+        "issn": "1759-4685",
+        "publisher": null,
+        "sjr": null,
+        "snip": null,
+        "subject_areas": [],
+        "title": "Journal of molecular cell biology"
+      },
+      "publication_date": "2025-09-19",
+      "selected": null,
+      "title": "The tumor-associated fibroblasts regulate urothelial carcinoma progression.",
+      "urls": []
+    },
+    {
+      "abstract": "\u0394Hep Ifnar1 \u0394Hep Ifnar1 -/- Ifnar1 \u0394Hep Ifnar1 \u0394Hep Ifnar1 A limited number of studies on human subjects with type-A hepatitis have found a positive correlation between activated natural killer (NK) cell frequencies in blood and the severity of liver injury. However, without knowledge of differences in viral burdens, it remains unclear whether NK cells are elevated due to hepatitis A virus (HAV) replication and ongoing associated injury, or if NK cell responses directly cause pathogenesis. To gain insight into how NK cells respond during the early stages of hepatitis A virus infection, we generated mice that are permissive for HAV infection in the liver but are otherwise immunocompetent. HAV readily infected the liver of these hepatocyte-specific type-I interferon receptor knockout mice (), resulting in fecal virus shedding, elevated serum alanine aminotransferase levels, and immune cell infiltrates in the liver. Single-cell RNA sequencing analyses of liver leukocytes from infected  mice revealed a rapid accumulation of activated NK cells in the liver within 2 days. HAV infection and liver inflammation were brief and substantially reduced in magnitude in these mice compared to global  knockout mice that failed to induce substantial antiviral NK cell responses. NK cells were the principal source of interferon (IFN)-\u03b3 in  mice.  mice that were experimentally depleted of NK cells or IFN-\u03b3 showed greatly increased viral replication and liver damage. Moreover, IFN-\u03b3 alone was sufficient to suppress HAV replication in primary mouse hepatocytes. Collectively, these findings establish a critical role for type-I IFN induction of NK cells, their expression of IFN-\u03b3, and protection against hepatitis A.IMPORTANCEHepatitis A virus remains a leading cause of foodborne illness among unvaccinated individuals. Infection can result in severe liver injury that can progress to fatal fulminant viral hepatitis. Despite its clinical significance, the molecular, genetic, and cellular factors influencing infection severity remain poorly understood. Previous studies of patient blood have suggested that natural killer (NK) cells cause liver injury during infection. In this study, we used mouse models of infection to characterize early cellular defenses to infection and identified a critical role for NK cells and interferon-\u03b3 in conferring rapid immune protection rather than pathogenesis.",
+      "authors": [
+        "Ichiro Misumi",
+        "You Li",
+        "Takayoshi Shirasaki",
+        "Lixin Yang",
+        "Maryna Kapustina",
+        "Stanley M Lemon",
+        "Jason K Whitmire"
+      ],
+      "categories": null,
+      "citations": null,
+      "comments": null,
+      "databases": [
+        "PubMed"
+      ],
+      "doi": null,
+      "keywords": [
+        "N HAV",
+        "N T cells",
+        "N interferons",
+        "N hepatitis A",
+        "N NK cells",
+        "N mouse models"
+      ],
+      "number_of_pages": null,
+      "pages": "e0139525",
+      "publication": {
+        "category": "Journal",
+        "cite_score": null,
+        "is_potentially_predatory": false,
+        "isbn": null,
+        "issn": "1098-5514",
+        "publisher": null,
+        "sjr": null,
+        "snip": null,
+        "subject_areas": [],
+        "title": "Journal of virology"
+      },
+      "publication_date": "2025-09-19",
+      "selected": null,
+      "title": "Natural killer cells and IFN-\u03b3 protect against liver injury during HAV infection in mice.",
+      "urls": []
+    },
+    {
+      "abstract": "BACKGROUND UNASSIGNED In patients surviving myocardial infarction, adipose tissue infiltration within the scar is a common pathological finding and has been suggested to contribute to dysfunction and arrhythmogenesis. However, the cellular mechanisms for lipomatous metaplasia after infarction remain enigmatic. Our study reveals a novel molecular mechanism that mediates fibroblast-to-adipocyte conversion and causes fatty infiltration in the infarcted heart.\nMETHODS UNASSIGNED Mice with fibroblast-specific disruption of TGF-\u03b2 (transforming growth factor \u03b2) or Smad-dependent signaling and corresponding controls were generated and underwent reperfusion and nonreperfusion myocardial infarction protocols. Echocardiography, histological studies, and transcriptomic analysis were used to study effects on cardiac repair and remodeling. Lineage tracing experiments were used to document fibroblast-to-adipocyte conversion. In vitro, the effects of genetic disruption or pharmacological blockade of TGF-\u03b2 signaling on mouse cardiac fibroblasts were examined. Single-cell RNA sequencing data from human patients with myocardial infarction were analyzed to assess fibroblast-to-adipocyte conversion.\nRESULTS UNASSIGNED Fibroblast-specific abrogation of TGF-\u03b2 signaling through deletion of TbR2 (type 2 TGF-\u03b2 receptor) increased the incidence of early postinfarction cardiac rupture, promoting a matrix-degrading fibroblast phenotype. Moreover, fibroblast-specific TbR2 loss resulted in replacement of 30% to 40% of the mature scar with adipocytes in both reperfused and nonreperfused infarcts. Lineage tracing demonstrated that fibroblast-specific TbR2 loss promotes fibroblast-to-adipocyte conversion through effects that involve Smad-independent cascades. In vitro, TbR2 inhibition induced expression of adipogenesis-associated genes in primary cardiac fibroblasts. Genetic TbR2 loss promoted conversion of infarct fibroblasts to adipocytes upon stimulation with adipogenic medium. A subpopulation of fibroblasts in human fibrotic infarcted hearts acquired expression of adipocyte genes.\nCONCLUSIONS UNASSIGNED TGF-\u03b2 signaling plays a central role in maintaining fibroblast cell specification after cardiac injury. Fibroblast-to-adipocyte conversion induced by disrupted TGF-\u03b2 signaling may underlie scar-associated lipomatous metaplasia and may play an important role in the pathogenesis of heart failure and arrhythmogenesis in patients with ischemic cardiomyopathy.",
+      "authors": [
+        "Izabela Tuleta",
+        "Harikrishnan Venugopal",
+        "Kevin O'Leary",
+        "Deyou Zheng",
+        "Nikolaos G Frangogiannis"
+      ],
+      "categories": null,
+      "citations": null,
+      "comments": null,
+      "databases": [
+        "PubMed"
+      ],
+      "doi": null,
+      "keywords": [
+        "N adipocyte",
+        "N myocardial infarction",
+        "N heart failure",
+        "N fibroblast",
+        "N TGF-\u03b2"
+      ],
+      "number_of_pages": null,
+      "pages": null,
+      "publication": {
+        "category": "Journal",
+        "cite_score": null,
+        "is_potentially_predatory": false,
+        "isbn": null,
+        "issn": "1524-4539",
+        "publisher": null,
+        "sjr": null,
+        "snip": null,
+        "subject_areas": [],
+        "title": "Circulation"
+      },
+      "publication_date": "2025-09-19",
+      "selected": null,
+      "title": "Fibroblast-Specific Loss of TGF-\u03b2 Signaling Mediates Lipomatous Metaplasia in the Infarcted Heart.",
+      "urls": []
+    },
+    {
+      "abstract": "BACKGROUND AND AIMS OBJECTIVE This study aims to evaluate the real-life durability of biologic therapies and to identify factors associated with biologic persistence in pediatric inflammatory bowel disease (IBD).\nMETHODS METHODS We analyzed data from the IBD-registry of the Italian Society of Pediatric Gastroenterology, Hepatology, and Nutrition (SIGENP) of patients initiating biologics between 2009-2022 and \u22651-year follow-up.\nRESULTS RESULTS 1184 patients (747 with Crohn's Disease [CD], 437 with Ulcerative Colitis or IBD unclassified [UC/IBD-U]) were included, accounting for 1709 treatment courses. The median follow-up was 43\u2009months (IQR 28-64). Overall, 33% received a second-line biologic, 9% third-line, and 2% fourth-line. First-line biologic durability was significantly lower in UC/IBD-U vs. CD, with inferior persistence at 1,2 and 3\u2009years (61%, 51%, and 44% vs 88%, 75%, and 67%; HR 1.5 [95% CI 1.2-1.9], p=.002). In CD, infliximab had inferior durability then adalimumab (72%, 59%, and 50% vs 91%, 82%, and 77%; HR 2.0 [95% CI 1.5-2.7] p < .0001). In both CD and UC/IBD-U, age <6\u2009years was a risk factor for treatment discontinuation (HR 1.8 [95% CI 1.2-2.7], p .01) while therapeutic drug monitoring (TDM) emerged as protective (HR 0.5 [95% CI 0.4-0.7], p <.0001). Combination with an immunomodulator had no significant impact on durability (HR 0.9 [95% CI 0.8-1.2], p = .54).\nCONCLUSIONS CONCLUSIONS Biologic persistence varied by disease type and biologic agent. TDM was associated with longer treatment durability, while combination therapy had a limited effect. Further prospective studies are needed to refine biologics optimization strategies in pediatric IBD.",
+      "authors": [
+        "Sara Lega",
+        "Valeria Dipasquale",
+        "Giulia D'arcangelo",
+        "Luca Scarallo",
+        "Silvana Ancona",
+        "Flora Fedele",
+        "Giovanna Zuin",
+        "Francesco Graziano",
+        "Lorenzo Norsa",
+        "Simona Gatti",
+        "Maria Teresa Illiceto",
+        "Enrico Felici",
+        "Mara Corpino",
+        "Paolo Maria Pavanello",
+        "Rita Cozzali",
+        "Patrizia Alvisi",
+        "Antonio Pizzol",
+        "Claudia Banzato",
+        "Francesca Penagini",
+        "Antonio Marseglia",
+        "Simona Faraci",
+        "Chiara Luini",
+        "Caterina Strisciuglio",
+        "Chiara Moretti",
+        "Massimo Martinelli",
+        "Serena Arrigo",
+        "Paolo Lionetti",
+        "Marina Aloi",
+        "Claudio Romano",
+        "Manuela Giangreco",
+        "Matteo Bramuzzo",
+        "None None"
+      ],
+      "categories": null,
+      "citations": null,
+      "comments": null,
+      "databases": [
+        "PubMed"
+      ],
+      "doi": null,
+      "keywords": [
+        "N treatment optimization",
+        "N biologics",
+        "N pediatrics"
+      ],
+      "number_of_pages": null,
+      "pages": null,
+      "publication": {
+        "category": "Journal",
+        "cite_score": null,
+        "is_potentially_predatory": false,
+        "isbn": null,
+        "issn": "1876-4479",
+        "publisher": null,
+        "sjr": null,
+        "snip": null,
+        "subject_areas": [],
+        "title": "Journal of Crohn's & colitis"
+      },
+      "publication_date": "2025-09-19",
+      "selected": null,
+      "title": "Real-Life Durability and Risk Factors for Biologic Discontinuation in Pediatric Inflammatory Bowel Disease: Results from the Sigenp IBD Registry.",
+      "urls": []
+    },
+    {
+      "abstract": "BACKGROUND BACKGROUND Inflammatory bowel disease (IBD) can be detected in the absence of clinical symptoms.\nAIMS OBJECTIVE To determine the prevalence of incidental IBD in patients undergoing screening colonoscopy and to explore its clinical features and long-term outcomes.\nMETHODS METHODS We conducted a retrospective cohort study that included all asymptomatic adults who underwent colonoscopy for colorectal cancer screening or polyp surveillance between 2009 and 2023 in a large health system. Incidental IBD was defined as endoscopic and histologic findings consistent with the disease in the absence of symptoms. Clinical characteristics and outcomes were collected.\nRESULTS RESULTS Among 40,573 patients who underwent colonoscopy, 60 were diagnosed with incidental IBD: 40 with Crohn's disease (CD), 10 with ulcerative colitis (UC), and 10 with IBD-unclassified (IBD-U). Mean age at diagnosis was 54.6\u00a0years for CD, 52.8\u00a0years for UC, and 55.7\u00a0years for IBD-U, with an overall female predominance (53%). Most CD patients had ileal involvement (98%) and inflammatory behavior (98%), and 60% of UC patients had extensive disease. After a mean follow-up period of 27.9\u2009\u00b1\u200934.7\u00a0months, 10 (16.7%) patients developed symptoms, and 5 (8.3%) initiated therapy, mostly after symptom onset. No hospitalizations or surgeries were reported.\nCONCLUSION CONCLUSIONS The prevalence of incidental IBD detected during colorectal cancer screening is low (0.15%), with 20% of CD and 20% of UC cases progressing to symptomatic disease. Incidental IBD has a mild disease course with a low likelihood of progression to complications.",
+      "authors": [
+        "Sergio Bronze",
+        "Shabari Shenoy",
+        "Manasi Agrawal",
+        "Alexandros D Polydorides",
+        "Jean-Fr\u00e9d\u00e9ric Colombel",
+        "Iago Rodr\u00edguez-Lago",
+        "Ryan C Ungaro"
+      ],
+      "categories": null,
+      "citations": null,
+      "comments": null,
+      "databases": [
+        "PubMed"
+      ],
+      "doi": null,
+      "keywords": [
+        "N Incidental IBD",
+        "N Colorectal cancer screening",
+        "N Crohn\u2019s disease",
+        "N FIT",
+        "N Ulcerative colitis",
+        "N Inflammatory bowel disease"
+      ],
+      "number_of_pages": null,
+      "pages": null,
+      "publication": {
+        "category": "Journal",
+        "cite_score": null,
+        "is_potentially_predatory": false,
+        "isbn": null,
+        "issn": "1573-2568",
+        "publisher": null,
+        "sjr": null,
+        "snip": null,
+        "subject_areas": [],
+        "title": "Digestive diseases and sciences"
+      },
+      "publication_date": "2025-09-19",
+      "selected": null,
+      "title": "Prevalence and Clinical Features of Incidental Inflammatory Bowel Disease Identified During Screening and Surveillance Colonoscopy.",
+      "urls": []
+    },
+    {
+      "abstract": "Retinal ganglion cells (RGCs) are the sole projection neurons connecting the retina to the brain and therefore play a critical role in vision. Death of RGCs during glaucoma, optic neuropathies and after ocular trauma results in irreversible loss of vision as RGCs do not regenerate in the human eye. Moreover, there are no FDA approved therapies that prevent RGC death and/or promote RGC survival in the diseased or injured eye. There is a critical need to better understand the molecular underpinnings of neuroprotection to develop effective therapeutic approaches to preserve damaged RGCs. Unlike in mammals, RGCs in zebrafish are resilient to optic nerve injury, even after complete transection of the optic nerve. Here, we leveraged this unique model and utilized single-cell RNA sequencing to characterize RGC responses to injury and identify putative neuroprotective and regenerative pathways. RGCs are heterogeneous and studies in mice have shown that there is differential resiliency across RGC subtypes. Our results demonstrated that all RGC subtypes are resilient to injury in zebrafish. Quantifying changes in gene expression revealed the upregulation of progenitor and regenerative markers in all RGC subtypes after injury as well as distinct early and late phases to the injury response. This shift in gene expression causes injury-responsive RGCs to resemble RGC subtype 3, a low frequency population of endogenous immature RGCs that are normally maintained in the wild-type, uninjured adult retina. A similar but restricted transcriptomic injury response in RGCs of the uninjured contralateral eye was also detected, highlighting a systemic RGC response to unilateral optic nerve injury. Taken together, these results demonstrate that zebrafish RGCs dedifferentiate in response to injury, and this may be a novel mechanism mediating their unique cell survival and regenerative capabilities.",
+      "authors": [
+        "Ashrifa Ali",
+        "Hannah Schriever",
+        "Dennis Kostka",
+        "Takaaki Kuwajima",
+        "Kristen M Koenig",
+        "Jeffrey M Gross"
+      ],
+      "categories": null,
+      "citations": null,
+      "comments": null,
+      "databases": [
+        "PubMed"
+      ],
+      "doi": null,
+      "keywords": [],
+      "number_of_pages": null,
+      "pages": "e1011879",
+      "publication": {
+        "category": "Journal",
+        "cite_score": null,
+        "is_potentially_predatory": false,
+        "isbn": null,
+        "issn": "1553-7404",
+        "publisher": null,
+        "sjr": null,
+        "snip": null,
+        "subject_areas": [],
+        "title": "PLoS genetics"
+      },
+      "publication_date": "2025-09-19",
+      "selected": null,
+      "title": "Zebrafish optic nerve injury results in systemic retinal ganglion cell dedifferentiation.",
+      "urls": []
+    },
+    {
+      "abstract": "The role of cancer-associated fibroblasts (CAFs) in the initiation and invasion phases of human lung adenocarcinoma (LUAD) development is not fully understood. In this study, we utilized single-cell RNA sequencing, spatial transcriptomics, and a combination of in vivo and in vitro models to decode the dynamics of tumor-stroma interactions during human LUAD progression, focusing primarily on adenocarcinoma in situ (AIS), minimally invasive adenocarcinoma (MIA), and invasive adenocarcinoma (IAC). We identified a matrix CAF (mCAF) subtype characterized by high THBS2 expression, which was closely associated with poor clinical outcomes, tumor recurrence, and the invasive dynamics of LUAD. Spatial transcriptomics and multiplex immunohistochemistry analysis revealed that this CAF subpopulation was closely associated with tumor cells, with clear spatial colocalization. In vivo and in vitro experiments demonstrated that THBS2 secreted by these mCAFs directly binds to SDC4 on tumor cells, enhancing tumor epithelial-mesenchymal transition (EMT) programs. This study highlights THBS2+ mCAFs as key regulators of tumor-stroma interactions and identifies the THBS2-SDC4-EMT axis as a potential therapeutic target in LUAD.",
+      "authors": [
+        "Yuqing Ren",
+        "Ruijie Ming",
+        "Anning Zuo",
+        "Shutong Liu",
+        "Yuhao Ba",
+        "Yuyuan Zhang",
+        "Yukang Chen",
+        "Teng Pan",
+        "Peng Luo",
+        "Quan Cheng",
+        "Jinhai Deng",
+        "Yi Yue",
+        "Hui Xu",
+        "Siyuan Weng",
+        "Xinwei Han",
+        "Dongdong Zhou",
+        "Zaoqu Liu"
+      ],
+      "categories": null,
+      "citations": null,
+      "comments": null,
+      "databases": [
+        "PubMed"
+      ],
+      "doi": null,
+      "keywords": [],
+      "number_of_pages": null,
+      "pages": null,
+      "publication": {
+        "category": "Journal",
+        "cite_score": null,
+        "is_potentially_predatory": false,
+        "isbn": null,
+        "issn": "1476-5594",
+        "publisher": null,
+        "sjr": null,
+        "snip": null,
+        "subject_areas": [],
+        "title": "Oncogene"
+      },
+      "publication_date": "2025-09-19",
+      "selected": null,
+      "title": "Cancer-associated fibroblasts drive lung adenocarcinoma progression via THBS2-mediated epithelial-mesenchymal transition.",
+      "urls": []
+    },
+    {
+      "abstract": "BACKGROUND BACKGROUND Levofloxacin (LVX), a widely used fluoroquinolone antibiotic, is generally considered to have low hepatotoxic potential compared to its analog trovafloxacin (TVX). Although considered relatively safe, LVX has been implicated in Drug-induced liver injury (DILI) cases, prompting the need for a comprehensive mechanistic assessment.\nMETHODS METHODS This study employed an integrated strategy combining real-world pharmacovigilance analysis based on FDA Adverse Event Reporting System (FAERS), human liver organoid modeling, and extracellular vesicle (EV) proteomics to systematically assess LVX-associated DILI risks and mechanisms.\nRESULTS RESULTS A total of 1671 LVX-related DILI cases were identified in FAERS, with a predominance in males and individuals aged 45-65. Disproportionality analysis revealed statistically significant signals indicative of cholestatic liver injury phenotypes, including mixed liver injury, cholestasis, and conjugated hyperbilirubinemia, etc. Furthermore, liver organoid assays revealed that LVX induced moderate hepatocellular injury, which was less severe than that caused by TVX. EV proteomic analysis from LVX-exposed organoids identified glycolysis as the most significantly enriched pathway, with notable upregulation of phosphoglycerate kinase 1 (PGK1), lactate dehydrogenase A (LDHA), and fructose-bisphosphate aldolase A (ALDOA). The expression of these three key glycolysis-related targets was further validated by RT-qPCR and proteomic analysis, and molecular docking demonstrated strong binding affinities between LVX and these proteins. Collectively, these findings suggest that glycolytic reprogramming may contribute to the pathogenesis of LVX-induced liver injury.\nCONCLUSIONS CONCLUSIONS This study presents a multidimensional strategy to investigate LVX-induced liver injury by integrating real-world pharmacovigilance data with a human liver organoid model. Together, these findings provide a translational framework for elucidating DILI.",
+      "authors": [
+        "Shiyi Tan",
+        "Yun Yang",
+        "Yu-Han Cai",
+        "Yuepu Pu",
+        "Zhongze Gu",
+        "Juan Zhang"
+      ],
+      "categories": null,
+      "citations": null,
+      "comments": null,
+      "databases": [
+        "PubMed"
+      ],
+      "doi": null,
+      "keywords": [
+        "N Levofloxacin",
+        "N Hepatotoxicity",
+        "N Extracellular vesicle proteomics",
+        "N Pharmacovigilance",
+        "N Liver organoid platform"
+      ],
+      "number_of_pages": null,
+      "pages": "117576",
+      "publication": {
+        "category": "Journal",
+        "cite_score": null,
+        "is_potentially_predatory": false,
+        "isbn": null,
+        "issn": "1096-0333",
+        "publisher": null,
+        "sjr": null,
+        "snip": null,
+        "subject_areas": [],
+        "title": "Toxicology and applied pharmacology"
+      },
+      "publication_date": "2025-09-19",
+      "selected": null,
+      "title": "Integrative analysis of levofloxacin-induced liver injury: Insights from pharmacovigilance, human liver organoids, and extracellular vesicle proteomics.",
+      "urls": []
+    },
+    {
+      "abstract": "Aspiration-assisted bioprinting (AAB) is a versatile biofabrication technique that enables the precise and selective patterning of biologics, such as tissue spheroids and organoids, addressing limitations of conventional bioprinting techniques. AAB facilitates the fabrication of (1) tissues with physiologically relevant cell densities using spheroids and (2) advanced tissue models that replicate three-dimensional microenvironments essential for studying cellular responses, disease development and drug testing. Here we provide reliable and reproducible guidelines for the precise positioning of abovementioned biologics, incorporating two operational modes: (1) a single-nozzle mode for precise, one-by-one bioprinting and (2) a high-throughput mode using a digitally controllable nozzle array, enabling the rapid and simultaneous placement of multiple spheroids for scalable tissue fabrication. Comprehensive instructions are included for setting up the AAB platform, operating software and key operational procedures, including optimization of bioprinting conditions. This Protocol enables users to build and operate their own AAB platform depending on target applications, achieving fine control over spheroid positioning through successful aspiration and their precise placement under optimized conditions. This Protocol enables the setup of the AAB platform within 1-2 d. Bioprinting time varies depending on the number of spheroids to bioprint: the single-nozzle mode requires ~30 s per spheroid, while the high-throughput mode can print 64 spheroids in 3-4 min. Designed for accessibility and adaptability, this Protocol is suitable for users from a variety of backgrounds, including engineering, biology, pharmacy and medical sciences, who require bioprinting of spheroids for creating microphysiological systems for drug testing and disease modeling and implantable grafts for regenerative medicine.",
+      "authors": [
+        "Myoung Hwan Kim",
+        "Ibrahim T Ozbolat"
+      ],
+      "categories": null,
+      "citations": null,
+      "comments": null,
+      "databases": [
+        "PubMed"
+      ],
+      "doi": null,
+      "keywords": [],
+      "number_of_pages": null,
+      "pages": null,
+      "publication": {
+        "category": "Journal",
+        "cite_score": null,
+        "is_potentially_predatory": false,
+        "isbn": null,
+        "issn": "1750-2799",
+        "publisher": null,
+        "sjr": null,
+        "snip": null,
+        "subject_areas": [],
+        "title": "Nature protocols"
+      },
+      "publication_date": "2025-09-19",
+      "selected": null,
+      "title": "Aspiration-assisted bioprinting of spheroids.",
+      "urls": []
+    },
+    {
+      "abstract": "Inflammatory bowel disease (IBD), which includes ulcerative colitis (UC) and Crohn's disease, significantly impairs patients' quality of life and is characterized by a compromised intestinal barrier, pathogenic bacterial colonization, and chronic inflammation. The gut microbiota has emerged as a therapeutic target for IBD owing to its role in modulating immune responses, metabolic pathways, and barrier function. In this study, the therapeutic potential of honeysuckle-derived nanovesicles (HNVs) in a dextran sodium sulfate-induced murine model of UC is investigated. Oral administration of HNVs alleviates colitis symptoms, reduces colonic inflammation and histopathological damage, restores Treg/Th17 balance, and repairs intestinal barrier integrity. These effects are associated with favorable alterations in the gut microbiota, including an increase in beneficial bacteria and a decrease in pathogenic species, along with elevated levels of short-chain fatty acids (SCFAs), which are essential for maintaining mucosal immunity and barrier function. Moreover, metabolomic analysis reveals that HNVs promoted bile acid (BA) absorption and regulated BA metabolism, contributing to the maintenance of intestinal immune homeostasis. Collectively, these findings demonstrate the protective effects of HNVs through modulation of SCFA levels and BA metabolism, supporting their potential as a promising therapeutic strategy for the treatment of IBD.",
+      "authors": [
+        "Yuanyuan Wang",
+        "Yuanhao Zhou",
+        "Qingyuan Wu",
+        "Yishu Li",
+        "Yilin Huang",
+        "Kexin Yu",
+        "Ping Li",
+        "Zhenye Lv",
+        "Haotian Liu",
+        "Hai Zou",
+        "Huiyu Liu",
+        "Xiaozhou Mou"
+      ],
+      "categories": null,
+      "citations": null,
+      "comments": null,
+      "databases": [
+        "PubMed"
+      ],
+      "doi": null,
+      "keywords": [
+        "N inflammatory bowel disease",
+        "N short chain fatty acids",
+        "N honeysuckle\u2010derived nanovesicles",
+        "N metabolite",
+        "N gut microbiota",
+        "N secondary bile acid"
+      ],
+      "number_of_pages": null,
+      "pages": "e05208",
+      "publication": {
+        "category": "Journal",
+        "cite_score": null,
+        "is_potentially_predatory": false,
+        "isbn": null,
+        "issn": "2198-3844",
+        "publisher": null,
+        "sjr": null,
+        "snip": null,
+        "subject_areas": [],
+        "title": "Advanced science (Weinheim, Baden-Wurttemberg, Germany)"
+      },
+      "publication_date": "2025-09-19",
+      "selected": null,
+      "title": "Honeysuckle-Derived Nanovesicles Regulate Gut Microbiota for the Treatment of Inflammatory Bowel Disease.",
+      "urls": []
+    },
+    {
+      "abstract": "BACKGROUND BACKGROUND Fecal calprotectin is a reliable surrogate marker for disease activity in ulcerative colitis. However, there are no consensus cutoff values for histoendoscopic remission. This study aimed to correlate fecal calprotectin with Mayo endoscopic score and histological disease activity (Geboes score) for ulcerative colitis patients in clinical remission.\nMETHODS METHODS Prospective study including adult ulcerative colitis patients in clinical remission or disease relapse, undergoing endoscopy for disease activity or dysplasia surveillance at an inflammatory bowel disease center between 2013 and 2020. Fecal calprotectin was collected before bowel preparation and Mayo endoscopic score was documented during colonoscopy. Biopsies were taken throughout the colon and histological activity was assessed using Geboes score by a blinded expert gastrointestinal pathologist.\nRESULTS RESULTS Two hundred fifty-three patients were included, 117 (46%) were male (mean age of 38.2 years-standard deviation \u00b1 24.8). A fecal calprotectin \u2265 123 \u03bcg/g predicts Mayo endoscopic score > 0 (58% sensitivity and 70% specificity), also aiding to differentiate Mayo endoscopic score 0 from 1 (61% sensitivity and 70% specificity). A fecal calprotectin \u2265 80 \u03bcg/g identified histological disease activity using Geboes score > 3.1 in patients with clinical remission (64.7% sensitivity, 58.7% specificity). Using Geboes score > 2, a fecal calprotectin \u2265 50 \u03bcg/g, is the most clinically relevant to identify patients in clinical remission with active histologic inflammation (49.6% sensitivity, 41.6% specificity).\nCONCLUSIONS CONCLUSIONS Fecal calprotectin correlates with endoscopic and histologic disease activity and can be used as a surrogate marker for disease activity. Our study prospectively demonstrated optimal cutoff values to discriminate histoendoscopic remission.",
+      "authors": [
+        "Gustavo Dr\u00fcgg Hahn",
+        "Peter Laszlo Lakatos",
+        "Chelsea Maedler-Kron",
+        "Victoria Marcus",
+        "Waqqas Afif",
+        "Gary Wild",
+        "Alain Bitton",
+        "Cristina Flores",
+        "Carlos Fernando de Magalh\u00e3es Francesconi",
+        "Talat Bessissow"
+      ],
+      "categories": null,
+      "citations": null,
+      "comments": null,
+      "databases": [
+        "PubMed"
+      ],
+      "doi": null,
+      "keywords": [
+        "N ulcerative colitis",
+        "N histologic remission",
+        "N endoscopic remission",
+        "N fecal calprotectin"
+      ],
+      "number_of_pages": null,
+      "pages": null,
+      "publication": {
+        "category": "Journal",
+        "cite_score": null,
+        "is_potentially_predatory": false,
+        "isbn": null,
+        "issn": "1536-4844",
+        "publisher": null,
+        "sjr": null,
+        "snip": null,
+        "subject_areas": [],
+        "title": "Inflammatory bowel diseases"
+      },
+      "publication_date": "2025-09-19",
+      "selected": null,
+      "title": "Defining Fecal Calprotectin Cutoffs That Predict Endoscopic and Histologic Remission in Patients With Ulcerative Colitis.",
+      "urls": []
+    },
+    {
+      "abstract": "BACKGROUND BACKGROUND We aimed to identify the long-term outcomes and predictive factors for failure of conventional therapy (CT), including 5-aminosalicylic acid, azathioprine, and glucocorticoid, in patients with intestinal Beh\u00e7et's disease (i-BD).\nMETHODS METHODS This retrospective study included 63 patients with i-BD receiving CT at the University of Tokyo Hospital between April 2005 and July 2024. Patients requiring anti-tumor necrosis factor-alpha (TNF-\u03b1) agents due to CT failure were categorized into the advanced therapy (AT) group, whereas those controlled with CT were classified as the CT group. Risk factors for CT failure were analyzed using Cox proportional hazards regression, and cumulative failure rates were using the Kaplan-Meier method.\nRESULTS RESULTS Twenty-eight patients (44.8%) required AT during a median follow-up of 93 months. The cumulative 1-, 3-, 5-, and 10-year failure rates of CT were 22.6%, 35.9%, 40.0%, and 50.8%, respectively. Multivariate analysis identified maximum ulcer size \u22653 cm (hazard ratio [HR]: 2.68, 95% confidence interval [CI]: 1.05-6.84, p=0.030), concomitant proton-pump inhibitor (PPI) use (HR: 2.65, 95%CI: 1.06-6.58, p=0.036), C-reactive protein (CRP) \u22654 mg/dL (HR: 2.56, 95%CI: 1.04-6.31, p=0.042), and hematochezia (HR: 2.40, 95%CI: 1.05-5.46, p=0.037) as independent predictors of CT failure. A predictive model using all four factors demonstrated good accuracy (AUC=0.877) for predicting AT requirement. Regarding AT efficacy, 22 patients (78.6%) in the AT group continued AT for at least 1 year, with most achieving clinical and endoscopic remission. Concomitant glucocorticoid use significantly decreased from 12.7\u00b111.7 mg/day at baseline to 2.4\u00b12.5 mg/day at 1 year (p<0.001).\nCONCLUSIONS CONCLUSIONS Large ulcer size, PPI use, high CRP, and hematochezia are risk factors for CT failure. Anti-TNF-\u03b1 agents are effective in patients with CT failure, and risk-based treatment strategies may improve disease control in patients with i-BD.",
+      "authors": [
+        "Keita Murakami",
+        "Junya Arai",
+        "Sozaburo Ihara",
+        "Yumi Tsuchida",
+        "Haruka Tsuchiya",
+        "Mayo Tsuboi",
+        "Ken Kurokawa",
+        "Nobumi Suzuki",
+        "Hiroto Kinoshita",
+        "Yoku Hayakawa",
+        "Keishi Fujio",
+        "Mitsuhiro Fujishiro"
+      ],
+      "categories": null,
+      "citations": null,
+      "comments": null,
+      "databases": [
+        "PubMed"
+      ],
+      "doi": null,
+      "keywords": [],
+      "number_of_pages": 26,
+      "pages": "1-26",
+      "publication": {
+        "category": "Journal",
+        "cite_score": null,
+        "is_potentially_predatory": false,
+        "isbn": null,
+        "issn": "1421-9867",
+        "publisher": null,
+        "sjr": null,
+        "snip": null,
+        "subject_areas": [],
+        "title": "Digestion"
+      },
+      "publication_date": "2025-09-19",
+      "selected": null,
+      "title": "Long-term outcomes and clinical factors associated with conventional therapy failure in intestinal Beh\u00e7et's disease: A retrospective cohort study in Japan.",
+      "urls": []
+    },
+    {
+      "abstract": "The rising global prevalence of inflammatory bowel disease (IBD) and costs of care associated with its management mandates the need to constrain costs whilst improving patient outcomes. Traditional care models such as fee for service do not capture the functional impact of IBD across the whole patient journey. There is a need to develop innovative care models to better address the multifaceted needs of patients with IBD. Values based healthcare(VBHC) is a model of care that aims to deliver quality care by prioritising outcomes that matter to patients in a manner that demonstrates cost-effectiveness of health service provision. In this comprehensive scoping review of the literature, we examine the implementation of VBHC-orientated approaches to IBD care delivery and assess how they have demonstrated value in relation to clinical outcomes, patient reported outcomes (PROs), costs (direct and indirect) and healthcare utilisation (HCU). In addition, we outline key enablers and barriers to implementation of VBHC models in IBD. We then describe the ideal composition of IBD VBHC models and parameters required for implementation and demonstration of their value proposition.",
+      "authors": [
+        "Patrick Hilley",
+        "Simone Chin",
+        "Darren Wong",
+        "Peter De Cruz"
+      ],
+      "categories": null,
+      "citations": null,
+      "comments": null,
+      "databases": [
+        "PubMed"
+      ],
+      "doi": null,
+      "keywords": [],
+      "number_of_pages": null,
+      "pages": null,
+      "publication": {
+        "category": "Journal",
+        "cite_score": null,
+        "is_potentially_predatory": false,
+        "isbn": null,
+        "issn": "1876-4479",
+        "publisher": null,
+        "sjr": null,
+        "snip": null,
+        "subject_areas": [],
+        "title": "Journal of Crohn's & colitis"
+      },
+      "publication_date": "2025-09-19",
+      "selected": null,
+      "title": "Implementation of Values based healthcare in inflammatory bowel disease-a review article.",
+      "urls": []
+    },
+    {
+      "abstract": "Immunotherapy has emerged as a promising treatment option for triple-negative breast cancer (TNBC); however, the pronounced heterogeneity of the tumor immune microenvironment significantly hinders the prediction of therapeutic efficacy, with effective biomarkers also remaining limited. This study utilizes single-cell RNA sequencing (scRNA-seq) and transcriptome analysis to dissect the immune landscapes of TNBC, emphasizing CD8 effector T cells (CD8Teff) as potential predictors of immune checkpoint inhibitors (ICIs) treatment response. Immune profiling revealed that CD8Teff cells were predominantly enriched in \"hot\" tumors strongly correlating with improved progression-free and overall survival. Notably, the cytokine C-X-C Motif Chemokine Ligand 13 (CXCL13) emerged as a key regulator, with its high expression marking an immune-active tumor microenvironment favorable to ICI efficacy. Comprehensive analysis uncovered critical interactions between CD8Teff cells and other immune and stromal components, supporting the formation of an immunologically active tumor microenvironment (TME) conducive to tumor control. Additionally, metabolic reprogramming of CD8Teff cells in responsive tumors highlighted pathways that may influence ICIs efficacy. CD8Teff cells significantly influence the TME and predict ICI success in TNBC, with CXCL13 as a pivotal modulator. A pathology-based artificial intelligence model for CD8Teff recognition was developed, achieving an area under the curve (AUC) of 0.823 in the training cohort and 0.805 in the validation cohort. This study provides an in-depth characterization of the TNBC immune microenvironment, identifying CD8Teff functionality, CXCL13 signaling, and immune-metabolic pathways as critical determinants of immunotherapy success. These findings support the development of personalized treatment strategies based on immune profiling to enhance therapeutic efficacy in TNBC.",
+      "authors": [
+        "Luhui Mao",
+        "Zebang Zhang",
+        "Yongjian Chen",
+        "Qing Peng",
+        "Zhenjun Huang",
+        "Wenhao Ouyang",
+        "Dongqiang Zeng",
+        "Wei Ren",
+        "Zifan He",
+        "Tang Li",
+        "Zehua Wang",
+        "Ruichong Lin",
+        "Jianli Zhao",
+        "Jiannan Wu",
+        "Herui Yao",
+        "Yunfang Yu"
+      ],
+      "categories": null,
+      "citations": null,
+      "comments": null,
+      "databases": [
+        "PubMed"
+      ],
+      "doi": null,
+      "keywords": [
+        "N CD8Teff cells",
+        "N Triple-negative breast cancer",
+        "N C-X-C Motif Chemokine Ligand 13",
+        "N Immunotherapy response",
+        "N Artificial intelligence",
+        "N Single-cell RNA sequencing"
+      ],
+      "number_of_pages": null,
+      "pages": "66",
+      "publication": {
+        "category": "Journal",
+        "cite_score": null,
+        "is_potentially_predatory": false,
+        "isbn": null,
+        "issn": "2662-8651",
+        "publisher": null,
+        "sjr": null,
+        "snip": null,
+        "subject_areas": [],
+        "title": "Molecular biomedicine"
+      },
+      "publication_date": "2025-09-19",
+      "selected": null,
+      "title": "Single-cell RNA sequencing identifies CD8Teff cell activation as a\u00a0predictive biomarker in triple-negative breast cancer immunotherapy.",
+      "urls": []
+    },
+    {
+      "abstract": "INTRODUCTION BACKGROUND Ischemia-induced retinopathies, such as retinopathy of prematurity and proliferative diabetic retinopathy, are major causes of vision loss. Both pathological neovascularization and neuronal damage contribute to vision impairment in these conditions, yet current therapies primarily target neovascularization and may further compromise neuronal health.\nOBJECTIVES OBJECTIVE Cyclic AMP (cAMP) is a widely recognized second messenger regulating diverse physiological and pathological processes. Exchange protein directly activated by cAMP (Epac) is a recently identified effector of cAMP signaling. This study aimed to investigate the role of Epac1 in ischemia-induced retinopathy and elucidate its underlying mechanisms using a mouse model of oxygen-induced retinopathy (OIR).\nMETHODS METHODS A mouse OIR model was established by exposing pups to 70% oxygen from postnatal day 7 (P7) to P12. Retinal structure and neuronal survival were assessed by H&E staining, TUNEL assay and immunostaining. Single-cell RNA sequencing (scRNA-seq), immunostaining, qPCR, Western blot, and proximity ligation assay were used to investigate cellular and molecular mechanisms by which Epac1 contributes to retinal pathology in OIR.\nRESULTS RESULTS Genetic deletion of Epac1 significantly protected against retinal neuronal loss and attenuated M\u00fcller glial activation in addition to reducing pathological neovascularization and promoting vascular repair. scRNA-seq revealed substantial transcriptomic alterations in M\u00fcller cells during OIR, including the emergence of reactive subclusters with distinct pathological roles, which were mitigated by Epac1 deletion. At the molecular level, Epac1 deletion restored ischemia-reduced VEGFR2 level in M\u00fcller cells during OIR, while Epac activation promoted VEGFR2 internalization and impaired VEGF signaling and its neuroprotective effects in primary M\u00fcller cells.\nCONCLUSION CONCLUSIONS These findings reveal a novel role for Epac1 in promoting retinal neurodegeneration in a mouse model of OIR through modulation of VEGF signaling in M\u00fcller cells. Targeting Epac1 may thus provide therapeutic benefit by preserving neuronal integrity in addition to its effects on vascular pathology.",
+      "authors": [
+        "Shuizhen Shi",
+        "Fan Xia",
+        "Zhongqiao Lu",
+        "Erick Palacios",
+        "Fang Mei",
+        "Massoud Motamedi",
+        "Xiaodong Cheng",
+        "Hua Liu",
+        "Wenbo Zhang"
+      ],
+      "categories": null,
+      "citations": null,
+      "comments": null,
+      "databases": [
+        "PubMed"
+      ],
+      "doi": null,
+      "keywords": [
+        "N Vasculopathy",
+        "N M\u00fcller cells",
+        "N VEGFR2",
+        "N Neurodegeneration",
+        "N Epac1",
+        "N OIR"
+      ],
+      "number_of_pages": null,
+      "pages": null,
+      "publication": {
+        "category": "Journal",
+        "cite_score": null,
+        "is_potentially_predatory": false,
+        "isbn": null,
+        "issn": "2090-1224",
+        "publisher": null,
+        "sjr": null,
+        "snip": null,
+        "subject_areas": [],
+        "title": "Journal of advanced research"
+      },
+      "publication_date": "2025-09-19",
+      "selected": null,
+      "title": "Epac1 deletion attenuates M\u00fcller glial pathological activation and mitigates retinal neurodegeneration in ischemia-induced retinopathy.",
+      "urls": []
+    },
+    {
+      "abstract": "Androgen deprivation therapy (ADT) remains a cornerstone in the treatment of prostate cancer (PCa), yet most tumors eventually develop resistance. Murine models are widely used to study PCa progression and ADT response, but a detailed understanding of the prostate's biological response to androgen deprivation in these models is lacking. Here, we present a spatiotemporal analysis of cellular and transcriptional dynamics in the mouse prostate following orchiectomy (ORX)-induced androgen deprivation with a focus on non-epithelial components. We observed progressive involution across all prostate lobes (dorsal, ventral, lateral, and anterior) and distinct lobe-specific temporal gene expression changes post-ORX. Immune cell infiltration markedly increased over time, highlighting a shift in the prostate's cellular landscape. Single-cell RNA sequencing uncovered a previously undescribed fibroblast subtype-termed ORX-induced fibroblast (OIF)-characterized by high expression of Wnt2, Rorb, and Wif1, with distinct spatial localization. Pathway analysis revealed upregulation of amide and peptide binding functions, alongside suppression of peptidase and endopeptidase activity. Furthermore, dynamic changes in ligand-receptor interactions across lobes underscored the evolving intercellular communication in the post-ORX prostate. By integrating spatial transcriptomics with single-cell profiling, our study generates a high-resolution atlas of the murine prostate's response to androgen deprivation. These findings provide a foundational resource for interpreting ADT responses in preclinical models of PCa.",
+      "authors": [
+        "Greg Shelley",
+        "Allison May",
+        "Tyler Robinson",
+        "Jinlu Dai",
+        "Sethu Pitchiaya",
+        "Evan T Keller"
+      ],
+      "categories": null,
+      "citations": null,
+      "comments": null,
+      "databases": [
+        "PubMed"
+      ],
+      "doi": null,
+      "keywords": [
+        "N Spatial transcriptomics",
+        "N Prostate",
+        "N Androgen-deprivation",
+        "N Androgen",
+        "N Orchiectomy"
+      ],
+      "number_of_pages": null,
+      "pages": "101230",
+      "publication": {
+        "category": "Journal",
+        "cite_score": null,
+        "is_potentially_predatory": false,
+        "isbn": null,
+        "issn": "1476-5586",
+        "publisher": null,
+        "sjr": null,
+        "snip": null,
+        "subject_areas": [],
+        "title": "Neoplasia (New York, N.Y.)"
+      },
+      "publication_date": "2025-09-19",
+      "selected": null,
+      "title": "A spatiotemporal atlas of orchiectomy-induced androgen deprivation-mediated modulation of cellular composition and gene expression in the mouse prostate.",
+      "urls": []
+    },
+    {
+      "abstract": "BackgroundMicroglia are central mediators of neuroinflammation in Alzheimer's disease (AD), contributing significantly to disease pathogenesis. Understanding microglial heterogeneity and their regulatory mechanisms is critical for identifying potential therapeutic targets.ObjectiveThis study aimed to investigate the diversity of microglial subpopulations in AD and uncover key transcriptional regulators driving their pathogenic activity.MethodsWe integrated bulk RNA sequencing data from AD patients and 5\u00d7FAD mouse models with single-cell RNA sequencing (scRNA-seq) to profile microglial heterogeneity. Differential gene expression, pathway enrichment, pseudotime trajectory, and SCENIC analyses were used to identify functionally distinct subsets and regulatory networks. Experimental validation was conducted through in vivo assays in 5\u00d7FAD mice and in vitro inhibition studies targeting HIF-1\u03b1.ResultsA unique microglial subpopulation, termed microglia_2, was identified with an inflammatory-angiogenic transcriptional signature that was enriched during AD progression. This subset showed significant activation of inflammatory pathways. Pseudotime and SCENIC analyses revealed HIF-1\u03b1 as a master regulator of microglia_2. In 5\u00d7FAD mice, cognitive decline was accompanied by increased expression of HIF-1\u03b1 and Apoe, as well as microglial activation in the prefrontal cortex. In vitro inhibition of HIF-1\u03b1 significantly reduced microglial inflammation.ConclusionsOur study demonstrates that a specific microglial subpopulation characterized by elevated HIF-1\u03b1 expression may contribute to AD-associated neuroinflammation. By integrating transcriptomic analyses and experimental validation, we provide cell type-specific insights into disease mechanisms, offering potential insights for future mechanistic studies and therapeutic exploration.",
+      "authors": [
+        "Manyu Dong",
+        "Yilun Qian",
+        "Yao Geng",
+        "Ruiyu Wang",
+        "Yu Wang",
+        "Jili Cai",
+        "Xihui Wang",
+        "Ying Huang",
+        "Yan Liu",
+        "Wentao Liu",
+        "Qi Wu",
+        "Ying Shen"
+      ],
+      "categories": null,
+      "citations": null,
+      "comments": null,
+      "databases": [
+        "PubMed"
+      ],
+      "doi": null,
+      "keywords": [
+        "N Alzheimer's disease",
+        "N HIF-1\u03b1",
+        "N microglia",
+        "N neuroinflammation",
+        "N bioinformatics analysis"
+      ],
+      "number_of_pages": null,
+      "pages": "13872877251378007",
+      "publication": {
+        "category": "Journal",
+        "cite_score": null,
+        "is_potentially_predatory": false,
+        "isbn": null,
+        "issn": "1875-8908",
+        "publisher": null,
+        "sjr": null,
+        "snip": null,
+        "subject_areas": [],
+        "title": "Journal of Alzheimer's disease : JAD"
+      },
+      "publication_date": "2025-09-19",
+      "selected": null,
+      "title": "HIF-1\u03b1-induced microglia-mediated neuroinflammation is involved in Alzheimer's disease: Evidence from single-cell transcriptomic analysis.",
+      "urls": []
+    },
+    {
+      "abstract": "OBJECTIVE OBJECTIVE Androgen deprivation therapy (ADT) was the frontline treatment for patients with prostate cancer ineligible for radical prostatectomy. However, the development of resistance to ADT significantly limits its clinical efficacy.\nMETHODS METHODS Using a genome-wide CRISPR/Cas9 knockout (GeCKO) library screen combined with single-cell RNA sequencing (scRNA-seq) analysis, we identified key genes involved in ADT resistance.\nRESULTS RESULTS Macrophage migration inhibitory factor (MIF) was identified as a critical mediator of ADT resistance. Inhibition of MIF significantly overcomes ADT resistance. Moreover, we found that the androgen receptor (AR), but not its splice variant AR-V7, negatively regulates MIF expression. Consequently, inhibition of the AR signaling pathway via ADT results in the upregulation of MIF expression. Elevated expression of MIF promotes prostate cancer cell proliferation by upregulating AMPD2 expression.\nCONCLUSIONS CONCLUSIONS Our findings demonstrate that ADT induces MIF upregulation, which in turn drives prostate cancer cell proliferation via upregulating AMPD2 expression, eventually contributing to the development of resistance to ADT.",
+      "authors": [
+        "Changying Li",
+        "Chenchen He",
+        "Jiancheng Pan",
+        "Yuhong Feng",
+        "Dawei Tian",
+        "Jinhuan Meng",
+        "Zhi Qi",
+        "Changlin Li",
+        "Kuo Yang"
+      ],
+      "categories": null,
+      "citations": null,
+      "comments": null,
+      "databases": [
+        "PubMed"
+      ],
+      "doi": null,
+      "keywords": [
+        "N androgen deprivation therapy",
+        "N resistance",
+        "N MIF",
+        "N purine metabolism",
+        "N prostate cancer"
+      ],
+      "number_of_pages": null,
+      "pages": null,
+      "publication": {
+        "category": "Journal",
+        "cite_score": null,
+        "is_potentially_predatory": false,
+        "isbn": null,
+        "issn": "1097-0045",
+        "publisher": null,
+        "sjr": null,
+        "snip": null,
+        "subject_areas": [],
+        "title": "The Prostate"
+      },
+      "publication_date": "2025-09-19",
+      "selected": null,
+      "title": "MIF Facilitates Resistance to Androgen Deprivation Therapy by Regulating AMPD2 Expression in Prostate Cancer Cells.",
+      "urls": []
+    },
+    {
+      "abstract": "BACKGROUND BACKGROUND Nephronophthisis (NPH) is an autosomal recessive kidney disease, and NPHP1 is the most frequently affected gene. Tubulointerstitial fibrosis is the major phenotype of NPHP1-deficient NPH. The pathophysiology of NPHP1-deficient NPH is unclear because models representing the disease pathophysiology are lacking. Herein, we aimed to create a novel pathological model of NPH using 3D kidney organoids derived from human-induced pluripotent stem cells (iPSCs) and elucidated the pathophysiology while searching for therapeutic candidates.\nMETHODS METHODS NPHP1-deficient kidney organoids were generated from iPSCs. Fibrosis was induced by treatment with IL-1\u03b2. The effects of the Hippo signaling pathway inhibitors as therapeutic candidates were assessed. Fibrotic status was evaluated using immunofluorescence and quantitative PCR.\nRESULTS RESULTS -/- -/- -/- -/- -/- NPHP1 kidney organoids were generated from iPSCs. Fibrosis induction with IL-1\u03b2 considerably increased the expression of fibronectin and transcription of fibrosis-related genes in NPHP1 organoids. Long-term culture of NPHP1 organoids induced substantial fibrogenesis compared with wild-type organoids. Co-immunoprecipitation analysis revealed the binding of NPHP1 to LATS1/2-the main constituents of the Hippo pathway. IL-1\u03b2 administration increased the expression of the key Hippo pathway genes in NPHP1 organoids. By contrast, the Hippo pathway inhibitors ameliorated IL-1\u03b2-induced fibrogenesis in NPHP1 organoids. Because one of the inhibitors, verteporfin, is in clinical use, its practical availability is expected from a drug-repositioning perspective.\nCONCLUSIONS CONCLUSIONS Hippo signaling pathway is involved in the fibrotic changes associated with NPHP1-deficient NPH and the Hippo pathway inhibitors could be therapeutic agents.\nCLINICAL TRIAL NUMBER BACKGROUND Not applicable.",
+      "authors": [
+        "Takefumi Suzuki",
+        "Koichiro Susa",
+        "Hiroaki Kikuchi",
+        "Yuta Nakano",
+        "Tomoki Yanagi",
+        "Yu Hara",
+        "Tamami Fujiki",
+        "Fumiaki Ando",
+        "Shintaro Mandai",
+        "Yutaro Mori",
+        "Takayasu Mori",
+        "Hiroaki Iwasa",
+        "Yutaka Hata",
+        "Shinichi Uchida",
+        "Eisei Sohara"
+      ],
+      "categories": null,
+      "citations": null,
+      "comments": null,
+      "databases": [
+        "PubMed"
+      ],
+      "doi": null,
+      "keywords": [
+        "N Kidney organoid",
+        "N Nephronophthisis (NPH)",
+        "N Hippo signaling pathway",
+        "N Fibrosis",
+        "N Stem cell"
+      ],
+      "number_of_pages": null,
+      "pages": "489",
+      "publication": {
+        "category": "Journal",
+        "cite_score": null,
+        "is_potentially_predatory": false,
+        "isbn": null,
+        "issn": "1757-6512",
+        "publisher": null,
+        "sjr": null,
+        "snip": null,
+        "subject_areas": [],
+        "title": "Stem cell research & therapy"
+      },
+      "publication_date": "2025-09-19",
+      "selected": null,
+      "title": "iPSC-based drug discovery identified the Hippo signaling pathway as a therapeutic target in the fibrosis of NPHP1-deficient nephronophthisis.",
+      "urls": []
+    },
+    {
+      "abstract": "INTRODUCTION BACKGROUND Ferroptosis has garnered attention as a mechanism of cell death contributing to lupus and lupus nephritis pathogenesis. However, the precise locations of occurrence, mechanisms triggering disease progression, and critical targets remain unclear.\nMATERIALS AND METHODS METHODS Differentially expressed genes were identified using the \"limma\" package in R. Weighted gene co-expression network analysis was applied to explore gene modules associated with LN. Ferroptosis-related genes were obtained from FerrDb V2 and intersected with DEGs and WGCNA modules to identify candidate genes. Hub genes were selected using LASSO and Random Forest algorithms, followed by ROC curve validation. Immune cell infiltration was analyzed using the CIBERSORT algorithm, and correlations with hub gene expression were assessed. A protein-protein interaction network was constructed via STRING. Finally, RT-qPCR was performed to validate the expression of selected genes in kidney tissues from MRL/lpr and C57BL/6 mice.\nRESULTS RESULTS Differential expression gene analysis and weighted gene co-expression network analysis identified 688 LN-related genes in PBMC, 625 in the renal tubulointerstitium, and 1428 in renal glomeruli. The LASSO and Random Forest algorithms selected hub genes associated with ferroptosis and were validated through ROC analysis. Immunocyte infiltration analysis revealed differential patterns in different tissues, with most hub genes highly correlated with immune cell infiltrations. PPI analysis and RT-qPCR validation identified a PPARG-centered regulatory network (including PPARG, CDKN1A, NR4A1, ATF3, DUSP1 and PDK4) that may be crucial for the regulation of ferroptosis in lupus nephritis.\nCONCLUSION CONCLUSIONS This study reveals, for the first time, the mechanisms and regulatory hub genes of ferroptosis in different LN tissues. The regulatory network centered around PPARG may play a crucial role in ferroptosis in LN, providing a new perspective for in-depth investigation into LN pathogenesis and targeted therapy development. Key Points \u2022 Identified tissue-specific ferroptosis biomarkers in lupus nephritis using multiple machine learning methods. \u2022 The diagnostic efficacy of the PPARG regulatory network was validated through both internal and external validation. \u2022 Discovered the regulatory network of ferroptosis in lupus nephritis by constructing the PPARG regulatory network.",
+      "authors": [
+        "Xiaolong Li",
+        "Qingmiao Zhu",
+        "Jinge Huang",
+        "Kai Zhao",
+        "Ting Zhao"
+      ],
+      "categories": null,
+      "citations": null,
+      "comments": null,
+      "databases": [
+        "PubMed"
+      ],
+      "doi": null,
+      "keywords": [
+        "N Biomarkers",
+        "N Lupus nephritis",
+        "N Computational biology",
+        "N Machine learning",
+        "N Ferroptosis"
+      ],
+      "number_of_pages": null,
+      "pages": null,
+      "publication": {
+        "category": "Journal",
+        "cite_score": null,
+        "is_potentially_predatory": false,
+        "isbn": null,
+        "issn": "1434-9949",
+        "publisher": null,
+        "sjr": null,
+        "snip": null,
+        "subject_areas": [],
+        "title": "Clinical rheumatology"
+      },
+      "publication_date": "2025-09-19",
+      "selected": null,
+      "title": "PPARG-centered regulatory network of ferroptosis in lupus nephritis: insights by integrated comprehensive bioinformatics analysis and machine learning.",
+      "urls": []
+    },
+    {
+      "abstract": "Microglia, the principal immune cells of the central nervous system, have emerged as important players in sensing and regulating neuronal activity. While microglial activation is a hallmark in neurodegeneration, the specific role of microglia in disease-related cortical excitability remains unknown. Utilizing multichannel probe recordings and longitudinal in vivo calcium imaging, we observed neuronal hyperactivity at the initial stage of disease progression in a mouse model of TAR DNA-binding protein 43 (TDP-43) neurodegeneration (rNLS8, regulated nuclear localization sequence-deleted human TDP-43 transgenic mouse model). Spatial and single-cell RNA sequencing revealed a specific subpopulation of microglia, rod-shaped microglia, with a distinct morphology and direct response to cortical hyperactivity. Rod-shaped microglia predominantly interacted with neuronal dendrites and remodeled excitatory synaptic inputs to attenuate motor cortical hyperactivity. Triggering receptor expressed on myeloid cells 2 (TREM2) deficiency led to a marked reduction of rod-shaped microglia accompanied by increased neuronal activity in rNLS8 mice. Together, our results suggest that rod-shaped microglia play a neuroprotective role by attenuating cortical hyperexcitability in TDP-43-related neurodegeneration.",
+      "authors": [
+        "Manling Xie",
+        "Yue Liang",
+        "Alessandra S Miller",
+        "Praveen N Pallegar",
+        "Anthony D Umpierre",
+        "Na Wang",
+        "Shuwen Zhang",
+        "Nagaswaroop Kengunte Nagaraj",
+        "Zachary C Fogarty",
+        "Nikhil B Ghayal",
+        "Bj\u00f6rn Oskarsson",
+        "Shunyi Zhao",
+        "Jiaying Zheng",
+        "Wu Shi",
+        "Mastura Akter",
+        "Fangfang Qi",
+        "Aivi T Nguyen",
+        "Dennis W Dickson",
+        "Long-Jun Wu"
+      ],
+      "categories": null,
+      "citations": null,
+      "comments": null,
+      "databases": [
+        "PubMed"
+      ],
+      "doi": null,
+      "keywords": [
+        "N TDP-43",
+        "N glial biology",
+        "N neuroimmunology",
+        "N rod-shaped microglia",
+        "N Trem2",
+        "N motor neuron disease",
+        "N neurodegeneration",
+        "N cortical hyperactivity",
+        "N amyotrophic lateral sclerosis"
+      ],
+      "number_of_pages": null,
+      "pages": null,
+      "publication": {
+        "category": "Journal",
+        "cite_score": null,
+        "is_potentially_predatory": false,
+        "isbn": null,
+        "issn": "1097-4180",
+        "publisher": null,
+        "sjr": null,
+        "snip": null,
+        "subject_areas": [],
+        "title": "Immunity"
+      },
+      "publication_date": "2025-09-19",
+      "selected": null,
+      "title": "Rod-shaped microglia interact with neuronal dendrites to attenuate cortical excitability during TDP-43-related neurodegeneration.",
+      "urls": []
+    },
+    {
+      "abstract": "The accurate cell-level characterization of cytokine activity is important for understanding the signaling processes underpinning a wide range of immune-mediated conditions such as auto-immune disease, cancer and response to infection. We previously proposed the SCAPE (Single cell transcriptomics-level Cytokine Activity Prediction and Estimation) method to address the challenges associated with cytokine activity estimation in human single cell RNA-sequencing (scRNA-seq) and spatial transcriptomics (ST) data. Here, we propose a new method MouSSE (Mouse-Specific Single cell transcriptomics level cytokine activity prediction and Estimation) for performing cytokine activity estimation in murine scRNA-seq and ST data. MouSSE estimates the cell-level activity of 86 distinct cytokines using a gene set scoring approach. The cytokine-specific gene sets used by MouSSE are constructed using experimental cytokine stimulation data from the Immune Dictionary and cell-level scores are computed using a modification of the Variance-adjusted Mahalanobis (VAM) technique that supports both positive and negative gene weights. MouSSE is validated using data from both the Immune Dictionary via stratified cross-validation and external scRNA-seq and ST datasets against 10 cytokine activity estimation methods. These results demonstrate that MouSSE outperforms comparable methods for cell-level cytokine activity estimation in mouse scRNA-seq and ST data. An example vignette and installation instructions for the MouSSE R package are provided at https://github.com/azkajavaid/MousseR-package.",
+      "authors": [
+        "Azka Javaid",
+        "H Robert Frost"
+      ],
+      "categories": null,
+      "citations": null,
+      "comments": null,
+      "databases": [
+        "PubMed"
+      ],
+      "doi": null,
+      "keywords": [],
+      "number_of_pages": null,
+      "pages": "e1013475",
+      "publication": {
+        "category": "Journal",
+        "cite_score": null,
+        "is_potentially_predatory": false,
+        "isbn": null,
+        "issn": "1553-7358",
+        "publisher": null,
+        "sjr": null,
+        "snip": null,
+        "subject_areas": [],
+        "title": "PLoS computational biology"
+      },
+      "publication_date": "2025-09-19",
+      "selected": null,
+      "title": "Mouse-Specific Single cell cytokine activity prediction and Estimation (MouSSE).",
+      "urls": []
+    },
+    {
+      "abstract": "BACKGROUND BACKGROUND Various conditions can disrupt anorectal sexual function, potentially reducing pleasure or increasing pain. There is currently no standard diagnostic criteria for anorectal sexual dysfunction, including anhedonia and anodyspareunia, despite a described need for better measurement tools.\nOBJECTIVE OBJECTIVE To evaluate the Anorectal Sexual Function Index (ASFI) in a clinical sample of people with and without problematic receptive anal intercourse (RAI) and to develop diagnostic cut-off scores for potential classification of sexual dysfunction.\nDESIGN METHODS Between July 2024 and January 2025, we conducted a mixed-method, cross-sectional study of a population with mixed sexual function/dysfunction among individuals assigned male at birth.\nPARTICIPANTS METHODS We recruited individuals with concerns during RAI, including pain or lack of pleasure in addition to people with known pelvic pathology.\nMAIN MEASURES METHODS All participants completed a clinical interview and a questionnaire, including the ASFI and other health-related quality-of-life measures.\nKEY RESULTS RESULTS Among the 122 participants, the mean age was 42\u00a0years, the majority (97%) were cis-gender men, and 85% of whom identified as gay. Participants reporting reduced pleasure in the interview scored lower on the pleasure domain (11 vs 17, p\u2009<\u20090.01), while those reporting pain in the interview had higher pain scores (23 vs 13, p\u2009<\u20090.01). Participants with active fissures, IBS, IBD, anal cancer, and chronic prostatitis/pelvic pain syndrome consistently reported higher pain scores and lower pleasure scores. Participants classified with anodyspareunia reported lower sexual satisfaction, reduced erectile frequency during RAI, fewer orgasms during RAI, and higher levels of internalized homophobia. Participants classified with anhedonia reported lower sexual satisfaction, reduced erectile frequency during RAI, fewer orgasms during RAI, and higher prevalence of HIV.\nCONCLUSIONS CONCLUSIONS We standardized the diagnosis for anodyspareunia and RAI anhedonia using the ASFI. Respondents with anodyspareunia and RAI anhedonia reported worse patient-reported outcomes than those who did not meet criteria.",
+      "authors": [
+        "Thomas W Gaither",
+        "Myles Anderson",
+        "Jonathan A Balcazar",
+        "Marcia M Russell",
+        "Mark S Litwin"
+      ],
+      "categories": null,
+      "citations": null,
+      "comments": null,
+      "databases": [
+        "PubMed"
+      ],
+      "doi": null,
+      "keywords": [],
+      "number_of_pages": null,
+      "pages": null,
+      "publication": {
+        "category": "Journal",
+        "cite_score": null,
+        "is_potentially_predatory": false,
+        "isbn": null,
+        "issn": "1525-1497",
+        "publisher": null,
+        "sjr": null,
+        "snip": null,
+        "subject_areas": [],
+        "title": "Journal of general internal medicine"
+      },
+      "publication_date": "2025-09-19",
+      "selected": null,
+      "title": "Assessing Anorectal Sexual Function: Validity and Clinical Utility of a New Measure.",
+      "urls": []
+    },
+    {
+      "abstract": "Crohn's disease (CD), a chronic inflammatory bowel disease, is witnessing a rising global incidence. Adalimumab (ADA), a biological agent, is widely used in its treatment. However, patients exhibit significant individual variability in responses to ADA therapy. This study focuses on developing and validating a machine learning - based predictive model to assess the clinical remission of CD patients at 12 and 48 weeks post - ADA treatment, while identifying the key influencing factors. A single - center retrospective study was conducted, involving patients from the Second Xiangya Hospital of Central South University between 2017 and 2024. Comprehensive data on demographics, lifestyle, disease characteristics, and laboratory indicators were collected and preprocessed. The dataset was partitioned into an 80% training set and a 20% test set. Six machine learning models, including Random Forest and Gradient Boosting Machine, were employed to construct the prediction model. Model performance was evaluated using metrics such as accuracy, sensitivity, and specificity. The SHAP analysis was performed to elucidate the key factors. The results indicated that the XGBoost model outperformed other models across multiple evaluation metrics. Fecal calprotectin (Fc), a marker of intestinal inflammation, showed that lower levels were associated with a tendency towards mucosal healing. C - reactive protein (CRP), on the other hand, reflected systemic inflammation. Both biomarkers significantly influenced the prediction outcomes at different time points. The developed model serves as a valuable tool for clinical stratification and personalized treatment planning. Future research should expand sample diversity through multi - center collaboration and integrate multi - omics data, such as gut microbiome and metabolomics, to further enhance the model's ability to capture the molecular mechanisms underlying the disease.",
+      "authors": [
+        "Pianpian Xia",
+        "Feihong Deng",
+        "Deliang Liu"
+      ],
+      "categories": null,
+      "citations": null,
+      "comments": null,
+      "databases": [
+        "PubMed"
+      ],
+      "doi": null,
+      "keywords": [],
+      "number_of_pages": null,
+      "pages": "e0331447",
+      "publication": {
+        "category": "Journal",
+        "cite_score": null,
+        "is_potentially_predatory": false,
+        "isbn": null,
+        "issn": "1932-6203",
+        "publisher": null,
+        "sjr": null,
+        "snip": null,
+        "subject_areas": [],
+        "title": "PloS one"
+      },
+      "publication_date": "2025-09-19",
+      "selected": null,
+      "title": "Development and validation of a machine learning-based predictive model for clinical remission in Crohn's disease patients receiving Adalimumab therapy.",
+      "urls": []
+    },
+    {
+      "abstract": "BACKGROUND BACKGROUND Previous reviews for Crohn's disease (CD) treatment have rarely considered advanced and immunomodulator medical therapies together. Our aim was to compare all therapies for efficacy and safety in induction of remission.\nMETHODS METHODS We searched databases up to June 2025. Our outcomes were clinical remission and response, endoscopic remission, and safety outcomes. We performed network meta-analyses and estimated risk ratios (RR) and 95% CIs. We used GRADE to assess certainty of results, and surface under the cumulative ranking curve for ranking treatments.\nRESULTS RESULTS A total of 79 RCTs with 20\u2009724 participants were included. Interventions ranged from 2 to 30\u2009weeks. There was moderate GRADE certainty of effectiveness over placebo for clinical remission for combination of adalimumab with thiopurines (RR, 2.87; 95% CI, 1.99-4.14; RD (Risk difference) \u2009=\u200935.3%; NNT\u2009(Number needed to treat) =\u20093, large magnitude), guselkumab (RR, 2.5; 95% CI, 1.95-3.21; RD\u2009=\u200928.4%; NNT\u2009=\u20094, moderate magnitude, adalimumab (RR, 2.46; 95% CI, 1.84-3.29; RD\u2009=\u200927.6% NNT\u2009=\u20094, moderate magnitude), combination of infliximab with thiopurines (RR, 2.43; 95% CI, 1.71-3.44; RD\u2009=\u200927%; NNT\u2009=\u20094, moderate magnitude), and ustekinumab (RR, 2.04; 95% CI, 1.69-2.46; RD\u2009=\u200919.6% NNT\u2009=\u20095, small magnitude). For endoscopic remission, there was moderate GRADE certainty of effectiveness for risankizumab (RR, 3.48; 95% CI, 2.18-5.58; RD\u2009=\u200917.4%, moderate magnitude). The certainty on safety varied, but treatments appear generally safe in the short term.\nCONCLUSION CONCLUSIONS Combination of anti-tumor necrosis factors (anti-TNFs) and immunomodulators followed by anti-TNF monotherapy had large effect size with moderate certainty for the induction of clinical remission. More novel therapies appear to have similar effect sizes but with increased imprecision of the estimates.",
+      "authors": [
+        "Vasiliki Sinopoulou",
+        "Morris Gordon",
+        "Shiyao Liu",
+        "Daniel Arruda Navarro Albuquerque",
+        "Aderonke Ajiboye",
+        "Sudheer Kumar Vuyyuru",
+        "Shellie Radford",
+        "Gordon Moran"
+      ],
+      "categories": null,
+      "citations": null,
+      "comments": null,
+      "databases": [
+        "PubMed"
+      ],
+      "doi": null,
+      "keywords": [
+        "N inflammatory bowel disease",
+        "N gastroenterology",
+        "N evidence synthesis"
+      ],
+      "number_of_pages": null,
+      "pages": null,
+      "publication": {
+        "category": "Journal",
+        "cite_score": null,
+        "is_potentially_predatory": false,
+        "isbn": null,
+        "issn": "1536-4844",
+        "publisher": null,
+        "sjr": null,
+        "snip": null,
+        "subject_areas": [],
+        "title": "Inflammatory bowel diseases"
+      },
+      "publication_date": "2025-09-19",
+      "selected": null,
+      "title": "Immunomodulators and Advanced Therapies for Induction of Remission in Crohn's Disease: A Systematic Review and Network Meta-Analysis.",
+      "urls": []
+    },
+    {
+      "abstract": "Trajectory inference refers to the task of reconstructing state sequences of dynamic processes from single-cell RNA sequencing (scRNAseq) data. This task frequently results in ambiguous results due to the noisiness of the data. While this issue has been alleviated by the incorporation of directional information from RNA velocity analyses, it remains difficult to resolve complex differentiation topologies, such as convergent trajectories. We introduce exploratory trajectory inference to address this challenge. This approach considers unsupervised clustering analysis of trajectory ensembles derived from simulation-based trajectory inference to deduce differentiation lineages in a data-driven fashion. We assess this approach to resolve the convergent differentiation trajectories in CD8 T-cell differentiation in chronic infections. We utilize an original scRNAseq time-series dataset of CD8 T cells collected during the time course of a chronic LCMV infection. Simulation-based trajectory inference identified a branch region early during chronic infection where cells separate into an exhausted and a memory-like lineage. Exploratory trajectory inference further allowed us to identify a convergent differentiation trajectory traversing memory-like states and ending in the exhausted population. Adoptive transfer experiments showed CD8 T cells with predicted memory-like fate differentiating into both memory-like and exhaustion states, confirming the convergent differentiation topology. We expect exploratory trajectory inference to be applicable in other scRNAseq-based studies aiming at comprehensive characterization of differentiation trajectories with bifurcating and convergent topologies.",
+      "authors": [
+        "Jan T Schleicher",
+        "Revant Gupta",
+        "Dario Cerletti",
+        "Ioana Sandu",
+        "Annette Oxenius",
+        "Manfred Claassen"
+      ],
+      "categories": null,
+      "citations": null,
+      "comments": null,
+      "databases": [
+        "PubMed"
+      ],
+      "doi": null,
+      "keywords": [],
+      "number_of_pages": null,
+      "pages": "e0332406",
+      "publication": {
+        "category": "Journal",
+        "cite_score": null,
+        "is_potentially_predatory": false,
+        "isbn": null,
+        "issn": "1932-6203",
+        "publisher": null,
+        "sjr": null,
+        "snip": null,
+        "subject_areas": [],
+        "title": "PloS one"
+      },
+      "publication_date": "2025-09-19",
+      "selected": null,
+      "title": "Exploratory trajectory inference reveals convergent lineages for CD8 T cells in chronic LCMV infection.",
+      "urls": []
+    }
+  ],
+  "processed_at": "2025-09-22 16:28:05",
+  "publication_types": null,
+  "query": "[single-cell RNA sequencing] OR [IBD] OR [inflammatory bowel disease] OR [Crohn disease] OR [organoids] OR [computational biology]",
+  "since": "2025-09-19",
+  "until": "2025-09-22"
+}

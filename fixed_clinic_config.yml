@@ -1,0 +1,40 @@
+GOOGLE_SPREADSHEET_ID: ""  # Fill with your Google Sheet ID
+GOOGLE_CREDENTIALS_JSON: "./google-credentials.json"  # Put your real creds file here
+NCBI_API_KEY: ""  # Fill with your NCBI key
+LOCAL_ROOT_DIR: "."
+
+# Database configuration - focus on bioRxiv and PubMed (where medical papers are)
+databases: ["pubmed", "biorxiv"]
+
+# Simplified, broader queries based on your heterogeneous groups
+# Using OR logic so papers need to match ANY of these topics
+query_biorxiv: "[single-cell] OR [scRNA-seq] OR [spatial transcriptomics] OR [organoids] OR [multiomics] OR [IBD] OR [inflammatory bowel disease] OR [Crohn] OR [ulcerative colitis] OR [immunodeficiency] OR [inflammasome] OR [cytokine] OR [macrophages] OR [dendritic cells] OR [intestinal] OR [gut microbiome] OR [immune cells] OR [inflammation] OR [immunology] OR [computational biology]"
+
+query_pubmed_arxiv: "[single-cell RNA sequencing] OR [scRNA-seq] OR [spatial transcriptomics] OR [multiomics] OR [computational biology] OR [organoids] OR [IBD] OR [inflammatory bowel disease] OR [Crohn disease] OR [ulcerative colitis] OR [immunodeficiency] OR [inflammasome] OR [cytokine signaling] OR [macrophages] OR [dendritic cells] OR [intestinal epithelial] OR [gut microbiome] OR [immune cells] OR [immunology] OR [immunotherapy]"
+
+# Reasonable limits
+limit: 400
+limit_per_database: 150
+
+# LLM Filtering - Using original author's style prompt
+LLM_FILTERING: true
+LLM_PROVIDER: "openai"
+LANGUAGE_MODEL: "gemini-2.5-flash-lite"
+OPENAI_API_KEY: ""  # Fill with your GEMINI_KEY
+OPENAI_BASE_URL: "https://generativelanguage.googleapis.com/v1beta/openai/"
+
+# Simplified filtering prompt based on original author's style
+FILTERING_PROMPT: "You are a lab manager at a research lab focusing on single-cell RNA sequencing, spatial transcriptomics, machine learning applications and methods development in computational biology. Lab research focuses on inflammatory diseases, IBD, immune system disorders, and translational applications of single-cell data. Lab members are interested in building single-cell atlases, working with single-cell data on the level of patients (donors, individuals) and keeping updated on the most recent methods in single-cell biology. Another focus of the lab is benchmarking single-cell analysis tools. A specific area of interest is single-cell data integration. You are reviewing a list of research papers to determine if they are relevant to your lab. Please answer 'yes' or 'no' to the following question: Is the following research paper relevant?"
+
+# Posting configuration
+SLACK:
+  is_posting_on: false  # Set to true and add tokens when ready
+  bot_token: ""
+  channel_id: ""
+  app_token: ""
+
+TELEGRAM:
+  is_posting_on: false
+
+ZULIP:
+  is_posting_on: false

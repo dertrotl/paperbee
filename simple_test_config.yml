@@ -1,11 +1,11 @@
-# Simple test configuration to isolate problems
+# Simple test configuration to isolate PaperBee problems
 
 GOOGLE_SPREADSHEET_ID: "dummy-spreadsheet-id"
-GOOGLE_CREDENTIALS_JSON: "/Users/benjamin.weinert/git_repos/paperbee/dummy_creds.json"
+GOOGLE_CREDENTIALS_JSON: "/Users/benjamin.weinert/git_repos/paperbee/dummy_creds.json" 
 NCBI_API_KEY: "dummy-ncbi-key"
 LOCAL_ROOT_DIR: "/Users/benjamin.weinert/git_repos/paperbee"
 
-# Much simpler queries following original recommendations 
+# Much simpler queries following original recommendations
 query_biorxiv: "[single-cell] OR [scRNA-seq] OR [immunology]"
 query_pubmed_arxiv: "[single-cell RNA sequencing] OR [scRNA-seq] OR [immunology]"
 
@@ -13,10 +13,10 @@ query_pubmed_arxiv: "[single-cell RNA sequencing] OR [scRNA-seq] OR [immunology]
 limit: 50
 limit_per_database: 20
 
-# Disable LLM filtering to test raw paper retrieval
+# Disable LLM filtering to test raw paper retrieval first
 LLM_FILTERING: false
 
-# All platforms disabled for testing  
+# All platforms disabled for testing
 SLACK:
   is_posting_on: false
   bot_token: "dummy"
@@ -25,7 +25,7 @@ SLACK:
 
 TELEGRAM:
   is_posting_on: false
-  bot_token: "dummy" 
+  bot_token: "dummy"
   channel_id: "dummy"
 
 ZULIP:
@@ -40,6 +40,3 @@ MATTERMOST:
   token: "dummy"
   team: "dummy"
   channel: "dummy"
-
-# Test configuration for databases
-  (CHIP) OR (clonal hematopoiesis)
