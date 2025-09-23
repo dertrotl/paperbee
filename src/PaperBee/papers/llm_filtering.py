@@ -83,13 +83,10 @@ class LLMFilter:
             
             if keywords_list:
                 message = f"Title of the publication: '{title}'\nKeywords: {', '.join(keywords_list)}"
-                print(f"Filtering with keywords: {', '.join(keywords_list)}")
             else:
                 message = f"Title of the publication: '{title}'"
-                print("Filtering without keywords (empty keywords list)")
         else:
             message = f"Title of the publication: '{title}'"
-            print("Filtering without keywords")
 
         if isinstance(client, Client):
             # Use Ollama
@@ -132,8 +129,14 @@ class LLMFilter:
             content_lower = content.lower()
             # More permissive matching - look for positive indicators
             if any(word in content_lower for word in ["yes", "relevant", "accept", "include", "interesting"]):
+                # Show keywords after decision for better readability
+                keywords_info = f" (Keywords: {', '.join(keywords_list)})" if keywords_list else ""
+                print(f"✅ ACCEPT '{title[:50]}...' - LLM said: '{content}'{keywords_info}")
                 return True
             elif any(word in content_lower for word in ["no", "not relevant", "reject", "exclude", "unrelated"]):
+                # Show keywords after decision for better readability  
+                keywords_info = f" (Keywords: {', '.join(keywords_list)})" if keywords_list else ""
+                print(f"❌ REJECT '{title[:50]}...' - LLM said: '{content}'{keywords_info}")
                 return False
             else:
                 # If unclear, default to accepting (less restrictive)
@@ -141,6 +144,7 @@ class LLMFilter:
                 return True
         else:
             # Default to accepting when content is None
+            print(f"⚠️ No LLM content for '{title[:30]}...' - defaulting to ACCEPT")
             return True
 
     def filter_articles(self) -> pd.DataFrame:
@@ -151,6 +155,7 @@ class LLMFilter:
             pd.DataFrame: A filtered DataFrame containing only the articles deemed relevant by the LLM.
         """
         retained_indices: List[int] = []
+        print(f"🔍 LLM filtering starting with {len(self.df)} papers...")
 
         for index, article in self.df.iterrows():
             if self.is_relevant(
@@ -161,8 +166,11 @@ class LLMFilter:
                 model=self.model,
             ):
                 retained_indices.append(index)
+                print(f"📝 Paper {len(retained_indices)}: {article['Title'][:60]}... → RETAINED")
 
             time.sleep(0.2)  # 100ms delay between requests to not exceed the rate limit
 
         # Return a DataFrame containing only the retained articles
-        return self.df.loc[retained_indices]
+        filtered_df = self.df.loc[retained_indices]
+        print(f"🎯 LLM filtering complete: {len(self.df)} → {len(filtered_df)} papers")
+        return filtered_df

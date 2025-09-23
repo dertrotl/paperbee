@@ -102,10 +102,10 @@ jobs:
               # Create config for this group
               config = {
                   "GOOGLE_SPREADSHEET_ID": os.environ.get("GOOGLE_SHEET_ID", ""),
-                  "GOOGLE_CREDENTIALS_JSON": "./google-credentials.json",
-                  "NCBI_API_KEY": os.environ.get("NCBI_KEY", ""),
-                  "LOCAL_ROOT_DIR": ".",
-                  "databases": ["pubmed", "arxiv", "biorxiv"],
+              "GOOGLE_CREDENTIALS_JSON": "./google-credentials.json",
+              "NCBI_API_KEY": os.environ.get("NCBI_KEY", ""),
+              "LOCAL_ROOT_DIR": ".",
+              "databases": ["pubmed", "biorxiv"],
                   "query_biorxiv": group_config["query_biorxiv"],
                   "query_pubmed_arxiv": group_config["query_pubmed_arxiv"],
                   "limit": group_config["limit"],

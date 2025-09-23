@@ -64,7 +64,7 @@ jobs:
               "GOOGLE_CREDENTIALS_JSON": "./google-credentials.json",
               "NCBI_API_KEY": os.environ.get("NCBI_KEY", ""),
               "LOCAL_ROOT_DIR": ".",
-              "databases": ["pubmed", "arxiv", "biorxiv"],
+              "databases": ["pubmed", "biorxiv"],
               
               # Clinic-focused queries (Single-cell, IBD, Immunology) - OPTIMIZED
               "query_biorxiv": "[single-cell] OR [scRNA-seq] OR [spatial transcriptomics] OR [organoids] OR [IBD] OR [inflammatory bowel disease] OR [Crohn] OR [ulcerative colitis] OR [immunodeficiency] OR [inflammasome] OR [immunology] OR [autoimmune] OR [multiomics] OR [computational biology]",
