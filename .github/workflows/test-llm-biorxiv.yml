@@ -1,0 +1,88 @@
+name: Test LLM Filtering and bioRxiv Fix
+
+on:
+  workflow_dispatch:
+
+jobs:
+  test-llm-biorxiv:
+    runs-on: ubuntu-latest
+    timeout-minutes: 30
+    
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+        
+      - name: Set up Python
+        uses: actions/setup-python@v4
+        with:
+          python-version: '3.11'
+          
+      - name: Install Poetry
+        uses: snok/install-poetry@v1
+        
+      - name: Install dependencies
+        run: poetry install
+        
+      - name: Create dummy Google credentials
+        run: |
+          echo '{
+            "type": "service_account",
+            "project_id": "dummy-test-project",
+            "private_key_id": "dummy-key-id",
+            "private_key": "-----BEGIN PRIVATE KEY-----\nDUMMY_PRIVATE_KEY_FOR_TESTING_ONLY\n-----END PRIVATE KEY-----\n",
+            "client_email": "dummy@dummy.iam.gserviceaccount.com",
+            "client_id": "dummy-client-id",
+            "auth_uri": "https://accounts.google.com/o/oauth2/auth",
+            "token_uri": "https://oauth2.googleapis.com/token"
+          }' > dummy_google_creds.json
+        
+      - name: Create test config
+        run: |
+          echo 'GOOGLE_SPREADSHEET_ID: "dummy_test_id"
+          GOOGLE_CREDENTIALS_JSON: "./dummy_google_creds.json"
+          NCBI_API_KEY: "will_be_overridden_by_env"
+          LOCAL_ROOT_DIR: "."
+          databases: ["pubmed", "biorxiv"]
+          
+          # Test queries for cancer immunotherapy
+          query_biorxiv: "[cancer immunotherapy] OR [immunotherapy]"
+          query_pubmed_arxiv: "[cancer] AND [immunotherapy]"
+          
+          limit: 20
+          limit_per_database: 10
+          
+          # LLM Configuration - EXACT same as daily-papers-simple.yml
+          LLM_FILTERING: true
+          LLM_PROVIDER: "openai"
+          LANGUAGE_MODEL: "gemini-2.5-flash-lite"
+          OPENAI_API_KEY: "will_be_overridden_by_env"
+          OPENAI_BASE_URL: "https://generativelanguage.googleapis.com/v1beta/openai/"
+          FILTERING_PROMPT: "You are reviewing research papers for cancer immunotherapy. Answer yes or no: Is this paper relevant for cancer immunotherapy research?"
+          
+          # DISABLE ALL POSTING - No Google Sheets writing!
+          SLACK:
+            is_posting_on: false
+          TELEGRAM:
+            is_posting_on: false
+          ZULIP:
+            is_posting_on: false' > test_config.yml
+    
+      - name: Test LLM and bioRxiv
+        env:
+          NCBI_KEY: ${{ secrets.NCBI_API_KEY }}
+          GEMINI_KEY: ${{ secrets.GEMINI_API_KEY }}
+        run: |
+          echo "🧪 Testing LLM Filtering and bioRxiv Fix"
+          echo "📅 Search window: 1 day back"
+          echo ""
+          
+          echo "✅ Test config created"
+          echo "🎯 Testing LLM filtering and bioRxiv dual-date system..."
+          
+          # Run the test
+          poetry run paperbee post --config test_config.yml --since 1
+          
+      - name: Clean up
+        if: always()
+        run: |
+          rm -f dummy_google_creds.json test_config.yml
