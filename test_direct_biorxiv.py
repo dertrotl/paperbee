@@ -78,7 +78,8 @@ def test_papers_finder_integration():
             google_credentials_json="dummy_creds.json",
             sheet_name="dummy_sheet",
             databases=config['databases'],
-            query="machine learning",  # Use general query instead
+            query_biorxiv=config['query_biorxiv'],  # Use specific bioRxiv query
+            # query="machine learning",  # Don't use unified query for this test
             since=config['since']
         )
         

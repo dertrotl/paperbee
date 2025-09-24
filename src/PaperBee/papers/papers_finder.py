@@ -148,22 +148,26 @@ class PapersFinder:
             print(f"Found {len(articles)} articles from unified query")
             print(f"First few titles: {[art.get('title', 'No title')[:50] for art in articles[:3]]}")
         else:
-            if not self.query_biorxiv or not self.query_pub_arx:
-                e = "Both query_biorxiv and query_pubmed_arxiv must be provided if query is not provided."
+            # Check if we need non-bioRxiv databases
+            non_biorxiv_databases = [db for db in self.databases if db != "biorxiv"]
+            
+            # Only require pubmed/arxiv query if we actually have non-bioRxiv databases
+            if non_biorxiv_databases and not self.query_pub_arx:
+                e = "query_pubmed_arxiv must be provided for non-bioRxiv databases."
                 raise ValueError(e)
-
-            findpapers.search(
-                self.search_file_pub_arx,
-                self.query_pub_arx,
-                self.since,
-                self.until,
-                self.limit,
-                self.limit_per_database,
-                [
-                    database for database in self.databases if database != "biorxiv"
-                ],  # Biorxiv requires a different query
-                verbose=False,
-            )
+            
+            # Only search non-bioRxiv databases if they exist and we have a query
+            if non_biorxiv_databases and self.query_pub_arx:
+                findpapers.search(
+                    self.search_file_pub_arx,
+                    self.query_pub_arx,
+                    self.since,
+                    self.until,
+                    self.limit,
+                    self.limit_per_database,
+                    non_biorxiv_databases,
+                    verbose=False,
+                )
             articles_biorxiv_dict: List[Dict[str, Any]] = []
             # DIRECT bioRxiv API handling (bypasses findpapers medRxiv blocking)
             articles_biorxiv_dict: List[Dict[str, Any]] = []
@@ -205,10 +209,14 @@ class PapersFinder:
                 else:
                     print("ℹ️ bioRxiv not in databases list")
             
-            with open(self.search_file_pub_arx) as papers_file:
-                papers_data = json.load(papers_file)
-                articles_pub_arx_dict: List[Dict[str, Any]] = papers_data.get("papers", [])
-            print(f"Found {len(articles_pub_arx_dict)} articles from PubMed/ArXiv")
+            # Load pubmed/arxiv results only if we searched for them
+            articles_pub_arx_dict: List[Dict[str, Any]] = []
+            if non_biorxiv_databases and self.query_pub_arx and os.path.exists(self.search_file_pub_arx):
+                with open(self.search_file_pub_arx) as papers_file:
+                    papers_data = json.load(papers_file)
+                    articles_pub_arx_dict = papers_data.get("papers", [])
+                print(f"Found {len(articles_pub_arx_dict)} articles from PubMed/ArXiv")
+            
             print(f"Found {len(articles_biorxiv_dict)} articles from bioRxiv")
             articles = articles_pub_arx_dict + articles_biorxiv_dict
             print(f"Total articles before processing: {len(articles)}")

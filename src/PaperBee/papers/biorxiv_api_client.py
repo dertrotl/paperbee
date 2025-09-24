@@ -106,7 +106,9 @@ class BioRxivAPIClient:
                 'publication_date': paper.get('date', ''),
                 'journal': 'bioRxiv',
                 'database': 'bioRxiv',
+                'databases': 'bioRxiv',  # Required by ArticlesProcessor
                 'url': f"https://www.biorxiv.org/content/{doi}",
+                'keywords': '',  # Required by ArticlesProcessor - empty for bioRxiv
                 'paper_type': paper.get('type', 'preprint'),
                 'category': paper.get('category', ''),
                 'license': paper.get('license', ''),
