@@ -2,6 +2,12 @@ name: Test LLM Filtering and bioRxiv Fix
 
 on:
   workflow_dispatch:
+  push:
+    branches: [ main ]
+    paths: 
+      - 'src/**'
+      - '.github/workflows/test-llm-biorxiv.yml'
+      - 'test_*.py'
 
 jobs:
   test-llm-biorxiv:
@@ -25,6 +31,9 @@ jobs:
           poetry install
           # Install requests explicitly for network testing
           poetry run pip install requests
+          # Ensure poetry environment is active
+          echo "Poetry environment setup complete"
+          poetry run python -c "import sys; print(f'Python path: {sys.executable}')"
         
       - name: Create dummy Google credentials
         run: |
@@ -102,7 +111,7 @@ jobs:
         run: |
           echo "🧬 Testing Direct bioRxiv API Client"
           echo "=================================="
-          python test_direct_biorxiv.py
+          poetry run python test_direct_biorxiv.py
 
       - name: Test LLM and bioRxiv
         env:

@@ -21,8 +21,8 @@ def test_direct_api():
     
     client = BioRxivAPIClient()
     
-    # Test query
-    query = "machine learning"
+    # Test query - using same as GitHub Actions workflow
+    query = "computational biology"
     start_date = datetime.now() - timedelta(days=7)
     end_date = datetime.now()
     
@@ -61,7 +61,7 @@ def test_papers_finder_integration():
     # Create minimal config for testing
     config = {
         'databases': ['biorxiv'],
-        'query_biorxiv': 'machine learning',
+        'query_biorxiv': 'computational biology',  # Same as GitHub Actions
         'since': 7,  # days ago
         'limit': 10,
         'limit_per_database': 10,
