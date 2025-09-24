@@ -1,0 +1,32 @@
+GOOGLE_SPREADSHEET_ID: "dummy_test_id"
+GOOGLE_CREDENTIALS_JSON: "./dummy_google_creds.json"
+NCBI_API_KEY: "dummy_ncbi_key"
+LOCAL_ROOT_DIR: "."
+databases: ["pubmed", "arxiv", "biorxiv"]
+
+# OPTIMIZED MarrPeng Queries - More focused but still broad enough
+# Focus on MEDICAL/BIOLOGICAL imaging + AI, not general ML/CV
+query_biorxiv: "[computational pathology] OR [digital pathology] OR [cell segmentation] OR [histopathology] OR [microscopy analysis] OR [medical imaging] OR [biomedical image] OR [pathology AI] OR [tissue analysis] OR [cell detection] OR [whole slide imaging]"
+
+query_pubmed_arxiv: "[computational pathology] OR [digital pathology] OR [cell segmentation] OR [histopathology AI] OR [microscopy image analysis] OR [medical image segmentation] OR [pathology machine learning] OR [tissue segmentation] OR [cell detection algorithms] OR [whole slide image analysis]"
+
+limit: 400
+limit_per_database: 150
+
+# LLM Configuration 
+LLM_FILTERING: true
+LLM_PROVIDER: "openai"
+LANGUAGE_MODEL: "gemini-2.5-flash-lite"
+OPENAI_API_KEY: "REMOVED"
+OPENAI_BASE_URL: "https://generativelanguage.googleapis.com/v1beta/openai/"
+
+# ENHANCED MarrPeng Filter - More specific to pathology/imaging
+FILTERING_PROMPT: "You are reviewing papers for a computational pathology lab focused on medical imaging AI. Accept papers about: digital/computational pathology, cell/tissue segmentation, histopathology analysis, medical image processing, microscopy AI, whole slide imaging, or biomedical computer vision. REJECT papers about: general machine learning, non-medical computer vision, behavioral studies, drug discovery, or general AI without medical imaging focus. Answer 'yes' or 'no': Is this paper relevant to computational pathology and medical imaging AI?"
+
+# DISABLE ALL POSTING
+SLACK:
+  is_posting_on: false
+TELEGRAM:
+  is_posting_on: false
+ZULIP:
+  is_posting_on: false

@@ -19,7 +19,7 @@ limit_per_database: 150
 LLM_FILTERING: true
 LLM_PROVIDER: "openai"
 LANGUAGE_MODEL: "gemini-2.5-flash-lite"
-OPENAI_API_KEY: "REMOVED"
+OPENAI_API_KEY: "XXXXX"
 OPENAI_BASE_URL: "https://generativelanguage.googleapis.com/v1beta/openai/"
 
 # Simplified filtering prompt based on original author's style

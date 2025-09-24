@@ -73,6 +73,9 @@ class LLMFilter:
         Returns:
             bool: True if the publication is deemed relevant, otherwise False.
         """
+        # Initialize keywords_list at the beginning to avoid UnboundLocalError
+        keywords_list = []
+        
         if keywords:
             # Handle case where keywords might be a string instead of a list
             if isinstance(keywords, str):
