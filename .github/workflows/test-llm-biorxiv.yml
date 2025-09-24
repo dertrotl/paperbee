@@ -89,27 +89,17 @@ jobs:
           # Test from Python
           echo ""
           echo "🐍 Python HTTP Test:"
-          python -c "
+          poetry run python -c "
           import requests
           try:
               response = requests.get('https://api.biorxiv.org/', timeout=10)
               print(f'✅ bioRxiv API responded with status: {response.status_code}')
           except Exception as e:
               print(f'❌ Python request failed: {e}')
-          "
+          " || echo "⚠️ Python test failed, but continuing..."
 
-      - name: Test LLM and bioRxiv
-        env:
-          NCBI_KEY: ${{ secrets.NCBI_API_KEY }}
-          GEMINI_KEY: ${{ secrets.GEMINI_API_KEY }}
+      - name: Test findpapers bioRxiv directly
         run: |
-          echo "🧪 Testing LLM Filtering and bioRxiv Fix"
-          echo "📅 Search window: 1 day back"
-          echo ""
-          
-          echo "✅ Test config created"
-          echo "🎯 Testing LLM filtering and bioRxiv dual-date system..."
-          
           # Add debug output for bioRxiv search
           echo ""
           echo "🔍 Debug: Testing findpapers bioRxiv directly..."
@@ -171,6 +161,18 @@ jobs:
               print('📋 Full traceback:')
               traceback.print_exc()
           "
+
+      - name: Test LLM and bioRxiv
+        env:
+          NCBI_KEY: ${{ secrets.NCBI_API_KEY }}
+          GEMINI_KEY: ${{ secrets.GEMINI_API_KEY }}
+        run: |
+          echo "🧪 Testing LLM Filtering and bioRxiv Fix"
+          echo "📅 Search window: 1 day back"
+          echo ""
+          
+          echo "✅ Test config created"
+          echo "🎯 Testing LLM filtering and bioRxiv dual-date system..."
           
           # Run the full test
           echo ""
