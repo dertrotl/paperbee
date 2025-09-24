@@ -96,12 +96,20 @@ jobs:
           with open("config_clinic.yml", "w") as f:
               yaml.dump(config, f, default_flow_style=False)
           
+          # Debug: Check saved config file
+          print(f"🔍 DEBUG - Saved YAML config content:")
+          with open("config_clinic.yml", "r") as f:
+              saved_config = f.read()
+              print(saved_config[:500] + "..." if len(saved_config) > 500 else saved_config)
+          
           print(f"🏥 Clinic Research Configuration:")
           print(f"   🧬 BioRxiv query: {config['query_biorxiv'][:100]}...")
           print(f"   📄 PubMed/ArXiv query: {config['query_pubmed_arxiv'][:100]}...")
           print(f"   📊 Limits: total={config['limit']}, per_db={config['limit_per_database']}")
           print(f"   🗃️ Databases: {config['databases']}")
           print(f"   🤖 LLM: {config['LANGUAGE_MODEL']}")
+          print(f"   🔍 DEBUG - Full config databases value: {repr(config['databases'])}")
+          print(f"   🔍 DEBUG - Type of databases: {type(config['databases'])}")
           
           # Run PaperBee
           try:
