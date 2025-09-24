@@ -128,12 +128,14 @@ def main() -> None:
     # Dispatch to the appropriate subcommand
     if args.command == "post":
         config = load_config(args.config)
+        # Use databases from command line if provided, otherwise from config file
+        databases = args.databases if args.databases is not None else config.get("databases")
         papers, response_slack, response_telegram, response_zulip = asyncio.run(
             daily_papers_search(
                 config,
                 interactive=args.interactive,
                 since=args.since,
-                databases=args.databases,
+                databases=databases,
             )
         )
         print("Papers found:")

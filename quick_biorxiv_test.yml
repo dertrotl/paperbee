@@ -1,0 +1,26 @@
+GOOGLE_SPREADSHEET_ID: "dummy_test_id"
+GOOGLE_CREDENTIALS_JSON: "./dummy_creds.json"
+NCBI_API_KEY: "dummy_key"
+LOCAL_ROOT_DIR: "."
+
+# Only bioRxiv for quick testing
+databases: ["biorxiv"]
+
+# Simple queries for testing
+query_biorxiv: "[computational biology] OR [single-cell] OR [organoids]"
+query_pubmed_arxiv: "[computational biology] OR [single-cell] OR [organoids]"
+
+# Small limits for testing
+limit: 10
+limit_per_database: 5
+
+# NO LLM filtering for speed
+LLM_FILTERING: false
+
+# No posting
+SLACK:
+  is_posting_on: false
+TELEGRAM:
+  is_posting_on: false
+ZULIP:
+  is_posting_on: false

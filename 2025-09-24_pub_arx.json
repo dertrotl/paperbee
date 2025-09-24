@@ -1,0 +1,13 @@
+{
+  "databases": [],
+  "limit": 1200,
+  "limit_per_database": 400,
+  "number_of_papers": 0,
+  "number_of_papers_by_database": {},
+  "papers": [],
+  "processed_at": "2025-09-24 11:50:46",
+  "publication_types": null,
+  "query": "[computational biology] OR [single-cell] OR [organoids]",
+  "since": "2025-09-23",
+  "until": "2025-09-24"
+}

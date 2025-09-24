@@ -137,6 +137,8 @@ jobs:
               print(f"   📊 Limits: total={group_config['limit']}, per_db={group_config['limit_per_database']}")
               print(f"   🗃️ Databases: {config['databases']}")
               print(f"   🤖 LLM: {config['LANGUAGE_MODEL']}")
+              print(f"   🔍 DEBUG - Full config databases value: {repr(config['databases'])}")
+              print(f"   🔍 DEBUG - Type of databases: {type(config['databases'])}")
               
               # Run PaperBee for this group
               try:
