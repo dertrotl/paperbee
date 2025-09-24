@@ -45,20 +45,15 @@ jobs:
           LOCAL_ROOT_DIR: "."
           databases: ["pubmed", "biorxiv"]
           
-          # Test queries for cancer immunotherapy
-          query_biorxiv: "[cancer immunotherapy] OR [immunotherapy]"
-          query_pubmed_arxiv: "[cancer] AND [immunotherapy]"
+          # Test queries - SIMPLE for bioRxiv debugging
+          query_biorxiv: "[computational biology]"
+          query_pubmed_arxiv: "[computational biology]"
           
-          limit: 20
-          limit_per_database: 10
+          limit: 5
+          limit_per_database: 2
           
-          # LLM Configuration - EXACT same as daily-papers-simple.yml
-          LLM_FILTERING: true
-          LLM_PROVIDER: "openai"
-          LANGUAGE_MODEL: "gemini-2.5-flash-lite"
-          OPENAI_API_KEY: "${GEMINI_KEY}"
-          OPENAI_BASE_URL: "https://generativelanguage.googleapis.com/v1beta/openai/"
-          FILTERING_PROMPT: "You are reviewing research papers for cancer immunotherapy. Answer yes or no: Is this paper relevant for cancer immunotherapy research?"
+          # LLM Configuration - DISABLED for debugging
+          LLM_FILTERING: false
           
           # DISABLE ALL POSTING - No Google Sheets writing!
           SLACK:
@@ -69,6 +64,37 @@ jobs:
             is_posting_on: false
           EOF
     
+      - name: Test Network Connectivity to bioRxiv
+        run: |
+          echo "🌐 Testing Network Connectivity to bioRxiv API"
+          echo "=============================================="
+          
+          # Test DNS resolution
+          echo "🔍 DNS Resolution Test:"
+          nslookup api.biorxiv.org || echo "❌ DNS resolution failed"
+          
+          # Test HTTP connectivity
+          echo ""
+          echo "🔗 HTTP Connectivity Test:"
+          curl -I https://api.biorxiv.org/ --max-time 10 || echo "❌ HTTP connection failed"
+          
+          # Test specific bioRxiv endpoint
+          echo ""
+          echo "📡 bioRxiv API Endpoint Test:"
+          curl -s https://api.biorxiv.org/details/biorxiv/2025-09-20/2025-09-24 --max-time 10 | head -100 || echo "❌ bioRxiv API call failed"
+          
+          # Test from Python
+          echo ""
+          echo "🐍 Python HTTP Test:"
+          python -c "
+          import requests
+          try:
+              response = requests.get('https://api.biorxiv.org/', timeout=10)
+              print(f'✅ bioRxiv API responded with status: {response.status_code}')
+          except Exception as e:
+              print(f'❌ Python request failed: {e}')
+          "
+
       - name: Test LLM and bioRxiv
         env:
           NCBI_KEY: ${{ secrets.NCBI_API_KEY }}
@@ -81,7 +107,46 @@ jobs:
           echo "✅ Test config created"
           echo "🎯 Testing LLM filtering and bioRxiv dual-date system..."
           
-          # Run the test
+          # Add debug output for bioRxiv search
+          echo ""
+          echo "🔍 Debug: Testing findpapers bioRxiv directly..."
+          python -c "
+          import findpapers
+          print('findpapers version:', findpapers.__version__ if hasattr(findpapers, '__version__') else 'unknown')
+          try:
+              from datetime import date, timedelta
+              since_date = (date.today() - timedelta(days=1)).strftime('%Y-%m-%d')
+              until_date = date.today().strftime('%Y-%m-%d')
+              print(f'Testing bioRxiv search from {since_date} to {until_date}')
+              
+              findpapers.search(
+                  'debug_biorxiv_test.json',
+                  '[computational biology] OR [single-cell]',
+                  since_date,
+                  until_date,
+                  10,
+                  5,
+                  ['biorxiv'],
+                  verbose=True
+              )
+              
+              import os, json
+              if os.path.exists('debug_biorxiv_test.json'):
+                  with open('debug_biorxiv_test.json') as f:
+                      data = json.load(f)
+                      papers = data.get('papers', [])
+                      print(f'✅ findpapers found {len(papers)} papers from bioRxiv')
+              else:
+                  print('❌ No debug file created by findpapers')
+          except Exception as e:
+              import traceback
+              print(f'❌ findpapers error: {e}')
+              traceback.print_exc()
+          "
+          
+          # Run the full test
+          echo ""
+          echo "🚀 Running full PaperBee test..."
           poetry run paperbee post --config test_config.yml --since 1
           
       - name: Clean up
