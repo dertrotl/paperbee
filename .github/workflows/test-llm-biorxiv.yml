@@ -98,76 +98,11 @@ jobs:
               print(f'❌ Python request failed: {e}')
           " || echo "⚠️ Python test failed, but continuing..."
 
-      - name: Test findpapers bioRxiv directly
+      - name: Test Direct bioRxiv API
         run: |
-          # Add debug output for bioRxiv search
-          echo ""
-          echo "🔍 Debug: Testing findpapers bioRxiv directly..."
-          poetry run python -c "
-          import findpapers
-          import os
-          import json
-          from datetime import date, timedelta, datetime
-          
-          print('✅ findpapers version:', findpapers.__version__ if hasattr(findpapers, '__version__') else 'unknown')
-          
-          # Convert strings to datetime objects - THIS WAS THE BUG!
-          since_date_str = (date.today() - timedelta(days=1)).strftime('%Y-%m-%d')
-          until_date_str = date.today().strftime('%Y-%m-%d')
-          
-          # Convert to datetime objects as expected by findpapers
-          since_date_obj = datetime.strptime(since_date_str, '%Y-%m-%d').date()
-          until_date_obj = datetime.strptime(until_date_str, '%Y-%m-%d').date()
-          
-          print(f'🔍 Testing bioRxiv search from {since_date_str} to {until_date_str}')
-          print('🔍 Query: [computational biology]')
-          print('🔍 Limit: 5, per_database: 2')
-          print(f'🔍 Since object type: {type(since_date_obj)}')
-          print(f'🔍 Until object type: {type(until_date_obj)}')
-          
-          try:
-              # Clean up any existing file
-              if os.path.exists('debug_biorxiv_test.json'):
-                  os.remove('debug_biorxiv_test.json')
-              
-              print('🚀 Calling findpapers.search with datetime objects...')
-              findpapers.search(
-                  'debug_biorxiv_test.json',
-                  '[computational biology]',
-                  since_date_obj,  # Pass datetime object, not string!
-                  until_date_obj,  # Pass datetime object, not string!
-                  5,    # limit
-                  2,    # limit_per_database  
-                  ['biorxiv'],
-                  verbose=True
-              )
-              
-              print('✅ findpapers.search completed')
-              
-              if os.path.exists('debug_biorxiv_test.json'):
-                  print('📄 JSON file created successfully')
-                  with open('debug_biorxiv_test.json') as f:
-                      data = json.load(f)
-                      papers = data.get('papers', [])
-                      print(f'📊 Found {len(papers)} papers in JSON file')
-                      
-                      if papers:
-                          print('🔍 First paper title:', papers[0].get('title', 'NO TITLE')[:100])
-                          print('🎯 SUCCESS: findpapers works with datetime objects!')
-                      else:
-                          print('⚠️ Papers array is empty')
-                          print('📋 Full JSON data:')
-                          print(json.dumps(data, indent=2)[:500] + '...' if len(str(data)) > 500 else json.dumps(data, indent=2))
-              else:
-                  print('❌ No JSON file created by findpapers')
-                  print('📁 Files in directory:', os.listdir('.'))
-                  
-          except Exception as e:
-              import traceback
-              print(f'❌ findpapers error: {e}')
-              print('📋 Full traceback:')
-              traceback.print_exc()
-          "
+          echo "🧬 Testing Direct bioRxiv API Client"
+          echo "=================================="
+          python test_direct_biorxiv.py
 
       - name: Test LLM and bioRxiv
         env:

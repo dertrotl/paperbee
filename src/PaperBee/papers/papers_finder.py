@@ -9,6 +9,7 @@ import pandas as pd
 from slack_sdk import WebClient
 from tqdm import tqdm
 
+from .biorxiv_api_client import BioRxivAPIClient
 from .cli import InteractiveCLIFilter
 from .google_sheet import GoogleSheetsUpdater
 from .llm_filtering import LLMFilter
@@ -164,31 +165,39 @@ class PapersFinder:
                 verbose=False,
             )
             articles_biorxiv_dict: List[Dict[str, Any]] = []
-            # IMPROVED bioRxiv handling
+            # DIRECT bioRxiv API handling (bypasses findpapers medRxiv blocking)
             articles_biorxiv_dict: List[Dict[str, Any]] = []
             if "biorxiv" in self.databases and self.query_biorxiv:
-                print(f"🧬 Searching bioRxiv with query: {self.query_biorxiv[:100]}...")
+                print(f"🧬 Searching bioRxiv directly with query: {self.query_biorxiv[:100]}...")
                 try:
-                    findpapers.search(
-                        self.search_file_biorxiv,
-                        self.query_biorxiv,
-                        self.since,
-                        self.until,
-                        self.limit,
-                        self.limit_per_database,
-                        ["biorxiv"],
-                        verbose=False,
+                    client = BioRxivAPIClient()
+                    articles_biorxiv_dict = client.search_papers(
+                        query=self.query_biorxiv,
+                        since_date=self.since,
+                        until_date=self.until,
+                        limit=self.limit_per_database
                     )
                     
-                    if os.path.exists(self.search_file_biorxiv):
-                        with open(self.search_file_biorxiv) as papers_file:
-                            biorxiv_data = json.load(papers_file)
-                            articles_biorxiv_dict = biorxiv_data.get("papers", [])
-                        print(f"🧬 Found {len(articles_biorxiv_dict)} articles from bioRxiv")
-                    else:
-                        print("⚠️ bioRxiv search file not created")
+                    print(f"🧬 Found {len(articles_biorxiv_dict)} articles from bioRxiv (direct API)")
+                    
+                    # Save to file for compatibility with existing workflow
+                    biorxiv_results = {
+                        "papers": articles_biorxiv_dict,
+                        "metadata": {
+                            "query": self.query_biorxiv,
+                            "since": self.since.isoformat() if self.since else None,
+                            "until": self.until.isoformat() if self.until else None,
+                            "limit": self.limit_per_database,
+                            "database": "biorxiv",
+                            "api_method": "direct_api"
+                        }
+                    }
+                    
+                    with open(self.search_file_biorxiv, 'w') as f:
+                        json.dump(biorxiv_results, f, indent=2, default=str)
+                        
                 except Exception as e:
-                    print(f"⚠️ Error during bioRxiv search: {e}")
+                    print(f"⚠️ Error during bioRxiv API search: {e}")
                     articles_biorxiv_dict = []
             else:
                 if "biorxiv" in self.databases:

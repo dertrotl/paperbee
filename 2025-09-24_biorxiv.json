@@ -40,6 +40,39 @@
       ]
     },
     {
+      "abstract": "SARS-CoV-2 infection leads to extensive host transcriptomic changes, but the role of alternative splicing in shaping the immune response remains underexplored. Here, we present the first application of long-read single-cell RNA sequencing on nasopharyngeal swabs from COVID-19 patients and healthy controls to resolve transcript-level changes across cell types. Our analysis identified major epithelial cell types and pronounced immune infiltration, with cell-type annotations concordant with those from short-read data. By enabling isoform-level resolution, our nanopore sequencing approach revealed cell-type specific alternative splicing, undetectable with short-read sequencing. For example, although gene-level expression of the key immune and apoptosis regulators, IFNAR2 and FAIM, did not differ between COVID-19 patients and healthy controls we identified marked shifts in isoform usage. Between moderate and critical cases, we observed cell-type specific differential transcript usage in the T cell signaling kinase FYN and the immune-regulatory transcription factor IRF2. As some of these splicing alterations yield functionally distinct isoforms, we hypothesize that alternative splicing modulates immune signaling and apoptosis, fine-tuning the host response to SARS-CoV-2 infection. Our study demonstrates the unique power of long-read single-cell transcriptomics to uncover isoform-resolved regulatory changes, offering novel insights into the role of alternative splicing in shaping immune responses to viral infections.",
+      "authors": [
+        "Koehler, K.",
+        "Morris, L.",
+        "Rakszewska, A.",
+        "Chua, R. L.",
+        "Balura, M.",
+        "Jechow, K.",
+        "Loske, J.",
+        "Eils, R.",
+        "Lehmann, I.",
+        "Robinson, P. N.",
+        "Conrad, C."
+      ],
+      "categories": null,
+      "citations": null,
+      "comments": null,
+      "databases": [
+        "bioRxiv"
+      ],
+      "doi": "10.1101/2025.09.23.676511",
+      "keywords": [],
+      "number_of_pages": null,
+      "pages": null,
+      "publication": null,
+      "publication_date": "2025-09-23",
+      "selected": null,
+      "title": "Long-read single-cell RNA sequencing uncovers cell-type specific transcript regulation in COVID-19",
+      "urls": [
+        "https://doi.org/10.1101/2025.09.23.676511"
+      ]
+    },
+    {
       "abstract": "The advent of single-cell lineage-tracing technologies has enabled simultaneous measurement of gene expression and lineage barcodes. However, integrating these modalities for high-resolution lineage reconstruction has remained challenging due to limitations of methods that analyze modalities separately. In response, we present BiLinT, a Bayesian framework for reconstructing high-resolution cell lineage trees by jointly modeling single-cell multimodal lineage-tracing data. BiLinT integrates lineage barcode evolution (modeled via a continuous-time Markov chain) and gene expression dynamics (modeled via an Ornstein-Uhlenbeck process) within a unified probabilistic model. Applications to synthetic and real datasets demonstrate improved accuracy and reveal developmental fate biases.",
       "authors": [
         "Chen, Z.",
@@ -141,6 +174,31 @@
       ]
     },
     {
+      "abstract": "Single-cell Assay for Transposase Accessible Chromatin (scATAC-seq) is increasingly used at population scale to study how genetic variation shapes chromatin accessibility across diverse cell types. This widespread adoption of the assay has created a need for computational methods that can handle complex biological and technical variation. Yet method development is limited by the lack of flexible simulation tools with known ground truth. Here, we present simPIC, a simulation framework for generating realistic single-cell ATAC-seq data across individuals and cell types. simPIC supports both population-scale and single-individual simulations, with the ability to model cell groups, batch effects, and genotype dependent variation in accessibility. These features enable realistic benchmarking for tasks such as chromatin accessibility quantitative trait locus (caQTL) mapping. simPIC generates data that closely match real datasets and better captures inter-individual and experimental variation compared to existing tools. Keywords: single-cell ATAC-seq, single-cell genomics, software package, simulation",
+      "authors": [
+        "Chugh, S.",
+        "Shim, H. S.",
+        "McCarthy, D. J."
+      ],
+      "categories": null,
+      "citations": null,
+      "comments": null,
+      "databases": [
+        "bioRxiv"
+      ],
+      "doi": "10.1101/2025.09.21.676689",
+      "keywords": [],
+      "number_of_pages": null,
+      "pages": null,
+      "publication": null,
+      "publication_date": "2025-09-23",
+      "selected": null,
+      "title": "simPIC: flexible simulation of paired-insertion counts for single-cell ATAC sequencing data",
+      "urls": [
+        "https://doi.org/10.1101/2025.09.21.676689"
+      ]
+    },
+    {
       "abstract": "Background Technological advancements in protein mass spectrometry have significantly enhanced analytical sensitivity and throughput, enabling single-cell proteomics by mass spectrometry (SCP-MS) to become reality. SCP-MS allows high-resolution analysis of cellular heterogeneity and function, bypassing bulk analysis limitations. Here, we used SCP-MS to document at the protein level the cellular diversity of mouse kidney cells. We further focused SCP-MS on low abundance distal convoluted tubule (DCT) cells that are essential for body electrolyte homeostasis and blood pressure control. Methods Mouse kidney cells were isolated via enzymic digestion and single-cells isolated using fluorescence-activated cell sorting (FACS). DCT cells were isolated from mice with GFP expression specifically in the DCT (parvalbumin-GFP) using a similar workflow. SCP-MS analyses was performed using an Orbitrap Ascend Mass Spectrometer with a FAIMS Pro Duo interface coupled with Wide ISolation window High-resolution MS1 Data Independent Acquisition (WISH-DIA). Spectronaut was used for protein identification and quantification, and cell-type annotation and clustering were performed in Python by scanpy implementation. Results Workflow benchmarking using Hela cells confirmed a successful SCP-MS setup. From 768 single mouse kidney cells, SCP-MS identified 2626 unique proteins. Computational approaches resolved various nephron segments, including distinct DCT populations. From enriched DCT cells, 1912 proteins were identified, enabling classification of three populations - DCT1, DCT2, and a proliferative subset (ProLIF) that represented a transient state between DCT1 and DCT2. ProLIF cells had elevated abundance of the sodium-chloride cotransporter NCC and represented approximately 33% of DCT cells, substantially exceeding previous transcriptomic estimates of ProLIF cell frequency (~0.1%). High proliferation (~39%) of DCT cells was confirmed using immunohistochemistry. Conclusions This SCP-MS analysis of mouse kidney uncovered significant cellular heterogeneity not captured effectively using transcriptomics. Despite imitations in proteome depth and throughput, SCP-MS provides a powerful approach for investigating kidney cellular dynamics at the protein level.",
       "authors": [
         "Wu, Q.",
@@ -169,31 +227,6 @@
       "title": "Single-cell proteomics: a powerful new tool to study kidney cell heterogeneity",
       "urls": [
         "https://doi.org/10.1101/2025.09.23.678003"
-      ]
-    },
-    {
-      "abstract": "Single-cell Assay for Transposase Accessible Chromatin (scATAC-seq) is increasingly used at population scale to study how genetic variation shapes chromatin accessibility across diverse cell types. This widespread adoption of the assay has created a need for computational methods that can handle complex biological and technical variation. Yet method development is limited by the lack of flexible simulation tools with known ground truth. Here, we present simPIC, a simulation framework for generating realistic single-cell ATAC-seq data across individuals and cell types. simPIC supports both population-scale and single-individual simulations, with the ability to model cell groups, batch effects, and genotype dependent variation in accessibility. These features enable realistic benchmarking for tasks such as chromatin accessibility quantitative trait locus (caQTL) mapping. simPIC generates data that closely match real datasets and better captures inter-individual and experimental variation compared to existing tools. Keywords: single-cell ATAC-seq, single-cell genomics, software package, simulation",
-      "authors": [
-        "Chugh, S.",
-        "Shim, H. S.",
-        "McCarthy, D. J."
-      ],
-      "categories": null,
-      "citations": null,
-      "comments": null,
-      "databases": [
-        "bioRxiv"
-      ],
-      "doi": "10.1101/2025.09.21.676689",
-      "keywords": [],
-      "number_of_pages": null,
-      "pages": null,
-      "publication": null,
-      "publication_date": "2025-09-23",
-      "selected": null,
-      "title": "simPIC: flexible simulation of paired-insertion counts for single-cell ATAC sequencing data",
-      "urls": [
-        "https://doi.org/10.1101/2025.09.21.676689"
       ]
     },
     {
@@ -244,42 +277,9 @@
       "urls": [
         "https://doi.org/10.1101/2025.09.21.677676"
       ]
-    },
-    {
-      "abstract": "SARS-CoV-2 infection leads to extensive host transcriptomic changes, but the role of alternative splicing in shaping the immune response remains underexplored. Here, we present the first application of long-read single-cell RNA sequencing on nasopharyngeal swabs from COVID-19 patients and healthy controls to resolve transcript-level changes across cell types. Our analysis identified major epithelial cell types and pronounced immune infiltration, with cell-type annotations concordant with those from short-read data. By enabling isoform-level resolution, our nanopore sequencing approach revealed cell-type specific alternative splicing, undetectable with short-read sequencing. For example, although gene-level expression of the key immune and apoptosis regulators, IFNAR2 and FAIM, did not differ between COVID-19 patients and healthy controls we identified marked shifts in isoform usage. Between moderate and critical cases, we observed cell-type specific differential transcript usage in the T cell signaling kinase FYN and the immune-regulatory transcription factor IRF2. As some of these splicing alterations yield functionally distinct isoforms, we hypothesize that alternative splicing modulates immune signaling and apoptosis, fine-tuning the host response to SARS-CoV-2 infection. Our study demonstrates the unique power of long-read single-cell transcriptomics to uncover isoform-resolved regulatory changes, offering novel insights into the role of alternative splicing in shaping immune responses to viral infections.",
-      "authors": [
-        "Koehler, K.",
-        "Morris, L.",
-        "Rakszewska, A.",
-        "Chua, R. L.",
-        "Balura, M.",
-        "Jechow, K.",
-        "Loske, J.",
-        "Eils, R.",
-        "Lehmann, I.",
-        "Robinson, P. N.",
-        "Conrad, C."
-      ],
-      "categories": null,
-      "citations": null,
-      "comments": null,
-      "databases": [
-        "bioRxiv"
-      ],
-      "doi": "10.1101/2025.09.23.676511",
-      "keywords": [],
-      "number_of_pages": null,
-      "pages": null,
-      "publication": null,
-      "publication_date": "2025-09-23",
-      "selected": null,
-      "title": "Long-read single-cell RNA sequencing uncovers cell-type specific transcript regulation in COVID-19",
-      "urls": [
-        "https://doi.org/10.1101/2025.09.23.676511"
-      ]
     }
   ],
-  "processed_at": "2025-09-24 11:50:46",
+  "processed_at": "2025-09-24 12:17:31",
   "publication_types": null,
   "query": "[computational biology] OR [single-cell] OR [organoids]",
   "since": "2025-09-23",
