@@ -81,7 +81,7 @@ jobs:
                   "emoji": "🔬",
                   "query_biorxiv": "[computational pathology] OR [AI pathology] OR [machine learning pathology] OR [deep learning pathology] OR [computer aided diagnosis] OR [automated pathology] OR [digital pathology AI] OR [computational hematopathology] OR [AI medical diagnosis] OR [machine learning medical]",
                   "query_pubmed_arxiv": "[computational pathology] OR [AI pathology] OR [machine learning pathology] OR [deep learning medical diagnosis] OR [computer aided pathology] OR [automated diagnosis] OR [AI hematopathology] OR [computational medical diagnosis] OR [algorithmic pathology]",
-                  "filter": "You are reviewing papers for a lab focused on computational pathology, hematopathology, and medical AI. Remember: we are primarily interested in COMPUTATIONAL papers. Key interests: hematology, blood disorders, computational pathology, and AI-based diagnostics. Be INCLUSIVE - if a paper relates to hematology, pathology, medical AI, or computational medicine, it is likely relevant. Prioritize computational/AI approaches. Answer 'yes' or 'no': Is this paper relevant?",,
+                  "filter": "You are reviewing papers for a lab focused on computational pathology, hematopathology, and medical AI. Remember: we are primarily interested in COMPUTATIONAL papers. Key interests: hematology, blood disorders, computational pathology, and AI-based diagnostics. Be INCLUSIVE - if a paper relates to hematology, pathology, medical AI, or computational medicine, it is likely relevant. Prioritize computational/AI approaches. Answer 'yes' or 'no': Is this paper relevant?",
                   "limit": 400,
                   "limit_per_database": 150
               }
