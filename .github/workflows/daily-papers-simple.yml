@@ -82,8 +82,12 @@ jobs:
               
               "FILTERING_PROMPT": "You are reviewing research papers for a lab focused on single-cell analysis, IBD/immunology, and computational biology. Key interests: single-cell RNA-seq, organoids, inflammatory bowel disease, immunodeficiency, inflammasome biology, and autoimmune diseases. Be INCLUSIVE - if a paper relates to single-cell methods, IBD, immunology, organoids, or computational biology approaches in these areas, it is likely relevant. Answer 'yes' or 'no': Is this paper relevant?",
               
+              # Enable paper categorization for Slack posting
+              "CATEGORIZE_PAPERS": True,
+              "CATEGORY_PROMPT": "Categorize this research paper into ONE of these three categories: 1) 'Bioinformatics/Computational' - papers focused on computational methods, algorithms, machine learning, bioinformatics tools, data analysis pipelines, mathematical modeling, or software development. 2) 'Wetlab' - papers focused on experimental techniques, laboratory methods, molecular biology, cell culture, animal models, or bench science. 3) 'Clinical' - papers focused on clinical studies, patient cohorts, clinical trials, diagnostic applications, therapeutic interventions, or translational medicine. Answer with ONLY ONE WORD: Bioinformatics, Wetlab, or Clinical.",
+              
               "SLACK": {
-                  "is_posting_on": True,
+                  "is_posting_on": False,  # Disable built-in posting, we'll do custom categorized posting
                   "bot_token": os.environ.get("SLACK_BOT", ""),
                   "channel_id": os.environ.get("SLACK_CHANNEL", ""),
                   "app_token": os.environ.get("SLACK_APP", "")
@@ -170,6 +174,89 @@ jobs:
           
           EOF
           
+      - name: Post Categorized Papers to Slack
+        env:
+          SLACK_BOT: ${{ secrets.SLACK_BOT_TOKEN }}
+          SLACK_CHANNEL: ${{ secrets.SLACK_CHANNEL_ID }}
+          GEMINI_KEY: ${{ secrets.GEMINI_API_KEY }}
+          GOOGLE_SHEET_ID: ${{ secrets.GOOGLE_SPREADSHEET_ID }}
+        run: |
+          echo "📤 Posting categorized papers to Slack..."
+          
+          python3 << 'EOF'
+          import os
+          import sys
+          from datetime import date
+          from slack_sdk import WebClient
+          from openai import OpenAI
+          
+          # Add src to path
+          sys.path.insert(0, os.path.join(os.getcwd(), 'src'))
+          
+          from PaperBee.papers.categorized_slack_formatter import CategorizedSlackPaperPublisher
+          from PaperBee.papers.google_sheet import GoogleSheetsUpdater
+          from PaperBee.papers.utils import Logger
+          
+          try:
+              # Initialize clients
+              slack_client = WebClient(token=os.environ.get("SLACK_BOT", ""))
+              llm_client = OpenAI(
+                  api_key=os.environ.get("GEMINI_KEY", ""),
+                  base_url="https://generativelanguage.googleapis.com/v1beta/openai/"
+              )
+              logger = Logger("CategorizedSlackPoster")
+              
+              # Get today's papers from Google Sheets
+              today_str = date.today().strftime("%Y-%m-%d")
+              
+              sheet_updater = GoogleSheetsUpdater(
+                  spreadsheet_id=os.environ.get("GOOGLE_SHEET_ID", ""),
+                  credentials_json_path="./google-credentials.json"
+              )
+              
+              # Read the sheet and get papers data
+              sheet_result = sheet_updater.open_sheet("Papers")
+              if sheet_result is None:
+                  logger.error("❌ Could not open Google Sheet")
+                  sys.exit(1)
+              
+              sheet, nr_rows = sheet_result
+              all_data = sheet.get_all_values()
+              
+              # Filter for today's papers (assuming date is in column 3, index 2)
+              # Format: [DOI, pub_date, search_date, is_preprint, title, abstract, source, keywords, url]
+              today_papers = [row for row in all_data[1:] if len(row) > 2 and row[2] == today_str]
+              
+              logger.info(f"📊 Found {len(today_papers)} papers from today ({today_str})")
+              
+              if today_papers:
+                  # Create categorized publisher
+                  publisher = CategorizedSlackPaperPublisher(
+                      client=slack_client,
+                      logger=logger,
+                      channel_id=os.environ.get("SLACK_CHANNEL", ""),
+                      llm_client=llm_client
+                  )
+                  
+                  # Post categorized papers
+                  response = publisher.post_categorized_papers(
+                      papers_list=today_papers,
+                      group_name="🏥 Clinic Research Papers",
+                      publish_date=today_str
+                  )
+                  
+                  logger.info(f"✅ Successfully posted categorized papers to Slack")
+              else:
+                  logger.info("ℹ️ No papers found for today, skipping Slack post")
+                  
+          except Exception as e:
+              print(f"❌ Error posting categorized papers: {e}")
+              import traceback
+              traceback.print_exc()
+              sys.exit(1)
+          
+          EOF
+      
       - name: Clean up
         if: always()
         run: |
