@@ -61,31 +61,48 @@ jobs:
           
           # Define three focused interest groups for MarrLab
           interest_groups = {
-              "Happy Pixels": {
-                  "emoji": "🖼️",
-                  "query_biorxiv": "[computational pathology] OR [machine learning pathology] OR [deep learning medical] OR [AI pathology] OR [computer vision biomedical] OR [image analysis biomedical] OR [cell segmentation] OR [foundation models] OR [vision language model] OR [multimodal AI] OR [computational microscopy] OR [automated cell analysis]",
-                  "query_pubmed_arxiv": "[computational pathology] OR [machine learning pathology] OR [deep learning medical imaging] OR [AI biomedical imaging] OR [computer vision medical] OR [automated image analysis] OR [foundation models medical] OR [vision language model] OR [multimodal AI medical] OR [computational microscopy]",
-                  "filter": "You are reviewing papers for a lab focused on computational pathology, microscopy image analysis, and AI/ML for biomedical imaging. Remember: we are primarily interested in COMPUTATIONAL papers. Key interests: cell segmentation, image processing, foundation models, vision language models, multimodal AI, and computer vision in life sciences. Be INCLUSIVE - if a paper relates to image analysis, microscopy, AI/ML in biomedical contexts, vision language models, or computational imaging, it is likely relevant. Prioritize computational/algorithmic approaches. Answer 'yes' or 'no': Is this paper relevant?",
-                  "limit": 400,
-                  "limit_per_database": 150
-              },
-              "Omics and Dynamics": {
-                  "emoji": "🧬",
-                  "query_biorxiv": "[computational biology hematology] OR [computational hematology] OR [mathematical modeling hematology] OR [systems biology blood] OR [bioinformatics hematology] OR [single cell computational] OR [machine learning hematology] OR [quantitative biology blood] OR [clonal dynamics modeling] OR [computational omics]",
-                  "query_pubmed_arxiv": "[computational hematology] OR [mathematical modeling hematology] OR [systems biology blood] OR [bioinformatics hematology] OR [machine learning hematology] OR [quantitative hematology] OR [computational biology blood disorders] OR [algorithmic hematology] OR [statistical modeling blood]",
-                  "filter": "You are reviewing papers for a lab focused on computational hematology, blood disorders, and quantitative biology. Remember: we are primarily interested in COMPUTATIONAL papers. Key interests: hematopoiesis, clonal dynamics, mathematical modeling, and multi-omics approaches. Be INCLUSIVE - if a paper relates to hematology, blood disorders, single-cell analysis, computational biology, or quantitative biology, it is likely relevant. Prioritize computational/quantitative approaches. Answer 'yes' or 'no': Is this paper relevant?",
-                  "limit": 400,
-                  "limit_per_database": 150
-              },
-              "Histopathology": {
-                  "emoji": "🔬",
-                  "query_biorxiv": "[computational pathology] OR [AI pathology] OR [machine learning pathology] OR [deep learning pathology] OR [computer aided diagnosis] OR [automated pathology] OR [digital pathology AI] OR [computational hematopathology] OR [AI medical diagnosis] OR [machine learning medical]",
-                  "query_pubmed_arxiv": "[computational pathology] OR [AI pathology] OR [machine learning pathology] OR [deep learning medical diagnosis] OR [computer aided pathology] OR [automated diagnosis] OR [AI hematopathology] OR [computational medical diagnosis] OR [algorithmic pathology]",
-                  "filter": "You are reviewing papers for a lab focused on computational pathology, hematopathology, and medical AI. Remember: we are primarily interested in COMPUTATIONAL papers. Key interests: hematology, blood disorders, computational pathology, and AI-based diagnostics. Be INCLUSIVE - if a paper relates to hematology, pathology, medical AI, or computational medicine, it is likely relevant. Prioritize computational/AI approaches. Answer 'yes' or 'no': Is this paper relevant?",
-                  "limit": 400,
-                  "limit_per_database": 150
-              }
-          }
+                "Happy Pixels": {
+                    "emoji": "🖼️",
+                    # BioRxiv: Simple single/double word terms with OR only
+                    "query_biorxiv": "[pathology] OR [microscopy] OR [histology] OR [cytometry] OR [imaging] OR [segmentation] OR [cell detection] OR [tissue analysis] OR [digital pathology] OR [computational imaging] OR [foundation model] OR [vision transformer] OR [multimodal] OR [biomedical imaging]",
+        
+                    # PubMed/ArXiv: Use AND to combine domain + method terms
+                    "query_pubmed_arxiv": "([pathology] OR [microscopy] OR [histology] OR [imaging] OR [cytometry]) AND ([deep learning] OR [machine learning] OR [neural network] OR [artificial intelligence] OR [computer vision] OR [foundation model] OR [transformer] OR [segmentation] OR [automated analysis])",
+        
+                    "filter": "You are reviewing papers for a lab focused on computational pathology, microscopy image analysis, and AI/ML for biomedical imaging. Remember: we are primarily interested in COMPUTATIONAL papers. Key interests: cell segmentation, image processing, foundation models, vision language models, multimodal AI, and computer vision in life sciences. Be INCLUSIVE - if a paper relates to image analysis, microscopy, AI/ML in biomedical contexts, vision language models, or computational imaging, it is likely relevant. Prioritize computational/algorithmic approaches. Answer 'yes' or 'no': Is this paper relevant?",
+        
+                    "limit": 800,
+                    "limit_per_database": 300
+                },
+    
+                "Omics and Dynamics": {
+                    "emoji": "🧬",
+                    # BioRxiv: Hematology + computational terms
+                    "query_biorxiv": "[hematology] OR [hematopoiesis] OR [bone marrow] OR [blood cell] OR [myeloid] OR [lymphoid] OR [erythroid] OR [leukemia] OR [clonal dynamics] OR [single cell] OR [transcriptomics] OR [computational biology] OR [systems biology] OR [mathematical modeling]",
+        
+                    # PubMed/ArXiv: Combine blood/hematology terms with computational methods
+                    "query_pubmed_arxiv": "([hematology] OR [hematopoiesis] OR [bone marrow] OR [blood] OR [myeloid] OR [leukemia] OR [clonal]) AND ([computational] OR [bioinformatics] OR [systems biology] OR [mathematical model] OR [machine learning] OR [single cell] OR [transcriptomics] OR [omics] OR [dynamics] OR [trajectory])",
+        
+                    "filter": "You are reviewing papers for a lab focused on computational hematology, blood disorders, and quantitative biology. Remember: we are primarily interested in COMPUTATIONAL papers. Key interests: hematopoiesis, clonal dynamics, mathematical modeling, and multi-omics approaches. Be INCLUSIVE - if a paper relates to hematology, blood disorders, single-cell analysis, computational biology, or quantitative biology, it is likely relevant. Prioritize computational/quantitative approaches. Answer 'yes' or 'no': Is this paper relevant?",
+        
+                    "limit": 800,
+                    "limit_per_database": 300
+                },
+    
+                "Histopathology": {
+                    "emoji": "🔬",
+                    # BioRxiv: Pathology + diagnosis + AI terms
+                    "query_biorxiv": "[pathology] OR [hematopathology] OR [diagnosis] OR [diagnostic] OR [histopathology] OR [cytopathology] OR [biopsy] OR [cancer detection] OR [tumor classification] OR [digital pathology] OR [foundation model] OR [automated diagnosis] OR [clinical AI]",
+        
+                    # PubMed/ArXiv: Pathology/diagnosis + AI/computational methods
+                    "query_pubmed_arxiv": "([pathology] OR [hematopathology] OR [diagnosis] OR [histology] OR [biopsy] OR [cancer]) AND ([artificial intelligence] OR [foundation model] OR [machine learning] OR [deep learning] OR [neural network] OR [automated] OR [computer aided] OR [digital pathology] OR [computational diagnosis])",
+        
+                    "filter": "You are reviewing papers for a lab focused on computational pathology, hematopathology, and medical AI. Remember: we are primarily interested in COMPUTATIONAL papers. Key interests: hematology, blood disorders, computational pathology, and AI-based diagnostics. Be INCLUSIVE - if a paper relates to hematology, pathology, medical AI, or computational medicine, it is likely relevant. Prioritize computational/AI approaches. Answer 'yes' or 'no': Is this paper relevant?",
+        
+                    "limit": 800,
+                    "limit_per_database": 300
+                }
+            }
           
           all_papers = []
           
@@ -105,7 +122,7 @@ jobs:
               "GOOGLE_CREDENTIALS_JSON": "./google-credentials.json",
               "NCBI_API_KEY": os.environ.get("NCBI_KEY", ""),
               "LOCAL_ROOT_DIR": ".",
-              "databases": ["pubmed", "biorxiv"],
+              "databases": ["pubmed", "biorxiv", "arxiv"],
                   "query_biorxiv": group_config["query_biorxiv"],
                   "query_pubmed_arxiv": group_config["query_pubmed_arxiv"],
                   "limit": group_config["limit"],
