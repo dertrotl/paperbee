@@ -64,12 +64,12 @@ jobs:
                 "Happy Pixels": {
                     "emoji": "🖼️",
                     # BioRxiv: Simple single/double word terms with OR only
-                    "query_biorxiv": "[pathology] OR [microscopy] OR [histology] OR [cytometry] OR [imaging] OR [segmentation] OR [cell detection] OR [tissue analysis] OR [digital pathology] OR [computational imaging] OR [foundation model] OR [vision transformer] OR [multimodal] OR [biomedical imaging]",
+                    "query_biorxiv": "[pathology] OR [microscopy] OR [histology] OR [cytometry] OR [imaging] OR [segmentation] OR [holography] OR [3D segmentation] OR [Vision language model] OR [cell detection] OR [tissue analysis] OR [digital pathology] OR [computational imaging] OR [foundation model] OR [vision transformer] OR [multimodal] OR [biomedical imaging] OR [cell painting] OR [organoid] OR [representation learning]",
         
                     # PubMed/ArXiv: Use AND to combine domain + method terms
-                    "query_pubmed_arxiv": "([pathology] OR [microscopy] OR [histology] OR [imaging] OR [cytometry]) AND ([deep learning] OR [machine learning] OR [neural network] OR [artificial intelligence] OR [computer vision] OR [foundation model] OR [transformer] OR [segmentation] OR [automated analysis])",
+                    "query_pubmed_arxiv": "([representation learning] OR [organoid] OR [cell painting] OR [pathology] OR [microscopy] OR [histology] OR [imaging] OR [cytometry] OR [holography]) AND ([deep learning] OR [machine learning] OR [neural network] OR [artificial intelligence] OR [computer vision] OR [foundation model] OR [transformer] OR [segmentation] OR [automated analysis] OR [vision language model] OR [biomedical imaging)",
         
-                    "filter": "You are reviewing papers for a lab focused on computational pathology, microscopy image analysis, and AI/ML for biomedical imaging. Remember: we are primarily interested in COMPUTATIONAL papers. Key interests: cell segmentation, image processing, foundation models, vision language models, multimodal AI, and computer vision in life sciences. Be INCLUSIVE - if a paper relates to image analysis, microscopy, AI/ML in biomedical contexts, vision language models, or computational imaging, it is likely relevant. Prioritize computational/algorithmic approaches. Answer 'yes' or 'no': Is this paper relevant?",
+                    "filter": "You are reviewing papers for a lab focused on computational pathology, microscopy image analysis, segmentation, holography, and AI/ML for biomedical imaging. Remember: we are primarily interested in COMPUTATIONAL papers. Key interests: cell segmentation, image processing, foundation models, vision language models, multimodal AI, and computer vision in life sciences. Be INCLUSIVE - if a paper relates to image analysis, microscopy, AI/ML in biomedical contexts of hematology or cytology, vision language models, or computational imaging, it is likely relevant. Prioritize computational/algorithmic approaches. Answer 'yes' or 'no': Is this paper relevant?",
         
                     "limit": 800,
                     "limit_per_database": 300
@@ -83,7 +83,7 @@ jobs:
                     # PubMed/ArXiv: Combine blood/hematology terms with computational methods
                     "query_pubmed_arxiv": "([hematology] OR [hematopoiesis] OR [bone marrow] OR [blood] OR [myeloid] OR [leukemia] OR [clonal]) AND ([computational] OR [bioinformatics] OR [systems biology] OR [mathematical model] OR [machine learning] OR [single cell] OR [transcriptomics] OR [omics] OR [dynamics] OR [trajectory])",
         
-                    "filter": "You are reviewing papers for a lab focused on computational hematology, blood disorders, and quantitative biology. Remember: we are primarily interested in COMPUTATIONAL papers. Key interests: hematopoiesis, clonal dynamics, mathematical modeling, and multi-omics approaches. Be INCLUSIVE - if a paper relates to hematology, blood disorders, single-cell analysis, computational biology, or quantitative biology, it is likely relevant. Prioritize computational/quantitative approaches. Answer 'yes' or 'no': Is this paper relevant?",
+                    "filter": "You are reviewing papers for a lab focused on computational hematology, blood disorders, and quantitative biology. Remember: we are primarily interested in COMPUTATIONAL papers. Key interests: hematopoiesis, clonal dynamics, mathematical modeling, and multi-omics approaches and single cell transcriptomics. Be INCLUSIVE - if a paper relates to hematology, blood disorders, single-cell analysis, computational biology, or quantitative biology, it is likely relevant. Prioritize computational/quantitative approaches. Answer 'yes' or 'no': Is this paper relevant?",
         
                     "limit": 800,
                     "limit_per_database": 300
@@ -92,12 +92,12 @@ jobs:
                 "Histopathology": {
                     "emoji": "🔬",
                     # BioRxiv: Pathology + diagnosis + AI terms
-                    "query_biorxiv": "[pathology] OR [hematopathology] OR [diagnosis] OR [diagnostic] OR [histopathology] OR [cytopathology] OR [biopsy] OR [cancer detection] OR [tumor classification] OR [digital pathology] OR [foundation model] OR [automated diagnosis] OR [clinical AI]",
+                    "query_biorxiv": "[pathology] OR [hematopathology] OR [diagnosis] OR [diagnostic] OR [histopathology] OR [cytopathology] OR [biopsy] OR [cancer detection] OR [tumor classification] OR [digital pathology] OR [foundation model] OR [automated diagnosis] OR [clinical AI] OR [spatial transcriptomics] OR [H&E] OR [machine learning] or [artificial intelligence] OR [neural network]",
         
                     # PubMed/ArXiv: Pathology/diagnosis + AI/computational methods
-                    "query_pubmed_arxiv": "([pathology] OR [hematopathology] OR [diagnosis] OR [histology] OR [biopsy] OR [cancer]) AND ([artificial intelligence] OR [foundation model] OR [machine learning] OR [deep learning] OR [neural network] OR [automated] OR [computer aided] OR [digital pathology] OR [computational diagnosis])",
+                    "query_pubmed_arxiv": "([pathology] OR [hematopathology] OR [diagnosis] OR [histology] OR [biopsy] OR [cancer] OR [spatial] OR [single cell] OR [transcriptomics] OR [spatial transcriptomics]) AND ([artificial intelligence] OR [foundation model] OR [machine learning] OR [deep learning] OR [neural network] OR [automated] OR [computer aided] OR [digital pathology] OR [computational diagnosis])",
         
-                    "filter": "You are reviewing papers for a lab focused on computational pathology, hematopathology, and medical AI. Remember: we are primarily interested in COMPUTATIONAL papers. Key interests: hematology, blood disorders, computational pathology, and AI-based diagnostics. Be INCLUSIVE - if a paper relates to hematology, pathology, medical AI, or computational medicine, it is likely relevant. Prioritize computational/AI approaches. Answer 'yes' or 'no': Is this paper relevant?",
+                    "filter": "You are reviewing papers for a lab focused on computational pathology, hematopathology, and medical AI. Remember: we are primarily interested in COMPUTATIONAL papers. Key interests: hematology, blood disorders, computational pathology, spatial transcriptomics, automated diagnosis nd AI-based diagnostics. Be INCLUSIVE - if a paper relates to hematology, pathology, medical AI, or computational medicine, it is likely relevant. Prioritize computational/AI approaches. Answer 'yes' or 'no': Is this paper relevant?",
         
                     "limit": 800,
                     "limit_per_database": 300

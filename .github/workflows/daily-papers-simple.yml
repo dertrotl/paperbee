@@ -9,7 +9,7 @@ on:
 jobs:
   fetch-papers:
     runs-on: ubuntu-latest
-    timeout-minutes: 60
+    timeout-minutes: 120
     
     steps:
       - name: Checkout repository
@@ -67,9 +67,9 @@ jobs:
               "databases": ["pubmed", "biorxiv"],
               
               # Clinic-focused queries (Single-cell, IBD, Immunology) - OPTIMIZED
-              "query_biorxiv": "[single-cell] OR [scRNA-seq] OR [spatial transcriptomics] OR [organoids] OR [IBD] OR [inflammatory bowel disease] OR [Crohn] OR [ulcerative colitis] OR [immunodeficiency] OR [inflammasome] OR [immunology] OR [autoimmune] OR [multiomics] OR [computational biology]",
+              "query_biorxiv": "[single-cell] OR [scRNA-seq] OR [spatial transcriptomics] OR [organoids] OR [IBD] OR [inflammatory bowel disease] OR [Crohn] OR [ulcerative colitis] OR [immunodeficiency] OR [inflammasome] OR [immunology] OR [autoimmune] OR [multiomics] OR [computational biology] OR [pertubations] OR [proteomics]",
               
-              "query_pubmed_arxiv": "[single-cell RNA sequencing] OR [scRNA-seq] OR [IBD] OR [inflammatory bowel disease] OR [Crohn's disease] OR [ulcerative colitis] OR [immunodeficiency] OR [inflammasome] OR [organoids] OR [multiomics] OR [computational biology] OR [immunology] OR [autoimmune]",
+              "query_pubmed_arxiv": "([single-cell RNA sequencing] OR [spatial] OR [spatial transcriptomics] OR [pertubations] OR [proteomics] OR [scRNA-seq] OR [immunodeficiency] OR [inflammasome] OR [organoids] OR [multiomics] OR [computational biology] OR [immunology] OR [autoimmune]) AND ([IBD] OR [inflammatory bowel disease] OR [Crohn's disease] OR [ulcerative colitis] OR [VEO-IBD])",
               
               "limit": 600,
               "limit_per_database": 200,
@@ -80,7 +80,7 @@ jobs:
               "OPENAI_API_KEY": os.environ.get("GEMINI_KEY", ""),
               "OPENAI_BASE_URL": "https://generativelanguage.googleapis.com/v1beta/openai/",
               
-              "FILTERING_PROMPT": "You are reviewing research papers for a lab focused on single-cell analysis, IBD/immunology, and computational biology. Key interests: single-cell RNA-seq, organoids, inflammatory bowel disease, immunodeficiency, inflammasome biology, and autoimmune diseases. Be INCLUSIVE - if a paper relates to single-cell methods, IBD, immunology, organoids, or computational biology approaches in these areas, it is likely relevant. Answer 'yes' or 'no': Is this paper relevant?",
+              "FILTERING_PROMPT": "You are reviewing research papers for a lab focused on single-cell analysis, IBD/immunology, and computational biology. Key interests: single-cell RNA-seq, organoids, everything related to veo-ibd,inflammatory bowel disease, immunodeficiency, inflammasome biology, and autoimmune diseases. Be INCLUSIVE - if a paper relates to single-cell methods, IBD, immunology, organoids, or computational biology approaches in these areas as well as single cell seq, spatial transcriptomics and proteomics, it is likely relevant. Answer 'yes' or 'no': Is this paper relevant?",
               
               # Enable paper categorization for Slack posting
               "CATEGORIZE_PAPERS": True,
