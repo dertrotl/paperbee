@@ -92,7 +92,7 @@ jobs:
                 "Histopathology": {
                     "emoji": "🔬",
                     # BioRxiv: Pathology + diagnosis + AI terms
-                    "query_biorxiv": "[pathology] OR [hematopathology] OR [diagnosis] OR [diagnostic] OR [histopathology] OR [cytopathology] OR [biopsy] OR [cancer detection] OR [tumor classification] OR [digital pathology] OR [foundation model] OR [automated diagnosis] OR [clinical AI] OR [spatial transcriptomics] OR [H&E] OR [machine learning] or [artificial intelligence] OR [neural network]",
+                    "query_biorxiv": "[pathology] OR [hematopathology] OR [diagnosis] OR [diagnostic] OR [histopathology] OR [cytopathology] OR [biopsy] OR [cancer detection] OR [tumor classification] OR [digital pathology] OR [foundation model] OR [automated diagnosis] OR [clinical AI] OR [spatial transcriptomics] OR [H&E] OR [machine learning] OR [artificial intelligence] OR [neural network]",
         
                     # PubMed/ArXiv: Pathology/diagnosis + AI/computational methods
                     "query_pubmed_arxiv": "([pathology] OR [hematopathology] OR [diagnosis] OR [histology] OR [biopsy] OR [cancer] OR [spatial] OR [single cell] OR [transcriptomics] OR [spatial transcriptomics]) AND ([artificial intelligence] OR [foundation model] OR [machine learning] OR [deep learning] OR [neural network] OR [automated] OR [computer aided] OR [digital pathology] OR [computational diagnosis])",
